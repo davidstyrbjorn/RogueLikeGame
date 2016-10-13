@@ -146,19 +146,17 @@ public class PlayerManager : MonoBehaviour {
         // Increasing the actual stat HERE
         if (randomNum == 0)
         {
-            float oldValue = maxHealthPoints;
-            maxHealthPoints += BaseValues.HealthStatIncrease;
+            float newMaxHealth = Mathf.CeilToInt(maxHealthPoints * BaseValues.HealthStatIncrease);
+            maxHealthPoints = newMaxHealth;
 
-            float percentualIncrease = (1 - (oldValue / maxHealthPoints)) * 100;
-            eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + percentualIncrease.ToString(".#") + "%</color>");
-
-            healthPoints += BaseValues.HealthStatIncrease;
+            eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + "10.22%" + "%</color>");
             
         }
         else if (randomNum == 1)
         {
             float oldValue = attack;
-            attack += BaseValues.AttackStatIncrease;
+            float newAttack = Mathf.CeilToInt(attack * BaseValues.AttackStatIncrease);
+            attack = newAttack;
 
             float percentualIncrease = (1 - (oldValue / attack)) * 100;
             eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + percentualIncrease.ToString(".#") + "%</color>");

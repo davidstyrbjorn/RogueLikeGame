@@ -13,8 +13,8 @@ public class Enemy : MonoBehaviour {
 
     public void SetUpEnemy(int _floorNumber)
     {
-        healthPoints = BaseValues.EnemyBaseHP + (_floorNumber * BaseValues.FloorHealthModifier) + Random.Range(0, _floorNumber);
-        attack = BaseValues.EnemyBaseAttack + (_floorNumber * BaseValues.FloorAttackModifier) + Random.Range(0, _floorNumber);
+        healthPoints = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.106f, _floorNumber));
+        attack = Mathf.CeilToInt(BaseValues.EnemyBaseAttack * Mathf.Pow(1.0838f, _floorNumber));
     }
 
     public float getHP() { return healthPoints; }
