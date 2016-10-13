@@ -217,6 +217,11 @@ public class PlayerManager : MonoBehaviour {
         isDead = true;
     }
 
+    public void walkedOffExit()
+    {
+        uiManager.DisableNextFloorPrompt();
+    }
+
     /*
     void OnGUI()
     {

@@ -118,6 +118,8 @@ public class PlayerMove : MonoBehaviour {
             // Floor exit condition
             if (currentMap[curr_x, curr_y] == 3)
                 playerManager.walkedOnExit();
+            else
+                playerManager.walkedOffExit();
 
             // Check if we walked onto any stat increaser
             if (currentMap[curr_x, curr_y] == 5)

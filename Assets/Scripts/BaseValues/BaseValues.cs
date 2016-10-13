@@ -11,7 +11,7 @@ public class BaseValues{
     public static float FloorAttackModifier = 1.25f;
     public static float FloorHealthModifier = 1.25f;
     public static float EnemyBaseHP = 50;
-    public static float EnemyBaseAttack = 5;
+    public static float EnemyBaseAttack = 10;
 
     // Weapon stats
     public static float WeaponCriticalMultiplier = 1.6f;
