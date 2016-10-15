@@ -10,8 +10,10 @@ public class UIManager : MonoBehaviour {
     public RectTransform characterInventory;
     public RectTransform nextFloorPrompt;
     public RectTransform gameOverScreen;
+    public RectTransform enemyStatScreen;
     public Text playerStatsText;
     public Text inventoryWeaponStat;
+    public Text enemyStatsText;
 
     public Image[] weaponSlots;
 
@@ -22,8 +24,6 @@ public class UIManager : MonoBehaviour {
 
     // Currently selected inventory weapon
     private Weapon currentlySelectedInventoryWeapon;
-    // Currently selected player weapon
-    public Image currentlySelectedWeaponImage;
 
     void Start()
     {
@@ -52,9 +52,6 @@ public class UIManager : MonoBehaviour {
         {
             playerStatsText.text = "HP: " + playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
                 "Attack: " + playerManager.getAttack() + "\nWeapon: " + playerManager.getEquipedWeapon().getAttack();
-
-            currentlySelectedWeaponImage.sprite = playerManager.getEquipedWeapon().getWeaponSprite();
-            currentlySelectedWeaponImage.color = Color.white;
         }
         else
             playerStatsText.text = "HP: " + playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
@@ -88,6 +85,21 @@ public class UIManager : MonoBehaviour {
             if(playerInventory.GetWeaponsList()[i] != null)
                 weaponSlots[i].sprite = playerInventory.GetWeaponsList()[i].getWeaponSprite();
         }
+    }
+
+    // Update the player values
+    public void UpdateEnemyUI(Enemy enemy)
+    {
+        if (enemy != null)
+        {
+            enemyStatScreen.gameObject.SetActive(true);
+            enemyStatsText.text = "Enemy\n" + "Health: " + enemy.getHP() + "\nAttack: " + enemy.getAttack();
+        }
+    }
+
+    public void DisableEnemyUI()
+    {
+        enemyStatScreen.gameObject.SetActive(false);
     }
 
     // Enables the window that asks if the player wants to go to the next floor

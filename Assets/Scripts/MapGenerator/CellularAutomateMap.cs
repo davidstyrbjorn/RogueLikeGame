@@ -152,6 +152,20 @@ public class CellularAutomateMap : MonoBehaviour
             map[x, EntranceY] = 0;
         for (int y = EntranceY; y < exitY; y++)
             map[exitX, y] = 0;
+
+        // Placing enemies around the exit on random
+        for (int x = ExitY - 1; x < ExitY + 1; x++)
+        {
+            if (x != EntranceX)
+                if (randomNum.Next(0, 100) > 50)
+                    map[x, ExitY] = 4;
+        }
+        for (int y = ExitY - 1; y < ExitY + 1; y++)
+        {
+            if (y != ExitY)
+                if (randomNum.Next(0, 100) > 50)
+                    map[ExitX, y] = 4;
+        }
     }
 
     void PlaceChest()

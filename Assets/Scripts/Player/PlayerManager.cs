@@ -68,9 +68,6 @@ public class PlayerManager : MonoBehaviour {
 
         currentEnemyPos = new Vector2(enemy_x, enemy_y);
 
-        enemyHealth = currentEnemy.GetComponent<Enemy>().getHP();
-        enemyAttack = currentEnemy.GetComponent<Enemy>().getAttack();
-
         StartCoroutine(CombatLoop());
     }
 
@@ -87,14 +84,13 @@ public class PlayerManager : MonoBehaviour {
                 // Starts off instantly with the player hitting the enemy    
                 float damage = equipedWeapon != null ? attack + equipedWeapon.getAttack() : attack;
                 currentEnemy.looseHealth(damage); // Enemy takes damage baed on our attack
+                uiManager.UpdateEnemyUI(currentEnemy);
 
                 // Write to the text box
                 eventBox.addEvent("Player attacked for " + "<color=red>" + damage + "</color>");
 
                 if (currentEnemy != null)
                 {
-                    enemyHealth = currentEnemy.getHP();
-
                     yield return new WaitForSeconds(0.7f);
                 }
 
@@ -102,7 +98,6 @@ public class PlayerManager : MonoBehaviour {
                 {
                     // Now the player takes damge based on currentEnemy's attack variable
                     looseHealth(currentEnemy.getAttack());
-
                     yield return new WaitForSeconds(0.7f);
                 }
             }
@@ -138,10 +133,9 @@ public class PlayerManager : MonoBehaviour {
             Destroy(currentEnemy.gameObject);
             currentEnemy = null;
             inCombat = false;
-
-            // Reset the values FOR TESTING PURPOSES
-            enemyHealth = 0;
-            enemyAttack = 0;
+            
+            // Disable enemy UI
+            uiManager.DisableEnemyUI();
         }
     }
 
@@ -227,6 +221,17 @@ public class PlayerManager : MonoBehaviour {
 
     void CheckForEnemyClick()
     {
-        RaycastHit2D ray = Physics2D.Raycast(Camera.main.transform.position, Camera.main.WorldToScreenPoint(Input.mousePosition));
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
+            if (hit.collider != null)
+            {
+                if (hit.collider.tag == "Enemy")
+                {
+                    
+                }
+            }
+        }
     }
 }
