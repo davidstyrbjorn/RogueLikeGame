@@ -31,6 +31,11 @@ public class PlayerManager : MonoBehaviour {
     public float getMaxHealth() { return maxHealthPoints; }
     public float getAttack() { return attack; }
 
+    void Update()
+    {
+        CheckForEnemyClick();
+    }
+
     void Start()
     {
         // Get component calls
@@ -220,10 +225,8 @@ public class PlayerManager : MonoBehaviour {
         uiManager.DisableNextFloorPrompt();
     }
 
-    /*
-    void OnGUI()
+    void CheckForEnemyClick()
     {
-        GUI.TextField(new Rect(3, 3, 100, 100), "HP: " + healthPoints + "/" + maxHealthPoints + "\nAttack: " + attack + "\nEnemy: " + enemyHealth + "\nEnemy: " + enemyAttack);
+        RaycastHit2D ray = Physics2D.Raycast(Camera.main.transform.position, Camera.main.WorldToScreenPoint(Input.mousePosition));
     }
-    */
 }
