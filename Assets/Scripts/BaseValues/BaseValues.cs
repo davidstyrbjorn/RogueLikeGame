@@ -8,7 +8,7 @@ public class BaseValues{
     public static float AttackStatIncrease = 1.122f;
 
     // Enemy base values
-    public static float EnemyBaseHP = 100;
+    public static float EnemyBaseHP = 50;
     public static float EnemyBaseAttack = 5;
 
     // Weapon stats

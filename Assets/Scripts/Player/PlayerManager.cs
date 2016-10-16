@@ -228,10 +228,11 @@ public class PlayerManager : MonoBehaviour {
             if (hit.collider != null)
             {
                 if (hit.collider.tag == "Enemy")
-                {
-                    
-                }
+                    uiManager.UpdateEnemyUI(hit.collider.gameObject.GetComponent<Enemy>());
             }
+            else
+                if(!inCombat)
+                    uiManager.DisableEnemyUI();
         }
     }
 }

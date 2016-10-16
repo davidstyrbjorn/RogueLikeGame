@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour {
 
     public void SetUpEnemy(int _floorNumber)
     {
-        healthPoints = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.106f, _floorNumber));
+        healthPoints = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.106f, _floorNumber)) + Mathf.FloorToInt(Random.Range(-_floorNumber, 5 * _floorNumber));
         attack = Mathf.CeilToInt(BaseValues.EnemyBaseAttack * Mathf.Pow(1.0838f, _floorNumber));
     }
 
