@@ -4,10 +4,15 @@ using System.Collections;
 public class Enemy : MonoBehaviour {
 
     private float healthPoints, attack;
+    private float critChance; // 1 - this, is the actual percentage chance
+    private float critMultiplier;
     private PlayerManager playerManager;
 
     void Start()
     {
+        critChance = Random.Range(75, 99);
+        critMultiplier = 1f + Random.Range(0f, 10f) / 10;
+        critMultiplier = Mathf.Round(critMultiplier * 100f) / 100f;
         playerManager = FindObjectOfType<PlayerManager>(); // Getting the player manager
     }
 

@@ -40,8 +40,10 @@ public class UIManager : MonoBehaviour {
 
     void KeyboardInput()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.C))
             characterStats.gameObject.SetActive(!characterStats.gameObject.active);
+        */
         if (Input.GetKeyDown(KeyCode.I))
             characterInventory.gameObject.SetActive(!characterInventory.gameObject.active);
     }
@@ -51,7 +53,7 @@ public class UIManager : MonoBehaviour {
         if (playerManager.getEquipedWeapon() != null)
         {
             playerStatsText.text = "HP: " + playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
-                "Attack: " + playerManager.getAttack() + "\nWeapon: " + playerManager.getEquipedWeapon().getAttack();
+                "Attack: " + playerManager.getAttack() + "\nWeapon: " + playerManager.getEquipedWeapon().getNormalAttack();
         }
         else
             playerStatsText.text = "HP: " + playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
@@ -61,7 +63,10 @@ public class UIManager : MonoBehaviour {
     // Selects whatever weapon we clicked on if the _index inside players weapons list
     public void ClickedOnWeapon(int _index)
     {
-        inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getAttack() + "\nCritical Chance: 0%";
+        inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getAttack();
+        inventoryWeaponStat.text += (playerInventory.GetWeaponsList()[_index].getCritChance() != 0f) ? "\nCritical Chance: " +
+            playerInventory.GetWeaponsList()[_index].getCritChance() + 
+            "\nCritical Multiplier: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier() : "";
         currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
     }
 
@@ -109,6 +114,8 @@ public class UIManager : MonoBehaviour {
     }
 
     public void DisableNextFloorPrompt() { nextFloorPrompt.gameObject.SetActive(false); }
+    public void ToggleInventory() { characterInventory.gameObject.SetActive(!characterInventory.gameObject.active); }
+    public void ToggleExtraStats() { /* Active the extra inventory screen once its implemented */ }
     public void NextFloor()
     {
         nextFloorPrompt.gameObject.SetActive(false);

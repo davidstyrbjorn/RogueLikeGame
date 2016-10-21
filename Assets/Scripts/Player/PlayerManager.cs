@@ -81,13 +81,14 @@ public class PlayerManager : MonoBehaviour {
                 // Show player attack effect
                 playerAnimation.DoCombatAnimation();
 
-                // Starts off instantly with the player hitting the enemy    
-                float damage = equipedWeapon != null ? attack + equipedWeapon.getAttack() : attack;
-                currentEnemy.looseHealth(damage); // Enemy takes damage baed on our attack
+                // Starts off instantly with the player hitting the enemy 
+                float weaponDamage = 0;
+                if (equipedWeapon != null) { weaponDamage = equipedWeapon.getAttack(); }
+                currentEnemy.looseHealth(attack + weaponDamage); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
 
                 // Write to the text box
-                eventBox.addEvent("Player attacked for " + "<color=red>" + damage + "</color>");
+                eventBox.addEvent("Player attacked for <color=red>" + attack  + "</color> + <color=yellow>(" + weaponDamage + ")</color>");
 
                 if (currentEnemy != null)
                 {
