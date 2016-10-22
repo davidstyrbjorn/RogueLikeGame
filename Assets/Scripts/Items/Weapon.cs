@@ -10,12 +10,15 @@ public class Weapon
     private float critChance;
     private float critMultiplier;
     private int floor;
+    private string name;
 
     public Weapon(Sprite _weaponSprite, int _floor)
     {
         floor = _floor;
         weaponSprite = _weaponSprite;
-        attack = 4 + Random.Range(1, _floor);
+        attack = 4 + Random.Range(_floor, _floor);
+
+        name = weaponSprite.name;
 
         // If we're above floor 10 give weapons critical strike
         if (floor >= 10)
@@ -36,6 +39,8 @@ public class Weapon
     public float getCriticalMultiplier() { return critMultiplier; }
     // Returns the normal attack with no critical chance
     public float getNormalAttack() { return attack; }
+    // Returns the name of the Weapon
+    public string getName() { return name; }
 
     public float getAttack()
     {

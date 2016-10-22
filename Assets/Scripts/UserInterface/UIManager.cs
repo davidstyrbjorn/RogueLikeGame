@@ -63,7 +63,7 @@ public class UIManager : MonoBehaviour {
     // Selects whatever weapon we clicked on if the _index inside players weapons list
     public void ClickedOnWeapon(int _index)
     {
-        inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getAttack();
+        inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
         inventoryWeaponStat.text += (playerInventory.GetWeaponsList()[_index].getCritChance() != 0f) ? "\nCritical Chance: " +
             playerInventory.GetWeaponsList()[_index].getCritChance() + 
             "\nCritical Multiplier: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier() : "";
