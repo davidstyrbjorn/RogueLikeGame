@@ -13,6 +13,7 @@ public class Potion {
     public potionType type;
     public int length;
 
+    public Potion(potionType _type, int _length)
     {
         type = _type;
         length = _length;
