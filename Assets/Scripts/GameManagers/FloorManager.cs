@@ -97,7 +97,7 @@ public class FloorManager : MonoBehaviour
                     }
                     else if (map[x, y] == 2)
                     {
-                        GameObject entranceTile = Instantiate(Entrance, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        GameObject entranceTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         entranceTile.transform.parent = transform;
 
                         tileList.Add(new Vector2(x, y), entranceTile);

@@ -132,6 +132,8 @@ public class PlayerMove : MonoBehaviour {
             if (currentMap[curr_x, curr_y] == 6)
                 playerManager.hitChest(new Vector2(curr_x, curr_y));
 
+            playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
+
             RevealNewPart(new Vector2(curr_x, curr_y));
         }
     }
@@ -148,26 +150,26 @@ public class PlayerMove : MonoBehaviour {
         {
             for (int y = (int)pos.y - 4; y < (int)pos.y + 4; y++)
             {
-                // Checking base tiles
-                if (floorManager.tileList.ContainsKey(new Vector2(x, y)))
-                {
-                    floorManager.tileList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                }
-                // Checking stat increasers to reveal
-                if (floorManager.statIncreaserList.ContainsKey(new Vector2(x, y)))
-                {
-                    floorManager.statIncreaserList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                }
-                // Checking for enemies to reveal
-                if (floorManager.enemyList.ContainsKey(new Vector2(x, y)))
-                {
-                    floorManager.enemyList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                }
-                // Checking for chests to reveal
-                if (floorManager.chestList.ContainsKey(new Vector2(x, y)))
-                {
-                    floorManager.chestList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                }
+                    // Checking base tiles
+                    if (floorManager.tileList.ContainsKey(new Vector2(x, y)))
+                    {
+                        floorManager.tileList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
+                    }
+                    // Checking stat increasers to reveal
+                    if (floorManager.statIncreaserList.ContainsKey(new Vector2(x, y)))
+                    {
+                        floorManager.statIncreaserList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
+                    }
+                    // Checking for enemies to reveal
+                    if (floorManager.enemyList.ContainsKey(new Vector2(x, y)))
+                    {
+                        floorManager.enemyList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
+                    }
+                    // Checking for chests to reveal
+                    if (floorManager.chestList.ContainsKey(new Vector2(x, y)))
+                    {
+                        floorManager.chestList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
+                    }
             }
         }
     }

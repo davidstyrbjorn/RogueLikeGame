@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
@@ -22,6 +23,8 @@ public class PlayerManager : MonoBehaviour {
     private Weapon equipedWeapon;
 
     public GameObject WeaponHoverEffectObject;
+
+    private List<Potion> currentPotionsInEffect = new List<Potion>();
     
     // TEST REMOVE AFTER TESTING IS DONE PLEEEEEASE
     private float enemyHealth;
@@ -57,6 +60,37 @@ public class PlayerManager : MonoBehaviour {
 
         // Setting up start attack
         attack = BaseValues.PlayerBaseAttack;
+
+        // Adding a potion for testing purposes
+        Potion testHealPotion = new Potion(Potion.potionType.HEALING, 40);
+        currentPotionsInEffect.Add(testHealPotion);
+    }
+
+    public void PlayerMoved(Vector2 newPos)
+    {
+        // Checking for potion effects
+        if (currentPotionsInEffect.Count> 0)
+        {
+            for (int i = 0; i < currentPotionsInEffect.Count; i++)
+            {
+                // Check if the potion is a healing potion
+                if(currentPotionsInEffect[i].type == Potion.potionType.HEALING)
+                {
+                    addHealth(maxHealthPoints * 0.1f); // add 10% of our max health
+                }
+                // Check if the potion is a strength potion
+                if(currentPotionsInEffect[i].type == Potion.potionType.STRENTGH)
+                {
+
+                }
+                
+                // Reduce the length of the potion
+                currentPotionsInEffect[i].length--;
+                // Check if the potion has run out of length in that case remove it 
+                if (currentPotionsInEffect[i].length <= 0)
+                    currentPotionsInEffect.RemoveAt(i);
+            }
+        }
     }
 
     public void onEngage(int enemy_x, int enemy_y)
@@ -193,10 +227,24 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+    public void addHealth(float _health)
+    {
+        // Adds health as long as there's anything to add
+        if (healthPoints <= maxHealthPoints)
+        {
+            healthPoints += _health;
+            // Trim of health if we over stepped our max health
+            if (healthPoints > maxHealthPoints)
+                healthPoints -= healthPoints - maxHealthPoints;
+            uiManager.NewPlayerValues();
+        }
+    }
+
     public void EquipWeapon(Weapon _weapon)
     {
         equipedWeapon = _weapon;
         uiManager.NewPlayerValues();
+        eventBox.addEvent("Equiped a  " + _weapon.getWeaponSprite().name);
     }
 
     public Weapon getEquipedWeapon()
@@ -235,5 +283,10 @@ public class PlayerManager : MonoBehaviour {
                 if(!inCombat)
                     uiManager.DisableEnemyUI();
         }
+    }
+
+    void Disintegrate()
+    {
+        
     }
 }

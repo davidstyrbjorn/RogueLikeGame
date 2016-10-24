@@ -87,8 +87,11 @@ public class UIManager : MonoBehaviour {
     {
         for(int i = 0; i < playerInventory.GetWeaponsList().Count; i++)
         {
-            if(playerInventory.GetWeaponsList()[i] != null)
+            if (playerInventory.GetWeaponsList()[i] != null)
+            {
+                weaponSlots[i].color = Color.white;
                 weaponSlots[i].sprite = playerInventory.GetWeaponsList()[i].getWeaponSprite();
+            }
         }
     }
 
