@@ -60,10 +60,6 @@ public class PlayerManager : MonoBehaviour {
 
         // Setting up start attack
         attack = BaseValues.PlayerBaseAttack;
-
-        // Adding a potion for testing purposes
-        Potion testHealPotion = new Potion(Potion.potionType.HEALING, 40);
-        currentPotionsInEffect.Add(testHealPotion);
     }
 
     public void PlayerMoved(Vector2 newPos)
@@ -81,7 +77,7 @@ public class PlayerManager : MonoBehaviour {
                 // Check if the potion is a strength potion
                 if(currentPotionsInEffect[i].type == Potion.potionType.STRENTGH)
                 {
-
+                    
                 }
                 
                 // Reduce the length of the potion
@@ -215,15 +211,23 @@ public class PlayerManager : MonoBehaviour {
         {
             floorManager.chestList[pos].GetComponent<Chest>().open();
 
-            Weapon foundWeapon = chestMaster.makeNewWeapon();
+            if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.WEAPON)
+            {
+                Weapon foundWeapon = chestMaster.makeNewWeapon();
 
-            GameObject weaponEffect = Instantiate(WeaponHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
-            weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
+                GameObject weaponEffect = Instantiate(WeaponHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
+                weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
 
-            // Now check if we actually want to have the weapon or equip the weapon
-            playerInventory.addWeapon(foundWeapon);
-            EquipWeapon(foundWeapon);
-            uiManager.UpdateWeaponSlots();
+                // Message the player he obtained a weapon
+                playerInventory.addWeapon(foundWeapon);
+                EquipWeapon(foundWeapon);
+                uiManager.UpdateWeaponSlots();
+            }
+            else if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.POTION)
+            {
+                Potion foundPotion = chestMaster.makeNewPotion();
+                playerInventory.addPotion(foundPotion);
+            }
         }
     }
 

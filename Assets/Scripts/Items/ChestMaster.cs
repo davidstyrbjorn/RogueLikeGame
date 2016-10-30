@@ -4,6 +4,8 @@ using System.Collections;
 public class ChestMaster : MonoBehaviour {
 
     public Sprite[] availAbleWeaponImages;
+    public Sprite healthPotionSprite;
+    public Sprite StrengthPotionSprite;
 
     private FloorManager floorManager;
 
@@ -16,5 +18,10 @@ public class ChestMaster : MonoBehaviour {
     {
         int randomIndex = Random.Range(0, availAbleWeaponImages.Length);
         return new Weapon(availAbleWeaponImages[randomIndex], floorManager.getCurrentFloor());
+    }
+
+    public Potion makeNewPotion()
+    {
+        return new Potion(floorManager.getCurrentFloor());
     }
 }

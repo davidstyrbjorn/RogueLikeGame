@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour {
     public Text enemyStatsText;
 
     public Image[] weaponSlots;
+    public Image[] potionSlots;
 
     // Attribute classes
     private PlayerManager playerManager;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
+using UnityEngine;
 
-public class BaseValues{
+public class BaseValues : MonoBehaviour{
     // Player base values
     public static float PlayerBaseHP = 100;
     public static float PlayerBaseAttack = 10;
@@ -13,4 +14,7 @@ public class BaseValues{
 
     // Weapon stats
     public static float WeaponCriticalMultiplier = 1.6f;
+
+    public static Sprite healthPotionSprite;
+    public static Sprite strengthPotionSprite;
 }
