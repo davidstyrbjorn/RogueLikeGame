@@ -15,6 +15,17 @@ public class BaseValues : MonoBehaviour{
     // Weapon stats
     public static float WeaponCriticalMultiplier = 1.6f;
 
+    // Potion sprites
+    // These two are class scoped public so i can somehow acces them in the inspector
+    // A better way to fix this class would be to make it a singleton
+    public Sprite HealthPotionSprite;
+    public Sprite StrengthPotionSprite;
     public static Sprite healthPotionSprite;
     public static Sprite strengthPotionSprite;
+
+    void Start()
+    {
+        healthPotionSprite = HealthPotionSprite;
+        strengthPotionSprite = StrengthPotionSprite;
+    }
 }

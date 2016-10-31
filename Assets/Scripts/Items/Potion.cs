@@ -21,8 +21,9 @@ public class Potion {
         length = 10;
 
         // Set the sprite for the potion
-        potionSprite = type == potionType.HEALING ? BaseValues.healthPotionSprite : BaseValues.strengthPotionSprite; 
+        potionSprite = type == potionType.HEALING ? BaseValues.healthPotionSprite : BaseValues.strengthPotionSprite;
     }
 
     public Sprite getPotionSprite() { return potionSprite; }
+    public potionType getPotionType() { return type; }
 }

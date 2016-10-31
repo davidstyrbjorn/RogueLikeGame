@@ -27,4 +27,9 @@ public class PlayerInventory : MonoBehaviour {
         return weaponsList;
     }
 
+    public List<Potion> GetPotionsList()
+    {
+        return potionsList;
+    }
+
 }

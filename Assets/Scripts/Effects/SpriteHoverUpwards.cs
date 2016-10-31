@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponHoverUpwards : MonoBehaviour {
+public class SpriteHoverUpwards : MonoBehaviour {
 
     private bool fadeOut;
     private SpriteRenderer spre;

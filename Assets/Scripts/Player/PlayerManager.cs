@@ -22,7 +22,7 @@ public class PlayerManager : MonoBehaviour {
 
     private Weapon equipedWeapon;
 
-    public GameObject WeaponHoverEffectObject;
+    public GameObject SpriteHoverEffectObject;
 
     private List<Potion> currentPotionsInEffect = new List<Potion>();
     
@@ -215,7 +215,7 @@ public class PlayerManager : MonoBehaviour {
             {
                 Weapon foundWeapon = chestMaster.makeNewWeapon();
 
-                GameObject weaponEffect = Instantiate(WeaponHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
+                GameObject weaponEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
                 weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
 
                 // Message the player he obtained a weapon
@@ -225,8 +225,14 @@ public class PlayerManager : MonoBehaviour {
             }
             else if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.POTION)
             {
+                // Create and try to add the potion to players inventory
                 Potion foundPotion = chestMaster.makeNewPotion();
                 playerInventory.addPotion(foundPotion);
+
+                GameObject spriteHover = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
+                spriteHover.GetComponent<SpriteRenderer>().sprite = foundPotion.getPotionSprite();
+
+                uiManager.UpdatePotionSlots();
             }
         }
     }

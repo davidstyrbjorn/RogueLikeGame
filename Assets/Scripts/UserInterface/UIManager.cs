@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour {
 
     // UI Game Objects
+    public RectTransform weaponInfoContainer;
+    public RectTransform potionInfoContainer;
     public RectTransform characterStats;
     public RectTransform characterInventory;
     public RectTransform nextFloorPrompt;
@@ -13,6 +15,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform enemyStatScreen;
     public Text playerStatsText;
     public Text inventoryWeaponStat;
+    public Text inventoryPotionStat;
     public Text enemyStatsText;
 
     public Image[] weaponSlots;
@@ -46,7 +49,7 @@ public class UIManager : MonoBehaviour {
             characterStats.gameObject.SetActive(!characterStats.gameObject.active);
         */
         if (Input.GetKeyDown(KeyCode.I))
-            characterInventory.gameObject.SetActive(!characterInventory.gameObject.active);
+            ToggleInventory();
     }
 
     public void NewPlayerValues()
@@ -64,11 +67,20 @@ public class UIManager : MonoBehaviour {
     // Selects whatever weapon we clicked on if the _index inside players weapons list
     public void ClickedOnWeapon(int _index)
     {
+        potionInfoContainer.gameObject.SetActive(false);
+        weaponInfoContainer.gameObject.SetActive(true);
         inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
         inventoryWeaponStat.text += (playerInventory.GetWeaponsList()[_index].getCritChance() != 0f) ? "\nCritical Chance: " +
             playerInventory.GetWeaponsList()[_index].getCritChance() + 
             "\nCritical Multiplier: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier() : "";
         currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
+    }
+
+    public void ClickedOnPotion(int _index)
+    {
+        potionInfoContainer.gameObject.SetActive(true);
+        weaponInfoContainer.gameObject.SetActive(false);
+        inventoryPotionStat.text = (playerInventory.GetPotionsList()[_index].getPotionType() == Potion.potionType.HEALING) ? "Type: Healing\n" : "Type: Strength\n";
     }
 
     // Equips the currently inventory selected weapon
@@ -96,6 +108,18 @@ public class UIManager : MonoBehaviour {
         }
     }
 
+    public void UpdatePotionSlots()
+    {
+        for(int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+        {
+            if(playerInventory.GetPotionsList()[i] != null)
+            {
+                potionSlots[i].color = Color.white;
+                potionSlots[i].sprite = playerInventory.GetPotionsList()[i].getPotionSprite();
+            }
+        }
+    }
+
     // Update the player values
     public void UpdateEnemyUI(Enemy enemy)
     {
@@ -118,7 +142,12 @@ public class UIManager : MonoBehaviour {
     }
 
     public void DisableNextFloorPrompt() { nextFloorPrompt.gameObject.SetActive(false); }
-    public void ToggleInventory() { characterInventory.gameObject.SetActive(!characterInventory.gameObject.active); }
+    public void ToggleInventory()
+    {
+        potionInfoContainer.gameObject.SetActive(false);
+        weaponInfoContainer.gameObject.SetActive(false);
+        characterInventory.gameObject.SetActive(!characterInventory.gameObject.active);
+    }
     public void ToggleExtraStats() { /* Active the extra inventory screen once its implemented */ }
     public void NextFloor()
     {
