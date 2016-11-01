@@ -16,9 +16,10 @@ public class Potion {
 
     public Potion(int _floor)
     {
-        // Default values REPLACE LATER
-        type = potionType.HEALING;
-        length = 10;
+        // For now just put a even chance for the potion type to be each
+        int _randomNum = Random.Range(0, 2);
+        if (_randomNum == 0) { type = potionType.HEALING; }
+        if (_randomNum == 1) { type = potionType.STRENTGH; }
 
         // Set the sprite for the potion
         potionSprite = type == potionType.HEALING ? BaseValues.healthPotionSprite : BaseValues.strengthPotionSprite;

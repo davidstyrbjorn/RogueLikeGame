@@ -18,7 +18,7 @@ public class Chest : MonoBehaviour {
     {
         int num = Random.Range(0, 2);
         if (num == 0)
-            chestDrop = ChestDrops.POTION;
+            chestDrop = ChestDrops.WEAPON;
         else if (num == 1)
             chestDrop = ChestDrops.POTION;
 

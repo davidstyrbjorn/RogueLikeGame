@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour {
 
     // Currently selected inventory weapon
     private Weapon currentlySelectedInventoryWeapon;
+    private int currentlySelectedPotionIndex = -1;
 
     void Start()
     {
@@ -78,9 +79,13 @@ public class UIManager : MonoBehaviour {
 
     public void ClickedOnPotion(int _index)
     {
-        potionInfoContainer.gameObject.SetActive(true);
-        weaponInfoContainer.gameObject.SetActive(false);
-        inventoryPotionStat.text = (playerInventory.GetPotionsList()[_index].getPotionType() == Potion.potionType.HEALING) ? "Type: Healing\n" : "Type: Strength\n";
+        if (potionSlots[_index].color != Color.clear)
+        {
+            potionInfoContainer.gameObject.SetActive(true);
+            weaponInfoContainer.gameObject.SetActive(false);
+            inventoryPotionStat.text = (playerInventory.GetPotionsList()[_index].getPotionType() == Potion.potionType.HEALING) ? "Type: Healing\n" : "Type: Strength\n";
+            currentlySelectedPotionIndex = _index;
+        }
     }
 
     // Equips the currently inventory selected weapon
@@ -88,6 +93,16 @@ public class UIManager : MonoBehaviour {
     {
         if(currentlySelectedInventoryWeapon != null)
             playerManager.EquipWeapon(currentlySelectedInventoryWeapon);
+    }
+
+    public void DrinkPotion()
+    {
+        if (!(currentlySelectedPotionIndex >= playerInventory.GetPotionsList().Count))
+        {
+            print("Should drink potion!");
+            playerInventory.GetPotionsList().RemoveAt(currentlySelectedPotionIndex);
+            UpdatePotionSlots();
+        }
     }
 
     public void RemoveSelectedWeapon()
@@ -110,12 +125,18 @@ public class UIManager : MonoBehaviour {
 
     public void UpdatePotionSlots()
     {
+
         for(int i = 0; i < playerInventory.GetPotionsList().Count; i++)
         {
-            if(playerInventory.GetPotionsList()[i] != null)
+            if (playerInventory.GetPotionsList()[i] != null)
             {
                 potionSlots[i].color = Color.white;
                 potionSlots[i].sprite = playerInventory.GetPotionsList()[i].getPotionSprite();
+            }
+            else if (playerInventory.GetPotionsList()[i] == null)
+            {
+                potionSlots[i].sprite = null;
+                potionSlots[i].color = Color.clear;
             }
         }
     }
