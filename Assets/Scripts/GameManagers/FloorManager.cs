@@ -27,6 +27,7 @@ public class FloorManager : MonoBehaviour
 
     private CellularAutomateMap mapGenerator;
     private PlayerMove playerMove;
+    private MiniMap miniMap;
 
     public GameObject GroundTile;
     public GameObject WallTile;
@@ -44,6 +45,8 @@ public class FloorManager : MonoBehaviour
     {
         playerMove = FindObjectOfType<PlayerMove>();
         mapGenerator = FindObjectOfType<CellularAutomateMap>();
+        miniMap = FindObjectOfType<MiniMap>();
+
         NewFloor();
         chestHeight = getChestHeight();
     }
@@ -68,6 +71,7 @@ public class FloorManager : MonoBehaviour
 
         StartCoroutine(MakeNewFloor());
         currentFloorNumber++;
+        miniMap.CreateNewTexture(); // Test remove later
     }
 
     void RenderMap()

@@ -35,7 +35,10 @@ public class UIManager : MonoBehaviour {
         floorManager = FindObjectOfType<FloorManager>();
         playerInventory = FindObjectOfType<PlayerInventory>();
         playerManager = FindObjectOfType<PlayerManager>();
+
         NewPlayerValues();
+        UpdatePotionSlots();
+        UpdateWeaponSlots();
     }
 
     void Update()
@@ -68,18 +71,21 @@ public class UIManager : MonoBehaviour {
     // Selects whatever weapon we clicked on if the _index inside players weapons list
     public void ClickedOnWeapon(int _index)
     {
-        potionInfoContainer.gameObject.SetActive(false);
-        weaponInfoContainer.gameObject.SetActive(true);
-        inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
-        inventoryWeaponStat.text += (playerInventory.GetWeaponsList()[_index].getCritChance() != 0f) ? "\nCritical Chance: " +
-            playerInventory.GetWeaponsList()[_index].getCritChance() + 
-            "\nCritical Multiplier: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier() : "";
-        currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
+        if (playerInventory.GetWeaponsList().Count > _index)
+        {
+            potionInfoContainer.gameObject.SetActive(false);
+            weaponInfoContainer.gameObject.SetActive(true);
+            inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
+            inventoryWeaponStat.text += (playerInventory.GetWeaponsList()[_index].getCritChance() != 0f) ? "\nCritical Chance: " +
+                playerInventory.GetWeaponsList()[_index].getCritChance() +
+                "\nCritical Multiplier: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier() : "";
+            currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
+        }
     }
 
     public void ClickedOnPotion(int _index)
     {
-        if (potionSlots[_index].color != Color.clear)
+        if (playerInventory.GetPotionsList().Count > _index)
         {
             potionInfoContainer.gameObject.SetActive(true);
             weaponInfoContainer.gameObject.SetActive(false);
@@ -97,12 +103,11 @@ public class UIManager : MonoBehaviour {
 
     public void DrinkPotion()
     {
-        if (!(currentlySelectedPotionIndex >= playerInventory.GetPotionsList().Count))
-        {
-            print("Should drink potion!");
-            playerInventory.GetPotionsList().RemoveAt(currentlySelectedPotionIndex);
-            UpdatePotionSlots();
-        }
+        potionInfoContainer.gameObject.SetActive(false);
+        // Remove the potion from the players potions inventory
+        playerManager.ConsumePotion(playerInventory.GetPotionsList()[currentlySelectedPotionIndex].getPotionType());
+        playerInventory.RemovePotionAt(currentlySelectedPotionIndex);
+        UpdatePotionSlots();
     }
 
     public void RemoveSelectedWeapon()
@@ -113,27 +118,31 @@ public class UIManager : MonoBehaviour {
     // Assigns the right weaponsSlots to the i index of players weapon list
     public void UpdateWeaponSlots()
     {
-        for(int i = 0; i < playerInventory.GetWeaponsList().Count; i++)
+        for(int i = 0; i < weaponSlots.Length; i++)
         {
-            if (playerInventory.GetWeaponsList()[i] != null)
+            if (playerInventory.GetWeaponsList().Count > i)
             {
                 weaponSlots[i].color = Color.white;
                 weaponSlots[i].sprite = playerInventory.GetWeaponsList()[i].getWeaponSprite();
+            }
+            else
+            {
+                weaponSlots[i].sprite = null;
+                weaponSlots[i].color = Color.clear;
             }
         }
     }
 
     public void UpdatePotionSlots()
     {
-
-        for(int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+        for(int i = 0; i < potionSlots.Length; i++)
         {
-            if (playerInventory.GetPotionsList()[i] != null)
+            if (playerInventory.GetPotionsList().Count > i)
             {
                 potionSlots[i].color = Color.white;
                 potionSlots[i].sprite = playerInventory.GetPotionsList()[i].getPotionSprite();
             }
-            else if (playerInventory.GetPotionsList()[i] == null)
+            else
             {
                 potionSlots[i].sprite = null;
                 potionSlots[i].color = Color.clear;

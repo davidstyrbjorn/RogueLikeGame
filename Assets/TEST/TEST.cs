@@ -4,20 +4,12 @@ using System.Collections;
 public class TEST : MonoBehaviour {
 
     public Transform target;
+    private Vector3 newPos;
 	
-	// Update is called once per frame
-	void Update () {
-        /*
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-        Vector3 moveVector = new Vector3(x, y, 0);
-        transform.Translate(moveVector * 20 * Time.deltaTime);
-        if (Input.GetKey(KeyCode.E))
-            Camera.main.orthographicSize++;
-        if (Input.GetKey(KeyCode.Q))
-            Camera.main.orthographicSize--;	
-            */
-        transform.position = Vector2.Lerp(transform.position, target.position, 2.5f * Time.deltaTime);
+	void FixedUpdate () {
+
+        newPos = new Vector3(target.position.x + 4.5f, target.position.y - 1.5f, -target.position.z-10);
+        transform.position = Vector2.Lerp(transform.position, newPos, 2.5f * Time.deltaTime);
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
 

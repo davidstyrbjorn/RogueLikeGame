@@ -10,6 +10,11 @@ public class PlayerInventory : MonoBehaviour {
     public List<Potion> potionsList = new List<Potion>();
     private int maxPotionCount = 9;
 
+    public void RemovePotionAt(int _index)
+    {
+        potionsList.RemoveAt(_index);
+    }
+
     public void addPotion(Potion _potion)
     {
         if (potionsList.Count < maxPotionCount)

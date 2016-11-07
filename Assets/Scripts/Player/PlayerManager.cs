@@ -9,6 +9,8 @@ public class PlayerManager : MonoBehaviour {
     private float maxHealthPoints;
     private float healthPoints;
     private float attack;
+    private float nextAttackBonus = 1f;
+    private int visionRadius = 6;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -23,8 +25,6 @@ public class PlayerManager : MonoBehaviour {
     private Weapon equipedWeapon;
 
     public GameObject SpriteHoverEffectObject;
-
-    private List<Potion> currentPotionsInEffect = new List<Potion>();
     
     // TEST REMOVE AFTER TESTING IS DONE PLEEEEEASE
     private float enemyHealth;
@@ -62,31 +62,10 @@ public class PlayerManager : MonoBehaviour {
         attack = BaseValues.PlayerBaseAttack;
     }
 
+    // PlayerMove calls this method each time
     public void PlayerMoved(Vector2 newPos)
     {
-        // Checking for potion effects
-        if (currentPotionsInEffect.Count> 0)
-        {
-            for (int i = 0; i < currentPotionsInEffect.Count; i++)
-            {
-                // Check if the potion is a healing potion
-                if(currentPotionsInEffect[i].type == Potion.potionType.HEALING)
-                {
-                    addHealth(maxHealthPoints * 0.1f); // add 10% of our max health
-                }
-                // Check if the potion is a strength potion
-                if(currentPotionsInEffect[i].type == Potion.potionType.STRENTGH)
-                {
-                    
-                }
-                
-                // Reduce the length of the potion
-                currentPotionsInEffect[i].length--;
-                // Check if the potion has run out of length in that case remove it 
-                if (currentPotionsInEffect[i].length <= 0)
-                    currentPotionsInEffect.RemoveAt(i);
-            }
-        }
+
     }
 
     public void onEngage(int enemy_x, int enemy_y)
@@ -118,7 +97,8 @@ public class PlayerManager : MonoBehaviour {
                 uiManager.UpdateEnemyUI(currentEnemy);
 
                 // Write to the text box
-                eventBox.addEvent("Player attacked for <color=red>" + attack  + "</color> + <color=yellow>(" + weaponDamage + ")</color>");
+                eventBox.addEvent("Player attacked for <color=red>" + attack * nextAttackBonus  + "</color> + <color=yellow>(" + weaponDamage + ")</color>");
+                nextAttackBonus = 1f;
 
                 if (currentEnemy != null)
                 {
@@ -257,6 +237,18 @@ public class PlayerManager : MonoBehaviour {
         eventBox.addEvent("Equiped a  " + _weapon.getWeaponSprite().name);
     }
 
+    public void ConsumePotion(Potion.potionType _type)
+    {
+        if(_type == Potion.potionType.HEALING)
+        {
+            addHealth(maxHealthPoints * BaseValues.healthPotionFactor);
+        }
+        if(_type == Potion.potionType.STRENTGH)
+        {
+            nextAttackBonus = BaseValues.strengthPotionMultiplier;
+        }
+    }
+
     public Weapon getEquipedWeapon()
     {
         return equipedWeapon;
@@ -299,4 +291,6 @@ public class PlayerManager : MonoBehaviour {
     {
         
     }
+
+    public int getVisionRadius() { return visionRadius; }
 }

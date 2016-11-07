@@ -11,19 +11,24 @@ public class PlayerMove : MonoBehaviour {
     private CellularAutomateMap mapGenerator;
     private FloorManager floorManager;
     private PlayerManager playerManager;
+    private MiniMap miniMap;
 
     private bool canExitFloor;
 
-    private float moveSpeed = 22.5f;
+    private float moveSpeed = 17.5f;
     private bool canMove;
 
     public Color almostListTile;
+    public Color almostListTile_2;
+    public Color oobTileColor;
 
     void Start()
     {
+        almostListTile_2 = new Color(almostListTile.r, almostListTile.g, almostListTile.b, almostListTile.a / 2);
         mapGenerator = FindObjectOfType<CellularAutomateMap>();
         floorManager = FindObjectOfType<FloorManager>();
         playerManager = FindObjectOfType<PlayerManager>();
+        miniMap = FindObjectOfType<MiniMap>();
     }
 
     void Update()
@@ -43,6 +48,7 @@ public class PlayerMove : MonoBehaviour {
         currentWorldPosition = SetPlayerPos(curr_x, curr_y);
         transform.position = currentWorldPosition;
         RevealNewPart(new Vector2(curr_x, curr_y));
+        miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
     }
 
     Vector2 SetPlayerPos(int _x, int _y)
@@ -60,10 +66,24 @@ public class PlayerMove : MonoBehaviour {
 
     void MovePlayer()
     {
-        if (Input.anyKeyDown && !playerManager.inCombat && canMove && !playerManager.isDead)
+        if (Input.anyKey && !playerManager.inCombat && canMove && !playerManager.isDead)
         {
+            // Move left
+            if (Input.GetKey(KeyCode.A))
+            {
+                // Move as long as we arent hitting any wall or an enemy
+                if (currentMap[curr_x - 1, curr_y] != 1 && currentMap[curr_x - 1, curr_y] != 4)
+                {
+                    curr_x--;
+                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                    canMove = false;
+                }
+                else if (currentMap[curr_x - 1, curr_y] == 4)
+                    playerManager.onEngage(curr_x - 1, curr_y);
+            }
+
             // Move to the left 
-            if (Input.GetKeyDown(KeyCode.D))
+            else if (Input.GetKey(KeyCode.D))
             {
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x+1, curr_y] != 4)
@@ -75,23 +95,9 @@ public class PlayerMove : MonoBehaviour {
                 else if (currentMap[curr_x + 1, curr_y] == 4)
                     playerManager.onEngage(curr_x + 1, curr_y);
             }
-            
-            // Move left
-            else if (Input.GetKeyDown(KeyCode.A))
-            {
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x - 1, curr_y] != 1 && currentMap[curr_x -1, curr_y] != 4)
-                {
-                    curr_x--;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
-                }
-                else if (currentMap[curr_x - 1, curr_y] == 4)
-                    playerManager.onEngage(curr_x - 1, curr_y);
-            }
 
             // Move upwards
-            else if (Input.GetKeyDown(KeyCode.W))
+            else if (Input.GetKey(KeyCode.W))
             {
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y+1] != 4)
@@ -105,7 +111,7 @@ public class PlayerMove : MonoBehaviour {
             }
 
             // Move downwards
-            else if (Input.GetKeyDown(KeyCode.S))
+            else if (Input.GetKey(KeyCode.S))
             {
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y-1] != 4)
@@ -135,6 +141,7 @@ public class PlayerMove : MonoBehaviour {
             playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
 
             RevealNewPart(new Vector2(curr_x, curr_y));
+            miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
         }
     }
 
@@ -144,32 +151,64 @@ public class PlayerMove : MonoBehaviour {
             canMove = true;                                     
     }
 
+    public Vector2 getCurrentPosition() { return new Vector2(curr_x, curr_y); }
+
     void RevealNewPart(Vector2 pos)
     {
-        for (int x = (int)pos.x - 4; x < (int)pos.x + 4; x++)
+        int visionRadius = playerManager.getVisionRadius();
+        for (int x = (int)pos.x - visionRadius; x < (int)pos.x + visionRadius; x++)
         {
-            for (int y = (int)pos.y - 4; y < (int)pos.y + 4; y++)
+            for (int y = (int)pos.y - visionRadius; y < (int)pos.y + visionRadius; y++)
             {
-                    // Checking base tiles
-                    if (floorManager.tileList.ContainsKey(new Vector2(x, y)))
-                    {
-                        floorManager.tileList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                    }
-                    // Checking stat increasers to reveal
-                    if (floorManager.statIncreaserList.ContainsKey(new Vector2(x, y)))
-                    {
-                        floorManager.statIncreaserList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                    }
-                    // Checking for enemies to reveal
-                    if (floorManager.enemyList.ContainsKey(new Vector2(x, y)))
-                    {
-                        floorManager.enemyList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                    }
-                    // Checking for chests to reveal
-                    if (floorManager.chestList.ContainsKey(new Vector2(x, y)))
-                    {
-                        floorManager.chestList[new Vector2(x, y)].GetComponent<SpriteRenderer>().color = Color.white;
-                    }
+                // These tiles should be fully lit
+                if(x >= (int)pos.x - 3 && x <= (int)pos.x + 3 && y >= (int)pos.y - 3 && y <= (int)pos.y + 3)
+                {
+                    Vector2 _indexPos = new Vector2(x, y);
+                    if (floorManager.enemyList.ContainsKey(_indexPos))
+                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
+                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
+                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
+                    if (floorManager.tileList.ContainsKey(_indexPos))
+                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
+                    if (floorManager.chestList.ContainsKey(_indexPos))
+                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
+                }
+                if(x == (int)pos.x + 4 || x == (int)pos.x - 4 || y == (int)pos.y + 4 || y == (int)pos.y - 4)
+                {
+                    Vector2 _indexPos = new Vector2(x, y);
+                    if (floorManager.enemyList.ContainsKey(_indexPos))
+                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
+                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
+                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
+                    if (floorManager.tileList.ContainsKey(_indexPos))
+                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
+                    if (floorManager.chestList.ContainsKey(_indexPos))
+                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
+                }
+                if(x == (int)pos.x + 5 || x == (int)pos.x - 5 || y == (int)pos.y + 5 || y == (int)pos.y - 5)
+                {
+                    Vector2 _indexPos = new Vector2(x, y);
+                    if (floorManager.enemyList.ContainsKey(_indexPos))
+                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
+                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
+                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
+                    if (floorManager.tileList.ContainsKey(_indexPos))
+                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
+                    if (floorManager.chestList.ContainsKey(_indexPos))
+                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
+                }
+                if (x == (int)pos.x + 6 || x == (int)pos.x - 6 || y == (int)pos.y + 6 || y == (int)pos.y - 6)
+                {
+                    Vector2 _indexPos = new Vector2(x, y);
+                    if (floorManager.enemyList.ContainsKey(_indexPos))
+                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
+                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
+                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
+                    if (floorManager.tileList.ContainsKey(_indexPos))
+                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
+                    if (floorManager.chestList.ContainsKey(_indexPos))
+                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
+                }
             }
         }
     }
