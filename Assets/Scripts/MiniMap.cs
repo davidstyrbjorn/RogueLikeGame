@@ -25,7 +25,6 @@ public class MiniMap : MonoBehaviour {
         spre = GetComponent<SpriteRenderer>();
         floorManager = FindObjectOfType<FloorManager>();
         CreateNewTexture();
-        StartCoroutine(blinkEnemy());
     }
 
     public void FullyRevealMap()
@@ -79,6 +78,7 @@ public class MiniMap : MonoBehaviour {
                 }
             }
         }
+        miniMapTexture.SetPixel((int)newPos.x, (int)newPos.y, new Color(17,31,127));
         miniMapTexture.Apply();
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
     }
@@ -87,31 +87,16 @@ public class MiniMap : MonoBehaviour {
     {
         // Applies miniMapTexture to our sprite
         // Which then gets rendered on screen 
-        /*
-        for(int x = 0; x < BaseValues.MAP_WIDTH; x++)
+        miniMapTexture = new Texture2D(BaseValues.MAP_WIDTH, BaseValues.MAP_HEIGHT);
+        miniMapTexture.filterMode = FilterMode.Point;
+        for (int x = 0; x < BaseValues.MAP_WIDTH; x++)
         {
             for(int y = 0; y < BaseValues.MAP_HEIGHT; y++)
             {
-                miniMapTexture.SetPixel(x, y, Color.clear);
+                miniMapTexture.SetPixel(x, y, Color.black);
             }
         }
         miniMapTexture.Apply();
-        */
-        miniMapTexture = new Texture2D(BaseValues.MAP_WIDTH, BaseValues.MAP_HEIGHT);
-        miniMapTexture.filterMode = FilterMode.Point;
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
-    }
-
-    IEnumerator blinkEnemy()
-    {
-        while (true)
-        {
-            miniMapTexture.SetPixel((int)playerMove.getCurrentPosition().x, (int)playerMove.getCurrentPosition().y, Color.blue);
-            miniMapTexture.Apply();
-            yield return new WaitForSeconds(1);
-            miniMapTexture.SetPixel((int)playerMove.getCurrentPosition().x, (int)playerMove.getCurrentPosition().y, Color.white);
-            miniMapTexture.Apply();
-            yield return new WaitForSeconds(1);
-        }
     }
 }   

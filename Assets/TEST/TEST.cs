@@ -8,10 +8,8 @@ public class TEST : MonoBehaviour {
 	
 	void FixedUpdate () {
 
-        newPos = new Vector3(target.position.x + 4.5f, target.position.y - 1.5f, -target.position.z-10);
+        newPos = new Vector3(target.position.x, target.position.y, -target.position.z-10);
         transform.position = Vector2.Lerp(transform.position, newPos, 2.5f * Time.deltaTime);
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
-
-
 }

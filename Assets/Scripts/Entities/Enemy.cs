@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour {
     private float critChance; // 1 - this, is the actual percentage chance
     private float critMultiplier;
     private PlayerManager playerManager;
+    private string name_;
 
     void Start()
     {
@@ -16,8 +17,9 @@ public class Enemy : MonoBehaviour {
         playerManager = FindObjectOfType<PlayerManager>(); // Getting the player manager
     }
 
-    public void SetUpEnemy(int _floorNumber)
+    public void SetUpEnemy(int _floorNumber, GameObject parentObject)
     {
+        name_ = parentObject.gameObject.name;
         healthPoints = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.106f, _floorNumber)) + Mathf.FloorToInt(Random.Range(-_floorNumber, 5 * _floorNumber));
         attack = Mathf.CeilToInt(BaseValues.EnemyBaseAttack * Mathf.Pow(1.0838f, _floorNumber));
     }
@@ -34,4 +36,6 @@ public class Enemy : MonoBehaviour {
             playerManager.enemyDied();
         }
     }
+
+    public string getName() { return name_; }
 }

@@ -21,6 +21,7 @@ public class PlayerManager : MonoBehaviour {
 
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
+    private string currentEnemyName;
 
     private Weapon equipedWeapon;
 
@@ -76,6 +77,7 @@ public class PlayerManager : MonoBehaviour {
         currentEnemy = _enemy.GetComponent<Enemy>();
 
         currentEnemyPos = new Vector2(enemy_x, enemy_y);
+        currentEnemyName = currentEnemy.getName();
 
         StartCoroutine(CombatLoop());
     }
@@ -92,12 +94,15 @@ public class PlayerManager : MonoBehaviour {
 
                 // Starts off instantly with the player hitting the enemy 
                 float weaponDamage = 0;
-                if (equipedWeapon != null) { weaponDamage = equipedWeapon.getAttack(); }
-                currentEnemy.looseHealth(attack + weaponDamage); // Enemy takes damage baed on our attack
+                if (equipedWeapon != null)
+                {
+                    weaponDamage = equipedWeapon.getAttack();
+                }
+                currentEnemy.looseHealth((attack * nextAttackBonus) + weaponDamage); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
 
                 // Write to the text box
-                eventBox.addEvent("Player attacked for <color=red>" + attack * nextAttackBonus  + "</color> + <color=yellow>(" + weaponDamage + ")</color>");
+                eventBox.addEvent("You hit the " + currentEnemyName + " for <color=red>" + attack * nextAttackBonus + "<color=yellow>+(" + weaponDamage + ")</color></color> " + " damage!");
                 nextAttackBonus = 1f;
 
                 if (currentEnemy != null)
@@ -119,12 +124,13 @@ public class PlayerManager : MonoBehaviour {
     {
         // Player takes the actual damage here
         healthPoints -= _hp;
-        eventBox.addEvent("Enemy hit for " + "<color=red>" + _hp + "</color>");
+        eventBox.addEvent(currentEnemyName + " hit you for " + _hp + " damge!");
 
         // Player dies here
         if (healthPoints <= 0)
         {
             died();
+            StopCoroutine("CombatLoop");
         }
         uiManager.NewPlayerValues();
     }
@@ -156,20 +162,19 @@ public class PlayerManager : MonoBehaviour {
         // Increasing the actual stat HERE
         if (randomNum == 0)
         {
-            float newMaxHealth = Mathf.CeilToInt(maxHealthPoints * BaseValues.HealthStatIncrease);
+            float newMaxHealth = Mathf.CeilToInt(maxHealthPoints + BaseValues.HealthStatIncrease);
             maxHealthPoints = newMaxHealth;
 
-            eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + "10.22%" + "%</color>");
+            eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + BaseValues.HealthStatIncrease + " points " + "</color>");
             
         }
         else if (randomNum == 1)
         {
             float oldValue = attack;
-            float newAttack = Mathf.CeilToInt(attack * BaseValues.AttackStatIncrease);
+            float newAttack = Mathf.CeilToInt(attack + BaseValues.AttackStatIncrease);
             attack = newAttack;
 
-            float percentualIncrease = (1 - (oldValue / attack)) * 100;
-            eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + percentualIncrease.ToString(".#") + "%</color>");
+            eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + BaseValues.AttackStatIncrease + " point " + "</color>");
         }
 
         // Removing the stat increaser after we have used it

@@ -32,6 +32,9 @@ public class BaseValues : MonoBehaviour{
     public static float strengthPotionMultiplier = 1.25f;
     public static float healthPotionFactor = 0.1f;
 
+    // Different colors i want to use
+
+
     void Start()
     {
         healthPotionSprite = HealthPotionSprite;

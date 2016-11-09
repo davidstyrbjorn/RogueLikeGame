@@ -12,7 +12,7 @@ using System.Collections.Generic;
 public class EventBox : MonoBehaviour {
 
     private List<string> events = new List<string>();
-    private int maxNumberOfEvents = 4;
+    private int maxNumberOfEvents = 5;
 
     public Text eventText;
 
@@ -26,7 +26,7 @@ public class EventBox : MonoBehaviour {
         else
         {
             // This will be executed if the events is filled to the brink 
-            events.RemoveAt(3);
+            events.RemoveAt(4);
             events.Insert(0, _event);
         }
         DrawText();

@@ -140,7 +140,7 @@ public class FloorManager : MonoBehaviour
                         enemyShell.transform.parent = transform;
 
                         // Calling functions on the enemy class
-                        enemyShell.GetComponent<Enemy>().SetUpEnemy(currentFloorNumber);
+                        enemyShell.GetComponent<Enemy>().SetUpEnemy(currentFloorNumber, EnemyShells[randomIndex].gameObject);
 
                         // Adding the enemy to the enemy-cordinate list
                         enemyList.Add(new Vector2(x, y), enemyShell);
