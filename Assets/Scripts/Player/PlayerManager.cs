@@ -130,7 +130,6 @@ public class PlayerManager : MonoBehaviour {
         if (healthPoints <= 0)
         {
             died();
-            StopCoroutine("CombatLoop");
         }
         uiManager.NewPlayerValues();
     }

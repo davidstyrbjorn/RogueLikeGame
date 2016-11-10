@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour {
     public Text inventoryWeaponStat;
     public Text inventoryPotionStat;
     public Text enemyStatsText;
+    public Slider healthSlider;
 
     public Image[] weaponSlots;
     public Image[] potionSlots;
@@ -58,13 +59,16 @@ public class UIManager : MonoBehaviour {
 
     public void NewPlayerValues()
     {
+        healthSlider.maxValue = playerManager.getMaxHealth();
+        healthSlider.value = playerManager.getHealth();
+
         if (playerManager.getEquipedWeapon() != null)
         {
-            playerStatsText.text = "HP: " + playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
+            playerStatsText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
                 "Attack: " + playerManager.getAttack() + "\nWeapon: " + playerManager.getEquipedWeapon().getNormalAttack();
         }
         else
-            playerStatsText.text = "HP: " + playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
+            playerStatsText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth() + "\n" +
                 "Attack: " + playerManager.getAttack() + "\nWeapon: None";
     }
 
