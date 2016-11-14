@@ -89,7 +89,7 @@ public class FloorManager : MonoBehaviour
                         wallTile.transform.parent = transform;
 
                         // Adding tile to tile list
-                        tileList.Add(new Vector2(x, y), wallTile);
+                        //tileList.Add(new Vector2(x, y), wallTile);
                     }
                     else if (map[x, y] == 0)
                     {

@@ -60,7 +60,7 @@ public class MiniMap : MonoBehaviour {
             {
                 if (x >= 0 && x < BaseValues.MAP_WIDTH && y >= 0 && y < BaseValues.MAP_HEIGHT)
                 {
-                    if (x != playerMove.getCurrentPosition().x && y != playerMove.getCurrentPosition().y)
+                    if (x != (int)newPos.x || y != (int)newPos.y)
                     {
                         if (floorManager.map[x, y] == 0)
                             miniMapTexture.SetPixel(x, y, groundTileColor);
@@ -78,7 +78,7 @@ public class MiniMap : MonoBehaviour {
                 }
             }
         }
-        miniMapTexture.SetPixel((int)newPos.x, (int)newPos.y, new Color(17,31,127));
+        miniMapTexture.SetPixel((int)newPos.x, (int)newPos.y, Color.yellow);
         miniMapTexture.Apply();
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
     }

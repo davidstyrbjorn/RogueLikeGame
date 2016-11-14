@@ -34,6 +34,9 @@ public class BaseValues : MonoBehaviour{
 
     // Different colors i want to use
 
+    // Camera values
+    public static int NormalCameraSize = 17;
+    public static int BattleCameraSize = 10;
 
     void Start()
     {

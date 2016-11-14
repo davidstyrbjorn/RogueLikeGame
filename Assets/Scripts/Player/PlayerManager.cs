@@ -19,6 +19,8 @@ public class PlayerManager : MonoBehaviour {
     private EventBox eventBox;
     private ChestMaster chestMaster;
 
+    private Camera gameCamera;
+
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
     private string currentEnemyName;
@@ -38,6 +40,8 @@ public class PlayerManager : MonoBehaviour {
     void Update()
     {
         CheckForEnemyClick();
+        if (currentEnemy != null)
+            uiManager.enemyStatScreen.position = currentEnemy.transform.position + Vector3.up * 7;
     }
 
     void Start()
@@ -49,6 +53,7 @@ public class PlayerManager : MonoBehaviour {
         playerAnimation = GetComponent<PlayerAnimation>();
         uiManager = FindObjectOfType<UIManager>();
         eventBox = FindObjectOfType<EventBox>();
+        gameCamera = Camera.main;
 
         GameStart();
     }
@@ -98,11 +103,12 @@ public class PlayerManager : MonoBehaviour {
                 {
                     weaponDamage = equipedWeapon.getAttack();
                 }
-                currentEnemy.looseHealth((attack * nextAttackBonus) + weaponDamage); // Enemy takes damage baed on our attack
+                float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
+                currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
 
                 // Write to the text box
-                eventBox.addEvent("You hit the " + currentEnemyName + " for <color=red>" + attack * nextAttackBonus + "<color=yellow>+(" + weaponDamage + ")</color></color> " + " damage!");
+                eventBox.addEvent("You hit the " + currentEnemyName + " for <color=red>" + total_attack_power + " </color>  damage!");
                 nextAttackBonus = 1f;
 
                 if (currentEnemy != null)
@@ -203,8 +209,8 @@ public class PlayerManager : MonoBehaviour {
                 weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
 
                 // Message the player he obtained a weapon
-                playerInventory.addWeapon(foundWeapon);
-                EquipWeapon(foundWeapon);
+                if(playerInventory.addWeapon(foundWeapon) == true)
+                    EquipWeapon(foundWeapon);
                 uiManager.UpdateWeaponSlots();
             }
             else if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.POTION)
@@ -280,10 +286,13 @@ public class PlayerManager : MonoBehaviour {
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-            if (hit.collider != null)
+            if (hit.collider != null && !inCombat)
             {
                 if (hit.collider.tag == "Enemy")
+                {
+                    currentEnemy = hit.collider.GetComponent<Enemy>();
                     uiManager.UpdateEnemyUI(hit.collider.gameObject.GetComponent<Enemy>());
+                }
             }
             else
                 if(!inCombat)
