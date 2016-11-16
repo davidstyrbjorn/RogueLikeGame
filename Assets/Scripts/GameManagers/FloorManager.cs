@@ -69,9 +69,9 @@ public class FloorManager : MonoBehaviour
         statIncreaserList.Clear();
         chestList.Clear();
 
-        StartCoroutine(MakeNewFloor());
         currentFloorNumber++;
-        miniMap.CreateNewTexture(); // Test remove later
+        StartCoroutine(MakeNewFloor());
+        miniMap.CreateNewTexture(); 
     }
 
     void RenderMap()
@@ -79,9 +79,9 @@ public class FloorManager : MonoBehaviour
         float tileWidth = GetTileWidth();
         if (map != null)
         {
-            for (int x = 0; x < mapGenerator.width; x++)
+            for (int x = 0; x < BaseValues.MAP_WIDTH; x++)
             {
-                for (int y = 0; y < mapGenerator.height; y++)
+                for (int y = 0; y < BaseValues.MAP_HEIGHT; y++)
                 {
                     if (map[x, y] == 1)
                     {
@@ -166,8 +166,15 @@ public class FloorManager : MonoBehaviour
 
     IEnumerator MakeNewFloor()
     {
-        mapGenerator.GenerateMap();
-        map = mapGenerator.getMap();
+        if (currentFloorNumber != 5 && currentFloorNumber != 10 && currentFloorNumber != 15 && currentFloorNumber != 20)
+        {
+            mapGenerator.GenerateMap();
+            map = mapGenerator.getMap();
+        }else
+        {
+            mapGenerator.MakeShop();
+            map = mapGenerator.getMap();
+        }
         yield return new WaitForFixedUpdate();
         RenderMap();
         playerMove.NewFloor(map);

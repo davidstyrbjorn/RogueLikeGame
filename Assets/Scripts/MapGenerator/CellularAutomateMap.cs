@@ -23,6 +23,10 @@ public class CellularAutomateMap : MonoBehaviour
     public int width = 32;
     public int height = 32;
 
+    // Shop variables
+    int shop_w = 12;
+    int shop_h = 12;
+
     private string seed;
 
     [Range(0, 100)]
@@ -42,6 +46,8 @@ public class CellularAutomateMap : MonoBehaviour
 
     public void GenerateMap()
     {
+        BaseValues.MAP_WIDTH = width;
+        BaseValues.MAP_HEIGHT = height;
         map = new int[width, height]; // Creates a new map with height and width as dimensions
         RandomFillMap(); // Fills the map at random with the fill percentage
 
@@ -302,6 +308,35 @@ public class CellularAutomateMap : MonoBehaviour
         }
 
         return wallCount;
+    }
+
+    public void MakeShop()
+    {
+        BaseValues.MAP_HEIGHT = shop_h;
+        BaseValues.MAP_WIDTH = shop_w;
+
+        map = new int[shop_w, shop_h];
+        // Filling the map with ground 
+        for (int i = 0; i < shop_w; i++)
+        {
+            for (int z = 0; z < shop_h; z++)
+            {
+                if (i == shop_w-1 || i == 0 || z == shop_h-1 || z == 0)
+                    map[i, z] = 1;
+                else
+                    map[i, z] = 0;
+            }
+        }
+        
+        // Placing the entrance x
+        map[shop_w / 2, 1] = 2;
+        EntranceX = shop_w / 2;
+        EntranceY = 1;
+
+        // Placing exit in the shop
+        map[shop_w / 2, shop_h - 3] = 3;
+        ExitX = shop_w / 2;
+        ExitY = shop_h - 1;
     }
 
     public int[,] getMap() { return map; }

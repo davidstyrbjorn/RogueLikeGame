@@ -43,10 +43,13 @@ public class PlayerMove : MonoBehaviour {
     public void NewFloor(int[,] newMap)
     {
         currentMap = newMap;
+
         curr_x = mapGenerator.EntranceX;
         curr_y = mapGenerator.EntranceY;
+
         currentWorldPosition = SetPlayerPos(curr_x, curr_y);
         transform.position = currentWorldPosition;
+
         RevealNewPart(new Vector2(curr_x, curr_y));
         miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
     }
