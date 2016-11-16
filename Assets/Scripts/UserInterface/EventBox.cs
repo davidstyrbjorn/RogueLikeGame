@@ -12,9 +12,13 @@ using System.Collections.Generic;
 public class EventBox : MonoBehaviour {
 
     private List<string> events = new List<string>();
-    private int maxNumberOfEvents = 5;
+    private List<string> eventsLog = new List<string>();
+
+    public int maxNumberOfEvents = 13;
+    private int maxNumberOfLogEvents = 40;
 
     public Text eventText;
+    public Text logText;
 
     public void addEvent(string _event)
     {
@@ -26,10 +30,26 @@ public class EventBox : MonoBehaviour {
         else
         {
             // This will be executed if the events is filled to the brink 
-            events.RemoveAt(4);
+            events.RemoveAt(maxNumberOfEvents-1);
             events.Insert(0, _event);
         }
+        addEventLog(_event);
         DrawText();
+    }
+
+    public void addEventLog(string _event)
+    {
+        if (eventsLog.Count < maxNumberOfLogEvents)
+        {
+            // We have room so just add the event 
+            eventsLog.Insert(0, _event);
+        }
+        else
+        {
+            // This will be executed if the events is filled to the brink 
+            eventsLog.RemoveAt(maxNumberOfLogEvents - 1);
+            eventsLog.Insert(0, _event);
+        }
     }
 
     void DrawText()
@@ -39,6 +59,11 @@ public class EventBox : MonoBehaviour {
         {
             eventText.text += events[i] + "\n";
         }
-    }
 
+        logText.text = string.Empty;
+        for(int i = 0; i < eventsLog.Count; i++)
+        {
+            logText.text += eventsLog[i] + "\n";
+        }
+    }
 }

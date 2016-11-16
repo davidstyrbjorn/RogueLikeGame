@@ -4,13 +4,23 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
-    public bool isDead = false;
-    public bool inCombat = false;
+    public enum PlayerStates
+    {
+        IN_COMBAT,
+        IN_COMBAT_CAN_ESCAPE,
+        NOT_IN_COMBAT,
+        DEAD,
+    }
+
+    //public bool isDead = false;
+    //public bool inCombat = false;
     private float maxHealthPoints;
     private float healthPoints;
     private float attack;
     private float nextAttackBonus = 1f;
     private int visionRadius = 6;
+    private int money;
+    private PlayerStates currentState;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -18,6 +28,7 @@ public class PlayerManager : MonoBehaviour {
     private UIManager uiManager;
     private EventBox eventBox;
     private ChestMaster chestMaster;
+    private SaveLoad saveLoad;
 
     private Camera gameCamera;
 
@@ -53,6 +64,8 @@ public class PlayerManager : MonoBehaviour {
         playerAnimation = GetComponent<PlayerAnimation>();
         uiManager = FindObjectOfType<UIManager>();
         eventBox = FindObjectOfType<EventBox>();
+        saveLoad = FindObjectOfType<SaveLoad>();
+
         gameCamera = Camera.main;
 
         GameStart();
@@ -61,11 +74,15 @@ public class PlayerManager : MonoBehaviour {
     void GameStart()
     {
         // Setting up start max health and start health    
-        maxHealthPoints = BaseValues.PlayerBaseHP;
+        maxHealthPoints = saveLoad.GetPlayerMaxHealth();
         healthPoints = maxHealthPoints;
 
         // Setting up start attack
-        attack = BaseValues.PlayerBaseAttack;
+        attack = saveLoad.GetPlayerAttack();
+
+        money = 0;
+
+        currentState = PlayerStates.NOT_IN_COMBAT;
     }
 
     // PlayerMove calls this method each time
@@ -76,7 +93,8 @@ public class PlayerManager : MonoBehaviour {
 
     public void onEngage(int enemy_x, int enemy_y)
     {
-        inCombat = true;
+        //inCombat = true;
+        currentState = PlayerStates.IN_COMBAT;
 
         GameObject _enemy = floorManager.enemyList[new Vector2(enemy_x, enemy_y)];
         currentEnemy = _enemy.GetComponent<Enemy>();
@@ -90,7 +108,7 @@ public class PlayerManager : MonoBehaviour {
     IEnumerator CombatLoop()
     {
         yield return new WaitForSeconds(0.1f);
-        while (inCombat && !isDead)
+        while (currentState == PlayerStates.IN_COMBAT || currentState == PlayerStates.IN_COMBAT_CAN_ESCAPE && currentState != PlayerStates.DEAD)
         {
             if (currentEnemy != null)
             {
@@ -120,6 +138,7 @@ public class PlayerManager : MonoBehaviour {
                 {
                     // Now the player takes damge based on currentEnemy's attack variable
                     looseHealth(currentEnemy.getAttack());
+                    currentState = PlayerStates.IN_COMBAT_CAN_ESCAPE;
                     yield return new WaitForSeconds(0.7f);
                 }
             }
@@ -140,7 +159,7 @@ public class PlayerManager : MonoBehaviour {
         uiManager.NewPlayerValues();
     }
 
-    public void enemyDied()
+    public void enemyDied(int moneyDrop)
     {
         if (currentEnemy != null)
         {
@@ -154,10 +173,32 @@ public class PlayerManager : MonoBehaviour {
             // Destroy our currentEnemy since it died
             Destroy(currentEnemy.gameObject);
             currentEnemy = null;
-            inCombat = false;
-            
+            //inCombat = false;
+            currentState = PlayerStates.NOT_IN_COMBAT;
+
+            // Gain some money
+            money += moneyDrop;
+
+            uiManager.NewPlayerValues();
             // Disable enemy UI
             uiManager.DisableEnemyUI();
+        }
+    }
+
+    public void disengageCombat()
+    {
+        if(currentEnemy != null)
+        {
+            // Stop looping the combat loop
+            StopCoroutine("CombatLoop");
+            currentEnemy = null;
+
+            // Set the according player state so we can do stuff
+            currentState = PlayerStates.NOT_IN_COMBAT;
+
+            // Update UI
+            uiManager.DisableEnemyUI();
+            uiManager.NewPlayerValues();
         }
     }
 
@@ -175,7 +216,6 @@ public class PlayerManager : MonoBehaviour {
         }
         else if (randomNum == 1)
         {
-            float oldValue = attack;
             float newAttack = Mathf.CeilToInt(attack + BaseValues.AttackStatIncrease);
             attack = newAttack;
 
@@ -272,7 +312,8 @@ public class PlayerManager : MonoBehaviour {
     public void died()
     {
         uiManager.GameOver();
-        isDead = true;
+        //isDead = true;
+        currentState = PlayerStates.DEAD;
     }
 
     public void walkedOffExit()
@@ -280,13 +321,15 @@ public class PlayerManager : MonoBehaviour {
         uiManager.DisableNextFloorPrompt();
     }
 
+    public int getMoney() { return money; }
+
     void CheckForEnemyClick()
     {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-            if (hit.collider != null && !inCombat)
+            if (hit.collider != null && currentState != PlayerStates.IN_COMBAT)
             {
                 if (hit.collider.tag == "Enemy")
                 {
@@ -295,7 +338,7 @@ public class PlayerManager : MonoBehaviour {
                 }
             }
             else
-                if(!inCombat)
+                if(currentState != PlayerStates.IN_COMBAT)
                     uiManager.DisableEnemyUI();
         }
     }
@@ -305,5 +348,6 @@ public class PlayerManager : MonoBehaviour {
         
     }
 
+    public PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }
 }

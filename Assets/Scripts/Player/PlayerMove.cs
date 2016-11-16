@@ -66,7 +66,7 @@ public class PlayerMove : MonoBehaviour {
 
     void MovePlayer()
     {
-        if (Input.anyKey && !playerManager.inCombat && canMove && !playerManager.isDead)
+        if (Input.anyKey && playerManager.getCurrentState() == PlayerManager.PlayerStates.NOT_IN_COMBAT)
         {
             // Move left
             if (Input.GetKey(KeyCode.A))
@@ -86,7 +86,7 @@ public class PlayerMove : MonoBehaviour {
             else if (Input.GetKey(KeyCode.D))
             {
                 // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x+1, curr_y] != 4)
+                if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x + 1, curr_y] != 4)
                 {
                     curr_x++;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
@@ -100,7 +100,7 @@ public class PlayerMove : MonoBehaviour {
             else if (Input.GetKey(KeyCode.W))
             {
                 // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y+1] != 4)
+                if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y + 1] != 4)
                 {
                     curr_y++;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
@@ -114,7 +114,7 @@ public class PlayerMove : MonoBehaviour {
             else if (Input.GetKey(KeyCode.S))
             {
                 // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y-1] != 4)
+                if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y - 1] != 4)
                 {
                     curr_y--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);

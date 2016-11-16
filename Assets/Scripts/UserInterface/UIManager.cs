@@ -13,12 +13,14 @@ public class UIManager : MonoBehaviour {
     public RectTransform nextFloorPrompt;
     public RectTransform gameOverScreen;
     public RectTransform enemyStatScreen;
+    public RectTransform logEventScreen;
     public Text playerHealthText;
     public Text inventoryWeaponStat;
     public Text inventoryPotionStat;
     public Text playerPhysicalDamageText;
     public Text enemyStatsText;
     public Text enemyDamageText;
+    public Text playerMoneyText;
     public Slider enemyHealthSlider;
     public Slider healthSlider;
 
@@ -49,6 +51,12 @@ public class UIManager : MonoBehaviour {
         UpdateWeaponSlots();
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+            logEventScreen.gameObject.SetActive(!logEventScreen.gameObject.active);
+    }
+
     public void NewPlayerValues()
     {
         healthSlider.maxValue = playerManager.getMaxHealth();
@@ -59,6 +67,9 @@ public class UIManager : MonoBehaviour {
         // Update player physical damage 
         playerPhysicalDamageText.text = ""+(playerManager.getAttack() + 
             (playerManager.getEquipedWeapon() != null ? playerManager.getEquipedWeapon().getNormalAttack() : 0));
+
+        // Money text
+        playerMoneyText.text = playerManager.getMoney().ToString();
     }
 
     // Selects whatever weapon we clicked on if the _index inside players weapons list

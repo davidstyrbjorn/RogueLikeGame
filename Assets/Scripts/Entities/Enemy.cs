@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour {
     private PlayerManager playerManager;
     private string name_;
 
+    private int moneyDrop;
+
     void Start()
     {
         critChance = Random.Range(75, 99);
@@ -24,6 +26,8 @@ public class Enemy : MonoBehaviour {
         maxHealth = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.106f, _floorNumber)) + Mathf.FloorToInt(Random.Range(-_floorNumber, 5 * _floorNumber));
         attack = Mathf.CeilToInt(BaseValues.EnemyBaseAttack * Mathf.Pow(1.0838f, _floorNumber));
         healthPoints = maxHealth;
+
+        moneyDrop = Mathf.CeilToInt(_floorNumber/2) + 1 + Random.Range(0, _floorNumber + 5);
     }
 
     public float getMaxHP() { return maxHealth; }
@@ -36,9 +40,10 @@ public class Enemy : MonoBehaviour {
         healthPoints -= _hp;
         if (healthPoints <= 0)
         {
-            playerManager.enemyDied();
+            playerManager.enemyDied(moneyDrop);
         }
     }
 
+    public int getMoneyDrop() { return moneyDrop; }
     public string getName() { return name_; }
 }
