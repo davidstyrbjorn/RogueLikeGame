@@ -28,12 +28,14 @@ public class FloorManager : MonoBehaviour
     private CellularAutomateMap mapGenerator;
     private PlayerMove playerMove;
     private MiniMap miniMap;
+    private EventBox eventBox;
 
     public GameObject GroundTile;
     public GameObject WallTile;
     public GameObject Entrance, Exit;
     public GameObject StatIncreaser;
     public GameObject Chest;
+    public GameObject shopKeeper;
     public GameObject[] EnemyShells;
 
     public Dictionary<Vector2, GameObject> enemyList = new Dictionary<Vector2, GameObject>();
@@ -46,6 +48,7 @@ public class FloorManager : MonoBehaviour
         playerMove = FindObjectOfType<PlayerMove>();
         mapGenerator = FindObjectOfType<CellularAutomateMap>();
         miniMap = FindObjectOfType<MiniMap>();
+        eventBox = FindObjectOfType<EventBox>();
 
         NewFloor();
         chestHeight = getChestHeight();
@@ -159,6 +162,16 @@ public class FloorManager : MonoBehaviour
                         chestClone.transform.parent = transform;
                         chestList.Add(new Vector2(x, y), chestClone);
                     }
+                    else if (map[x,y] == 7)
+                    {
+                        // Spawning the ground for the keeper
+                        GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        groundTile.transform.parent = transform;
+                        tileList.Add(new Vector2(x, y), groundTile);
+
+                        GameObject shopKeeperObject = Instantiate(shopKeeper, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        shopKeeperObject.transform.parent = transform;
+                    }
                 }
             }
         }
@@ -166,14 +179,18 @@ public class FloorManager : MonoBehaviour
 
     IEnumerator MakeNewFloor()
     {
-        if (currentFloorNumber != 5 && currentFloorNumber != 10 && currentFloorNumber != 15 && currentFloorNumber != 20)
+        if (currentFloorNumber != 5 && currentFloorNumber != 10 && currentFloorNumber != 15)
         {
+            eventBox.addEvent("Welcome to floor! " + currentFloorNumber);
             mapGenerator.GenerateMap();
             map = mapGenerator.getMap();
+            Camera.main.orthographicSize = BaseValues.NormalCameraSize;
         }else
         {
+            eventBox.addEvent("Welcome to the shop!");
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();
+            Camera.main.orthographicSize = BaseValues.BattleCameraSize;
         }
         yield return new WaitForFixedUpdate();
         RenderMap();

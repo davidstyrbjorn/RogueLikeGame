@@ -16,6 +16,7 @@ using System;
 // 4 = Enemy
 // 5 = Stat Increase
 // 6 = Chest
+// 7 = Shop Keeper
 
 public class CellularAutomateMap : MonoBehaviour
 {
@@ -24,8 +25,8 @@ public class CellularAutomateMap : MonoBehaviour
     public int height = 32;
 
     // Shop variables
-    int shop_w = 12;
-    int shop_h = 12;
+    int shop_w = 9;
+    int shop_h = 14;
 
     private string seed;
 
@@ -327,15 +328,18 @@ public class CellularAutomateMap : MonoBehaviour
                     map[i, z] = 0;
             }
         }
-        
-        // Placing the entrance x
-        map[shop_w / 2, 1] = 2;
-        EntranceX = shop_w / 2;
+
+        // Placing the shop keeper
+        map[4, shop_h - 7] = 7;
+
+        // Placing the entrance 
+        map[4, 1] = 2;
+        EntranceX = 4;
         EntranceY = 1;
 
         // Placing exit in the shop
-        map[shop_w / 2, shop_h - 3] = 3;
-        ExitX = shop_w / 2;
+        map[4, shop_h - 3] = 3;
+        ExitX = 4;
         ExitY = shop_h - 1;
     }
 

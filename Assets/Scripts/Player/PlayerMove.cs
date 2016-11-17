@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour {
     private FloorManager floorManager;
     private PlayerManager playerManager;
     private MiniMap miniMap;
+    private ShopKeeper shopKeeper;
 
     private bool canExitFloor;
 
@@ -29,6 +30,7 @@ public class PlayerMove : MonoBehaviour {
         floorManager = FindObjectOfType<FloorManager>();
         playerManager = FindObjectOfType<PlayerManager>();
         miniMap = FindObjectOfType<MiniMap>();
+        shopKeeper = FindObjectOfType<ShopKeeper>();
     }
 
     void Update()
@@ -140,6 +142,9 @@ public class PlayerMove : MonoBehaviour {
             // We hit an items chest
             if (currentMap[curr_x, curr_y] == 6)
                 playerManager.hitChest(new Vector2(curr_x, curr_y));
+
+            if (currentMap[curr_x, curr_y] == 7)
+                shopKeeper.StartTransaction();
 
             playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
 
