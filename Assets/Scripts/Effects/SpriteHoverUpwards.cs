@@ -13,6 +13,7 @@ public class SpriteHoverUpwards : MonoBehaviour {
         spre = GetComponent<SpriteRenderer>();
         StartCoroutine(MainCorountine());
     }
+
     void Update()
     {
         if (fadeOut)

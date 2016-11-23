@@ -79,10 +79,17 @@ public class UIManager : MonoBehaviour {
         {
             potionInfoContainer.gameObject.SetActive(false);
             weaponInfoContainer.gameObject.SetActive(true);
-            inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
-            inventoryWeaponStat.text += (playerInventory.GetWeaponsList()[_index].getCritChance() != 0f) ? "\nCritical Chance: " +
-                playerInventory.GetWeaponsList()[_index].getCritChance() +
-                "\nCritical Multiplier: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier() : "";
+
+            if(playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
+            {
+                inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
+            }
+            else
+            {
+                inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
+                    "Crit Chance: " + playerInventory.GetWeaponsList()[_index].getCritChance() + "\n" +
+                    "Crit Multi: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier();
+            }
             currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
 
             currentlySelectedWeaponIndex = _index;

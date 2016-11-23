@@ -4,6 +4,18 @@ public class TEST : MonoBehaviour {
 
     public Transform target;
     private Vector3 newPos;
+    private PlayerManager playerManager;
+
+    void Start()
+    {
+        playerManager = FindObjectOfType<PlayerManager>();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+            playerManager.addMoney(10);
+    }
 	
 	void FixedUpdate () {
 

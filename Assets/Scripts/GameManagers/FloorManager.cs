@@ -29,13 +29,14 @@ public class FloorManager : MonoBehaviour
     private PlayerMove playerMove;
     private MiniMap miniMap;
     private EventBox eventBox;
+    private ShopKeeper shopKeeper;
 
     public GameObject GroundTile;
     public GameObject WallTile;
     public GameObject Entrance, Exit;
     public GameObject StatIncreaser;
     public GameObject Chest;
-    public GameObject shopKeeper;
+    public GameObject shopKeeperPrefab;
     public GameObject[] EnemyShells;
 
     public Dictionary<Vector2, GameObject> enemyList = new Dictionary<Vector2, GameObject>();
@@ -49,6 +50,7 @@ public class FloorManager : MonoBehaviour
         mapGenerator = FindObjectOfType<CellularAutomateMap>();
         miniMap = FindObjectOfType<MiniMap>();
         eventBox = FindObjectOfType<EventBox>();
+        shopKeeper = FindObjectOfType<ShopKeeper>();
 
         NewFloor();
         chestHeight = getChestHeight();
@@ -169,7 +171,7 @@ public class FloorManager : MonoBehaviour
                         groundTile.transform.parent = transform;
                         tileList.Add(new Vector2(x, y), groundTile);
 
-                        GameObject shopKeeperObject = Instantiate(shopKeeper, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        GameObject shopKeeperObject = Instantiate(shopKeeperPrefab, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         shopKeeperObject.transform.parent = transform;
                     }
                 }
@@ -181,12 +183,13 @@ public class FloorManager : MonoBehaviour
     {
         if (currentFloorNumber != 5 && currentFloorNumber != 10 && currentFloorNumber != 15)
         {
-            eventBox.addEvent("Welcome to floor! " + currentFloorNumber);
+            eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
             mapGenerator.GenerateMap();
             map = mapGenerator.getMap();
             Camera.main.orthographicSize = BaseValues.NormalCameraSize;
         }else
         {
+            shopKeeper.shopActive = false;
             eventBox.addEvent("Welcome to the shop!");
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();

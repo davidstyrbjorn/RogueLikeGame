@@ -284,7 +284,7 @@ public class PlayerManager : MonoBehaviour {
     {
         equipedWeapon = _weapon;
         uiManager.NewPlayerValues();
-        eventBox.addEvent("Equiped a  " + _weapon.getWeaponSprite().name);
+        eventBox.addEvent("Equiped a  " + _weapon.getName());
     }
 
     public void ConsumePotion(Potion.potionType _type)
@@ -321,8 +321,6 @@ public class PlayerManager : MonoBehaviour {
         uiManager.DisableNextFloorPrompt();
     }
 
-    public int getMoney() { return money; }
-
     void CheckForEnemyClick()
     {
         if (Input.GetMouseButtonDown(0))
@@ -347,6 +345,9 @@ public class PlayerManager : MonoBehaviour {
     {
         
     }
+
+    public int getMoney() { return money; }
+    public void addMoney(int money_) { money += money_; uiManager.NewPlayerValues(); }
 
     public PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }

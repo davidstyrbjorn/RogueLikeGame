@@ -144,7 +144,12 @@ public class PlayerMove : MonoBehaviour {
                 playerManager.hitChest(new Vector2(curr_x, curr_y));
 
             if (currentMap[curr_x, curr_y] == 7)
+            {
+                shopKeeper.toggleShopHolder(true);
                 shopKeeper.StartTransaction();
+            }
+            else
+                shopKeeper.toggleShopHolder(false);
 
             playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
 

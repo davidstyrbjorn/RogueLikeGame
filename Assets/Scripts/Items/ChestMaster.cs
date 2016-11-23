@@ -3,9 +3,7 @@ using System.Collections;
 
 public class ChestMaster : MonoBehaviour {
 
-    public Sprite[] availAbleWeaponImages;
-    public Sprite healthPotionSprite;
-    public Sprite StrengthPotionSprite;
+    public GameObject[] allWeaponsPrefab;
 
     private FloorManager floorManager;
 
@@ -16,12 +14,12 @@ public class ChestMaster : MonoBehaviour {
 
     public Weapon makeNewWeapon()
     {
-        int randomIndex = Random.Range(0, availAbleWeaponImages.Length);
-        return new Weapon(availAbleWeaponImages[randomIndex], floorManager.getCurrentFloor());
+        int randomIndex = Random.Range(0, allWeaponsPrefab.Length);
+        return allWeaponsPrefab[randomIndex].GetComponent<Weapon>();
     }
 
     public Potion makeNewPotion()
     {
         return new Potion(floorManager.getCurrentFloor());
-    }
+    }                                                       
 }
