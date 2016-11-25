@@ -129,11 +129,19 @@ public class ShopKeeper : MonoBehaviour {
     {
         if(playerWeaponIndex != -1)
         {
-            playerManager.addMoney(playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
+            if (playerInventory.GetWeaponsList()[playerWeaponIndex] == playerManager.getEquipedWeapon())
+            {
+                eventBox.addEvent("Can't sell equiped weapon");
+            }
+            else
+            {
+                eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[playerWeaponIndex].getName() + " for " + playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
+                playerManager.addMoney(playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
 
-            playerInventory.RemoveWeaponAt(playerWeaponIndex);
-            uiManager.UpdateWeaponSlots();
-            UpdatePlayerWeaponSlots();
+                playerInventory.RemoveWeaponAt(playerWeaponIndex);
+                uiManager.UpdateWeaponSlots();
+                UpdatePlayerWeaponSlots();
+            }
         }
     }
 }

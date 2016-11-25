@@ -23,11 +23,11 @@ public class Enemy : MonoBehaviour {
     public void SetUpEnemy(int _floorNumber, GameObject parentObject)
     {
         name_ = parentObject.gameObject.name;
-        maxHealth = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.106f, _floorNumber)) + Mathf.FloorToInt(Random.Range(-_floorNumber, 5 * _floorNumber));
+        maxHealth = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.1f, _floorNumber));
         attack = Mathf.CeilToInt(BaseValues.EnemyBaseAttack * Mathf.Pow(1.0838f, _floorNumber));
         healthPoints = maxHealth;
 
-        moneyDrop = Mathf.CeilToInt(_floorNumber/2) + 1 + Random.Range(0, _floorNumber + 5);
+        moneyDrop = Mathf.CeilToInt(_floorNumber / 2) + 1 + Random.Range(0, _floorNumber + 5);
     }
 
     public float getMaxHP() { return maxHealth; }

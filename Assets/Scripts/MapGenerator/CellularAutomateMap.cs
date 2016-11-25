@@ -43,12 +43,13 @@ public class CellularAutomateMap : MonoBehaviour
     public int ExitX;
     public int ExitY;
 
-    private int enemySpawnChance = 70; // This is a percentage chance i.e 90 = 90%
+    private int enemySpawnChance = 94; // This is a percentage chance i.e 90 = 90%
 
     public void GenerateMap()
     {
         BaseValues.MAP_WIDTH = width;
         BaseValues.MAP_HEIGHT = height;
+
         map = new int[width, height]; // Creates a new map with height and width as dimensions
         RandomFillMap(); // Fills the map at random with the fill percentage
 
@@ -60,6 +61,20 @@ public class CellularAutomateMap : MonoBehaviour
         map = SpawnEnemies(map); // This spawns enemies on the map
         PlaceStatIncrease();
         PlaceChest();
+    }
+
+    int MapWallCount()
+    {
+        int count = 0;
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                if (map[x, y] == 1)
+                    count++;
+            }
+        }
+        return count;
     }
 
     void PlaceStatIncrease()
@@ -227,46 +242,17 @@ public class CellularAutomateMap : MonoBehaviour
         seed = Time.time.ToString();
         System.Random randomNum = new System.Random(seed.GetHashCode());
 
-        int enemyCount = 20;
-        int enemiesPlaced = 0;
-        int enemyGroups = 5;
-        int enemiesGrouped = 0;
-
         // Fills the map with single enemies then group some of them 
-        for (int x = 0; x < width; x += 4)
-            for (int y = 0; y < height; y += 4)
-                if (oldMap[x, y] == 0)
-                {
-                    if (enemiesPlaced < enemyCount)
-                    {
-                        newMap[x, y] = randomNum.Next(0, 100) > enemySpawnChance / 3 ? 4 : map[x, y];
-                        enemiesPlaced++;
-                    }
-                    else
-                    {
-                        newMap[x, y] = randomNum.Next(0, 100) > enemySpawnChance ? 4 : map[x, y];
-                    }
-                    if (newMap[x, y] == 4)
-                    {
-                        if(enemiesGrouped < enemyGroups)
-                        {
-                            if(randomNum.Next(0,100) > 80)
-                            {
-                                if (randomNum.Next(0, 100) > 50)
-                                    newMap[x + 1, y] = map[x+1,y] == 0 ? 4 : map[x+1,y];
-                                else
-                                    newMap[x - 1, y] = map[x-1, y] == 0 ? 4 : map[x-1,y];
-                                if (randomNum.Next(0, 100) > 50)
-                                    newMap[x, y + 1] = map[x,y+1] == 0 ? 4 : map[x,y+1];
-                                else
-                                    newMap[x, y - 1] = map[x,y-1] == 0 ? 4 : map[x,y-1];
-                                enemiesGrouped++;
-                            }
-                        }
-                    }
-                        
-                }
-
+        // REWORKED VERSION TO MAKE IT MORE RANDOM
+        for(int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if(newMap[x,y] != 1)
+                    if (randomNum.Next(0, 100) > enemySpawnChance)
+                        newMap[x, y] = 4;
+            }
+        }
         return newMap;        
     }
 
@@ -277,14 +263,50 @@ public class CellularAutomateMap : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 int neighbourWallTiles = GetSurroundingWallCount(x, y);
+                bool isInOpenSpace = IsCordinateInOpenSpace(x, y);
 
-                if (neighbourWallTiles > deathLimit)
+                if (isInOpenSpace)
+                {
+                    fillHere(x, y, 3);
+                }
+                else if (neighbourWallTiles > deathLimit)
                     map[x, y] = 1;
                 else if (neighbourWallTiles < birthLimit)
                     map[x, y] = 0;
 
             }
         }
+    }
+
+    void fillHere(int x_, int y_, int magnitude)
+    {
+        for(int x = x_-magnitude; x < x_+magnitude; x++)
+        {
+            for(int y = y_-magnitude; y < y_+magnitude; y++)
+            {
+                map[x, y] = 1;
+            }
+        }
+    }
+
+    bool IsCordinateInOpenSpace(int x_, int y_)
+    {
+        int groundCount = 0;
+        for (int x = x_ - 5; x < x_ + 5; x++)
+        {
+            for(int y = y_-5; y < y_+5; y++)
+            {
+                if (x >= 0 && x < width && y >= 0 && y < height)
+                {
+                    if (map[x, y] == 0) 
+                        groundCount++;
+                }
+            }
+        }   
+        if (groundCount >= 71)
+            return true;
+        else
+            return false;
     }
 
     int GetSurroundingWallCount(int gridX, int gridY)
