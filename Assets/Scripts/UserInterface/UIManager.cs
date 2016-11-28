@@ -125,7 +125,7 @@ public class UIManager : MonoBehaviour {
 
     public void RemoveSelectedWeapon()
     {
-        if (playerManager.getEquipedWeapon() != playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex])
+        if (this.playerManager.getEquipedWeapon() != this.playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex])
         {
             eventBox.addEvent("Removed " + playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex].getName());
             weaponInfoContainer.gameObject.SetActive(false);

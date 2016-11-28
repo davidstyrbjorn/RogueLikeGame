@@ -181,7 +181,7 @@ public class FloorManager : MonoBehaviour
 
     IEnumerator MakeNewFloor()
     {
-        if (currentFloorNumber != 5 && currentFloorNumber != 10 && currentFloorNumber != 15)
+        if ((currentFloorNumber%5) != 0)
         {
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
             mapGenerator.GenerateMap();

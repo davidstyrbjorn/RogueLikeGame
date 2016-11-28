@@ -18,6 +18,10 @@ using System;
 // 6 = Chest
 // 7 = Shop Keeper
 
+
+// Flagged map
+// 1 = Reachable
+
 public class CellularAutomateMap : MonoBehaviour
 {
 
@@ -35,8 +39,10 @@ public class CellularAutomateMap : MonoBehaviour
 
     public int deathLimit;
     public int birthLimit;
+    public int minimumGroundCount;
 
     private int[,] map;
+    private int[,] flaggedMap;
 
     public int EntranceX;
     public int EntranceY;
@@ -47,9 +53,14 @@ public class CellularAutomateMap : MonoBehaviour
 
     public void GenerateMap()
     {
+        bool validMap = false;
+
+        seed = Time.time.ToString();
+
         BaseValues.MAP_WIDTH = width;
         BaseValues.MAP_HEIGHT = height;
 
+        flaggedMap = new int[width, height]; // The flagged map that checks 
         map = new int[width, height]; // Creates a new map with height and width as dimensions
         RandomFillMap(); // Fills the map at random with the fill percentage
 
@@ -57,29 +68,52 @@ public class CellularAutomateMap : MonoBehaviour
         {
             SmoothMap();
         }
-        PlaceEntranceAndExit(); // Places an entrance and an exit 
-        map = SpawnEnemies(map); // This spawns enemies on the map
+
+        PlaceEntrance();
+        floodFill(EntranceX, EntranceY);
+        RemoveUnreachAbles();
+
+        PlaceExit();
+        SpawnEnemies(); // This spawns enemies on the map
         PlaceStatIncrease();
         PlaceChest();
+
+        validMap = CheckIfValidMap();
+        print(validMap);
     }
 
-    int MapWallCount()
+    bool CheckIfValidMap()
     {
-        int count = 0;
-        for(int x = 0; x < width; x++)
+        int tileCount = 0;
+        for(int x = 1; x < width-1; x++)
         {
-            for(int y = 0; y < height; y++)
+            for(int y = 1; y < height-1; y++)
             {
-                if (map[x, y] == 1)
-                    count++;
+                if (map[x, y] == 0)
+                    tileCount++;
             }
         }
-        return count;
+
+        if (tileCount >= minimumGroundCount)
+            return true;
+        else
+            return false;
+    }
+
+    void RemoveUnreachAbles()
+    {
+        for(int x = 1; x < width-1; x++)
+        {
+            for(int y = 1; y < height-1; y++)
+            {
+                if (flaggedMap[x, y] == 0)
+                    map[x, y] = 1;
+            }
+        }
     }
 
     void PlaceStatIncrease()
     {
-        string seed = Time.time.ToString();
         System.Random randomNum = new System.Random(seed.GetHashCode());
         int placeChance = 11;
 
@@ -117,82 +151,70 @@ public class CellularAutomateMap : MonoBehaviour
         }
     }
 
-    void PlaceEntranceAndExit()
+    void PlaceEntrance()
     {
+        System.Random randomNum = new System.Random(seed.GetHashCode());
+
         bool placedEntrance = false;
 
-        int lastAvailableX = 0;
-        int lastAvailableY = 0;
-
-        int entranceX = 0;
-        int entranceY = 0;
-
-        string seed = Time.time.ToString();
-        System.Random randomNum = new System.Random(seed.GetHashCode());
-        
-        // Placing the entrance
-        for (int x = 0; x < width/2; x++)
+        while (!placedEntrance)
         {
-            for(int y = 0; y < height/2; y++)
+            // Placing the entrance
+            for (int x = 1; x < width - 1; x++)
             {
-                if(map[x,y] == 0 && !placedEntrance) // Checks if the cordinats is available for placing an entrance
+                for (int y = 1; y < height - 1; y++)
                 {
-                    lastAvailableX = x;
-                    lastAvailableY = y;
-
-                    // Check if we want to play the entrance or not
-                    if(randomNum.Next(0, 100) < 5f) // 5% chance; place the door-entrance
+                    if (map[x, y] == 0)
                     {
-                        map[x, y] = 2;
-                        entranceX = x;
-                        entranceY = y;
-                        EntranceX = x;
-                        EntranceY = y; 
-                        placedEntrance = true;
+                        if (randomNum.Next(0, 100) > 98)
+                        {
+                            placedEntrance = true;
+                            map[x, y] = 2;
+                            EntranceX = x;
+                            EntranceY = y;
+                        }
                     }
                 }
             }
         }
-        if (!placedEntrance)
-        {
-            map[lastAvailableX, lastAvailableY] = 2;
-            entranceX = lastAvailableX;
-            entranceY = lastAvailableY;
-            EntranceX = lastAvailableX;
-            EntranceY = lastAvailableY;
-        }
+    }
 
-        // Place the exit
-        int exitX = EntranceX + randomNum.Next(1, (width - EntranceX-1));
-        int exitY = entranceY + randomNum.Next(1, (height - EntranceY -1));
-        ExitX = exitX;
-        ExitY = exitY;
-        map[exitX, exitY] = 3;
+    void PlaceExit()
+    {
+        System.Random randomNum = new System.Random(seed.GetHashCode());
 
-        // Now clear the road to the exit from the entrance which will be easy since we have both cordinates
-        for (int x = EntranceX + 1; x < exitX; x++)
-            map[x, EntranceY] = 0;
-        for (int y = EntranceY; y < exitY; y++)
-            map[exitX, y] = 0;
+        int lastX = 0;
+        int lastY = 0;
+        bool placedExit = false;
 
-        // Placing enemies around the exit on random
-        for (int x = ExitY - 1; x < ExitY + 1; x++)
+        // Placing the entrance
+        for (int x = 1; x < width - 1; x++)
         {
-            if (x != EntranceX)
-                if (randomNum.Next(0, 100) > 50)
-                    map[x, ExitY] = 4;
+            for (int y = 1; y < height - 1; y++)
+            {
+                if (map[x, y] == 0 && map[x,y] != 2)
+                {
+                    lastX = x;
+                    lastY = y;
+                    if (randomNum.Next(0, 100) > 98)
+                    {
+                        if (!placedExit)
+                        {
+                            placedExit = true;
+                            map[x, y] = 3;
+                            ExitX = x;
+                            ExitY = y;
+                        }
+                    }
+                }
+            }
         }
-        for (int y = ExitY - 1; y < ExitY + 1; y++)
-        {
-            if (y != ExitY)
-                if (randomNum.Next(0, 100) > 50)
-                    map[ExitX, y] = 4;
-        }
+        if (!placedExit)
+            map[lastX, lastY] = 3;
     }
 
     void PlaceChest()
     {
-        seed = Time.time.ToString();
         System.Random randomNum = new System.Random(seed.GetHashCode());
 
         for(int x = 1; x < width-1; x++)
@@ -215,14 +237,13 @@ public class CellularAutomateMap : MonoBehaviour
 
     void RandomFillMap()
     {
-        seed = Time.time.ToString();
-
         System.Random pseudoRandom = new System.Random(seed.GetHashCode());
 
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
+                flaggedMap[x, y] = 0;
                 if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
                 {
                     map[x, y] = 1;
@@ -235,25 +256,20 @@ public class CellularAutomateMap : MonoBehaviour
         }
     }
 
-    int[,] SpawnEnemies(int[,] oldMap)
+    void SpawnEnemies()
     {
-        int[,] newMap = oldMap;
-
-        seed = Time.time.ToString();
         System.Random randomNum = new System.Random(seed.GetHashCode());
 
-        // Fills the map with single enemies then group some of them 
-        // REWORKED VERSION TO MAKE IT MORE RANDOM
-        for(int x = 0; x < width; x++)
+        // Sprinkles enemies randomly throughout the map
+        for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if(newMap[x,y] != 1)
+                if (map[x, y] == 0)
                     if (randomNum.Next(0, 100) > enemySpawnChance)
-                        newMap[x, y] = 4;
+                        map[x, y] = 4;
             }
-        }
-        return newMap;        
+        }     
     }
 
     void SmoothMap()
@@ -285,6 +301,29 @@ public class CellularAutomateMap : MonoBehaviour
             for(int y = y_-magnitude; y < y_+magnitude; y++)
             {
                 map[x, y] = 1;
+            }
+        }
+    }
+
+    void floodFill(int x, int y)
+    {
+        if(x > 0 && x < width-1 && y > 0 && y < height-1)
+        {
+            if (map[x, y] == 2 || map[x,y] == 0 && flaggedMap[x,y] != 1)
+                flaggedMap[x, y] = 1;
+            else 
+                return;
+
+            try
+            {
+                floodFill(x + 1, y);
+                floodFill(x - 1, y);
+                floodFill(x, y + 1);
+                floodFill(x, y - 1);
+            }
+            catch
+            {
+
             }
         }
     }
@@ -331,6 +370,30 @@ public class CellularAutomateMap : MonoBehaviour
         }
 
         return wallCount;
+    }
+
+    int getSurroundingEnemyCount(int gridX, int gridY)
+    {
+        int enemyCount = 0;
+        for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX++)
+        {
+            for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++)
+            {
+                if (neighbourX >= 0 && neighbourX < width && neighbourY >= 0 && neighbourY < height)
+                {
+                    if (neighbourX != gridX || neighbourY != gridY)
+                    {
+                        enemyCount += map[neighbourX, neighbourX] == 4 ? 1 : 0;
+                    }
+                }
+                else
+                {
+                    enemyCount++;
+                }
+            }
+        }
+
+        return enemyCount;
     }
 
     public void MakeShop()
