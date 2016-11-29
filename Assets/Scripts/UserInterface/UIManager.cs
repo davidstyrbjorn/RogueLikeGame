@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour {
     public Text enemyStatsText;
     public Text enemyDamageText;
     public Text playerMoneyText;
+    public Text currentFloorText;
     public Slider enemyHealthSlider;
     public Slider healthSlider;
 
@@ -39,13 +40,16 @@ public class UIManager : MonoBehaviour {
 
     private int currentlySelectedPotionIndex = -1;
 
-    void Start()
+    void Awake()
     {
         floorManager = FindObjectOfType<FloorManager>();
         playerInventory = FindObjectOfType<PlayerInventory>();
         playerManager = FindObjectOfType<PlayerManager>();
         eventBox = FindObjectOfType<EventBox>();
+    }
 
+    void Start()
+    {
         NewPlayerValues();
         UpdatePotionSlots();
         UpdateWeaponSlots();
@@ -205,8 +209,16 @@ public class UIManager : MonoBehaviour {
     public void ToggleExtraStats() { /* Active the extra inventory screen once its implemented */ }
     public void NextFloor()
     {
-        nextFloorPrompt.gameObject.SetActive(false);
+        DisableNextFloorPrompt();
         floorManager.NewFloor();
+    }
+    public void OnNewFloor(bool isShop)
+    {
+        DisableEnemyUI();
+        if (isShop)
+            currentFloorText.text = "Shop";
+        else
+            currentFloorText.text = "Floor  " + floorManager.getCurrentFloor();
     }
     public void GameOver()
     {

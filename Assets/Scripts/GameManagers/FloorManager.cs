@@ -30,6 +30,7 @@ public class FloorManager : MonoBehaviour
     private MiniMap miniMap;
     private EventBox eventBox;
     private ShopKeeper shopKeeper;
+    private UIManager uiManager;
 
     public GameObject GroundTile;
     public GameObject WallTile;
@@ -46,6 +47,7 @@ public class FloorManager : MonoBehaviour
 
     void Start()
     {
+        uiManager = FindObjectOfType<UIManager>();
         playerMove = FindObjectOfType<PlayerMove>();
         mapGenerator = FindObjectOfType<CellularAutomateMap>();
         miniMap = FindObjectOfType<MiniMap>();
@@ -187,6 +189,7 @@ public class FloorManager : MonoBehaviour
             mapGenerator.GenerateMap();
             map = mapGenerator.getMap();
             Camera.main.orthographicSize = BaseValues.NormalCameraSize;
+            uiManager.OnNewFloor(false);
         }else
         {
             shopKeeper.shopActive = false;
@@ -194,6 +197,7 @@ public class FloorManager : MonoBehaviour
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();
             Camera.main.orthographicSize = BaseValues.BattleCameraSize;
+            uiManager.OnNewFloor(true);
         }
         yield return new WaitForFixedUpdate();
         RenderMap();
