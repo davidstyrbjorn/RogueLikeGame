@@ -79,7 +79,6 @@ public class CellularAutomateMap : MonoBehaviour
         PlaceChest();
 
         validMap = CheckIfValidMap();
-        print(validMap);
     }
 
     bool CheckIfValidMap()
@@ -221,11 +220,20 @@ public class CellularAutomateMap : MonoBehaviour
         {
             for(int y = 1; y < height-1; y++)
             {
-                if (map[x, y] == 0)
+                if(map[x,y] == 0)
                 {
-                    if (map[x + 1, y] == 1 || map[x - 1, y] == 1 || map[x, y + 1] == 1 || map[x, y - 1] == 1)
+                    // Places chest randomly based on the number of walls nearby
+                    int neighbours = GetSurroundingWallCount(x, y);
+                    if(neighbours >= 3)
                     {
-                        if (randomNum.Next(0, 101) > 99)
+                        if(randomNum.Next(0,100) >= 99)
+                        {
+                            map[x, y] = 6;
+                        }
+                    }
+                    else if(neighbours >= 1)
+                    {
+                        if (randomNum.Next(0, 1001) > 999)
                         {
                             map[x, y] = 6;
                         }

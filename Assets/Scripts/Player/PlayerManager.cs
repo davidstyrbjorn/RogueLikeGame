@@ -210,6 +210,7 @@ public class PlayerManager : MonoBehaviour {
         {
             float newMaxHealth = Mathf.CeilToInt(maxHealthPoints + BaseValues.HealthStatIncrease);
             maxHealthPoints = newMaxHealth;
+            addHealth(Mathf.CeilToInt(BaseValues.HealthStatIncrease));
 
             eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + BaseValues.HealthStatIncrease + " points " + "</color>");
             
@@ -323,11 +324,11 @@ public class PlayerManager : MonoBehaviour {
 
     void CheckForEnemyClick()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && currentState == PlayerStates.NOT_IN_COMBAT)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-            if (hit.collider != null && currentState != PlayerStates.IN_COMBAT)
+            if (hit.collider != null)
             {
                 if (hit.collider.tag == "Enemy")
                 {
