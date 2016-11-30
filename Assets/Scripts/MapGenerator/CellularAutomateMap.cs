@@ -49,7 +49,7 @@ public class CellularAutomateMap : MonoBehaviour
     public int ExitX;
     public int ExitY;
 
-    private int enemySpawnChance = 94; // This is a percentage chance i.e 90 = 90%
+    public int enemySpawnChance; 
 
     public void GenerateMap()
     {
