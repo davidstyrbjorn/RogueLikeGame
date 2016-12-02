@@ -16,7 +16,7 @@ public class PlayerManager : MonoBehaviour {
     //public bool inCombat = false;
     private float maxHealthPoints;
     private float healthPoints;
-    private float attack;
+    private float attack;       
     private float nextAttackBonus = 1f;
     private int visionRadius = 6;
     private int money;
@@ -29,6 +29,7 @@ public class PlayerManager : MonoBehaviour {
     private EventBox eventBox;
     private ChestMaster chestMaster;
     private SaveLoad saveLoad;
+    private ScreenTransitionImageEffect transitionScript;
 
     private Camera gameCamera;
 
@@ -43,6 +44,8 @@ public class PlayerManager : MonoBehaviour {
     // TEST REMOVE AFTER TESTING IS DONE PLEEEEEASE
     private float enemyHealth;
     private float enemyAttack;
+
+    public Texture2D[] maskTextures;
 
     public float getHealth() { return healthPoints; }
     public float getMaxHealth() { return maxHealthPoints; }
@@ -65,6 +68,7 @@ public class PlayerManager : MonoBehaviour {
         uiManager = FindObjectOfType<UIManager>();
         eventBox = FindObjectOfType<EventBox>();
         saveLoad = FindObjectOfType<SaveLoad>();
+        transitionScript = FindObjectOfType<ScreenTransitionImageEffect>();
 
         gameCamera = Camera.main;
 
@@ -335,7 +339,7 @@ public class PlayerManager : MonoBehaviour {
                     currentEnemy = hit.collider.GetComponent<Enemy>();
                     uiManager.UpdateEnemyUI(hit.collider.gameObject.GetComponent<Enemy>());
                 }
-            }
+            }               
             else
                 if(currentState != PlayerStates.IN_COMBAT)
                     uiManager.DisableEnemyUI();
@@ -345,6 +349,26 @@ public class PlayerManager : MonoBehaviour {
     void Disintegrate()
     {
         
+    }
+
+    public void Escape()
+    {
+        //saveLoad.ResetPlayerPrefs();
+        saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
+        eventBox.addEvent("Exiting map");
+        StartCoroutine(ExitCorountine());
+    }
+
+    IEnumerator ExitCorountine()
+    {
+        int _index = Random.Range(0, maskTextures.Length);
+        Camera.main.GetComponent<ScreenTransitionImageEffect>().maskTexture = maskTextures[_index];
+        while(transitionScript.maskValue <= 1f)
+        {
+            transitionScript.maskValue += 0.01f;
+            yield return new WaitForEndOfFrame();
+        }                   
+        uiManager.LoadScene("StartScene");
     }
 
     public int getMoney() { return money; }

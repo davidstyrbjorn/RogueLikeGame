@@ -17,6 +17,7 @@ using System;
 // 5 = Stat Increase
 // 6 = Chest
 // 7 = Shop Keeper
+// 8 = Exit Escape
 
 
 // Flagged map
@@ -431,9 +432,12 @@ public class CellularAutomateMap : MonoBehaviour
         EntranceY = 1;
 
         // Placing exit in the shop
-        map[4, shop_h - 3] = 3;
-        ExitX = 4;
-        ExitY = shop_h - 1;
+        map[5, shop_h - 3] = 3;
+        ExitX = 5;
+        ExitY = shop_h - 3;
+
+        // Placing escape exit
+        map[3, shop_h - 3] = 8;
     }
 
     public int[,] getMap() { return map; }

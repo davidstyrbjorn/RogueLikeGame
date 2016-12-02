@@ -182,10 +182,10 @@ public class UIManager : MonoBehaviour {
         {
             enemyStatScreen.gameObject.SetActive(true);
 
-            // The text after the symbol
+            // The text after the symbol *attack
             enemyDamageText.text = enemy.getAttack().ToString();
 
-            // Setting up the slider
+            // Setting up the slider *health
             enemyHealthSlider.maxValue = enemy.getMaxHP();
             enemyHealthSlider.value = enemy.getHP();
 
@@ -207,6 +207,7 @@ public class UIManager : MonoBehaviour {
 
     public void DisableNextFloorPrompt() { nextFloorPrompt.gameObject.SetActive(false); }
     public void ToggleExtraStats() { /* Active the extra inventory screen once its implemented */ }
+    public void ToggleInventoryScreen() { characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf); }
     public void NextFloor()
     {
         DisableNextFloorPrompt();

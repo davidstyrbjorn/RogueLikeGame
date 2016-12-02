@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SaveLoad : MonoBehaviour{
     
@@ -30,4 +29,10 @@ public class SaveLoad : MonoBehaviour{
         else
             return PlayerPrefs.GetFloat("playerMaxHealth");
     }
-}
+
+    public void ResetPlayerPrefs()
+    {
+        PlayerPrefs.SetFloat("playerMaxHealth", BaseValues.PlayerBaseHP);
+        PlayerPrefs.SetFloat("playerAttack", BaseValues.PlayerBaseAttack);
+    }
+}   
