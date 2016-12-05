@@ -10,20 +10,26 @@ public class UIManager : MonoBehaviour {
     public RectTransform potionInfoContainer;
     public RectTransform characterStats;
     public RectTransform characterInventory;
+    public RectTransform potionTab, weaponsTab;
     public RectTransform nextFloorPrompt;
     public RectTransform gameOverScreen;
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
     public Text playerHealthText;
-    public Text inventoryWeaponStat;
+
     public Text inventoryPotionStat;
-    public Text playerPhysicalDamageText;
+    public Text weaponNameText;
+    public Text inventoryWeaponStats;
+
+    public Text playerDamageText;
     public Text enemyStatsText;
     public Text enemyDamageText;
     public Text playerMoneyText;
     public Text currentFloorText;
     public Slider enemyHealthSlider;
     public Slider healthSlider;
+
+    public Image inventoryWeaponImage;
 
     public Image[] weaponSlots;
     public Image[] potionSlots;
@@ -69,7 +75,7 @@ public class UIManager : MonoBehaviour {
         playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
 
         // Update player physical damage 
-        playerPhysicalDamageText.text = ""+(playerManager.getAttack() + 
+        playerDamageText.text = ""+(playerManager.getAttack() + 
             (playerManager.getEquipedWeapon() != null ? playerManager.getEquipedWeapon().getNormalAttack() : 0));
 
         // Money text
@@ -84,15 +90,18 @@ public class UIManager : MonoBehaviour {
             potionInfoContainer.gameObject.SetActive(false);
             weaponInfoContainer.gameObject.SetActive(true);
 
+            weaponNameText.text = playerInventory.GetWeaponsList()[_index].getName();
+            inventoryWeaponImage.sprite = playerInventory.GetWeaponsList()[_index].getWeaponSprite();
+
             if(playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
             {
-                inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
+                inventoryWeaponStats.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
             }
             else
             {
-                inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
-                    "Crit Chance: " + playerInventory.GetWeaponsList()[_index].getCritChance() + "\n" +
-                    "Crit Multi: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier();
+                inventoryWeaponStats.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
+                    playerInventory.GetWeaponsList()[_index].getCritChance() + "\n" +
+                    playerInventory.GetWeaponsList()[_index].getCriticalMultiplier();
             }
             currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
 
@@ -207,7 +216,26 @@ public class UIManager : MonoBehaviour {
 
     public void DisableNextFloorPrompt() { nextFloorPrompt.gameObject.SetActive(false); }
     public void ToggleExtraStats() { /* Active the extra inventory screen once its implemented */ }
-    public void ToggleInventoryScreen() { characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf); }
+
+    #region inventory screen
+    public void ToggleInventoryScreen()
+    {
+        potionTab.gameObject.SetActive(false);
+        weaponsTab.gameObject.SetActive(false);
+        characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf);
+    }
+    public void GoTo_WeaponsTab()
+    {
+        weaponsTab.gameObject.SetActive(true);
+        potionTab.gameObject.SetActive(false);
+    }
+    public void GoTo_PotionTab()
+    {
+        weaponsTab.gameObject.SetActive(false);
+        potionTab.gameObject.SetActive(true);
+    }
+    #endregion
+
     public void NextFloor()
     {
         DisableNextFloorPrompt();
