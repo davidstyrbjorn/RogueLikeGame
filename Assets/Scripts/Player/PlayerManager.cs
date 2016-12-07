@@ -12,6 +12,14 @@ public class PlayerManager : MonoBehaviour {
         DEAD,
     }
 
+    public enum PouchTypes
+    {
+        SMALL,
+        MEDIUM,
+        BIG,
+        XXL,
+    }
+
     //public bool isDead = false;
     //public bool inCombat = false;
     private float maxHealthPoints;
