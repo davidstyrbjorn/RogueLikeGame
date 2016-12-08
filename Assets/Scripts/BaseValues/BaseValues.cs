@@ -36,6 +36,22 @@ public class BaseValues : MonoBehaviour{
     public static int NormalCameraSize = 17;
     public static int BattleCameraSize = 14;
 
+    // Money
+    /*
+     * Values are not final
+     * SMALL - 50
+     * MEDIUM - 100
+     * BIG - 250
+     * XXL - 500
+    */
+    public enum PouchTypes
+    {
+        SMALL,
+        MEDIUM,
+        BIG,
+        XXL,
+    }
+    
     void Start()
     {
         healthPotionSprite = HealthPotionSprite;

@@ -12,15 +12,14 @@ public class PlayerManager : MonoBehaviour {
         DEAD,
     }
 
-    //public bool isDead = false;
-    //public bool inCombat = false;
     private float maxHealthPoints;
     private float healthPoints;
-    private float attack;
+    private float attack;       
     private float nextAttackBonus = 1f;
     private int visionRadius = 6;
     private int money;
     private PlayerStates currentState;
+    private int maxMoney;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -29,6 +28,7 @@ public class PlayerManager : MonoBehaviour {
     private EventBox eventBox;
     private ChestMaster chestMaster;
     private SaveLoad saveLoad;
+    private ScreenTransitionImageEffect transitionScript;
 
     private Camera gameCamera;
 
@@ -41,8 +41,10 @@ public class PlayerManager : MonoBehaviour {
     public GameObject SpriteHoverEffectObject;
     
     // TEST REMOVE AFTER TESTING IS DONE PLEEEEEASE
-    private float enemyHealth;
-    private float enemyAttack;
+    //private float enemyHealth;
+    //private float enemyAttack;
+
+    public Texture2D[] maskTextures;
 
     public float getHealth() { return healthPoints; }
     public float getMaxHealth() { return maxHealthPoints; }
@@ -65,6 +67,7 @@ public class PlayerManager : MonoBehaviour {
         uiManager = FindObjectOfType<UIManager>();
         eventBox = FindObjectOfType<EventBox>();
         saveLoad = FindObjectOfType<SaveLoad>();
+        transitionScript = FindObjectOfType<ScreenTransitionImageEffect>();
 
         gameCamera = Camera.main;
 
@@ -80,7 +83,8 @@ public class PlayerManager : MonoBehaviour {
         // Setting up start attack
         attack = saveLoad.GetPlayerAttack();
 
-        money = 0;
+        money = saveLoad.GetPlayerMoney();
+        maxMoney = saveLoad.GetPlayerMaxMoney();
 
         currentState = PlayerStates.NOT_IN_COMBAT;
     }
@@ -283,9 +287,16 @@ public class PlayerManager : MonoBehaviour {
 
     public void EquipWeapon(Weapon _weapon)
     {
-        equipedWeapon = _weapon;
+        if (_weapon != null)
+        {
+            equipedWeapon = _weapon;
+            eventBox.addEvent("Equiped a  " + _weapon.getName());
+        }
+        else
+        {
+            equipedWeapon = null;
+        }
         uiManager.NewPlayerValues();
-        eventBox.addEvent("Equiped a  " + _weapon.getName());
     }
 
     public void ConsumePotion(Potion.potionType _type)
@@ -335,7 +346,7 @@ public class PlayerManager : MonoBehaviour {
                     currentEnemy = hit.collider.GetComponent<Enemy>();
                     uiManager.UpdateEnemyUI(hit.collider.gameObject.GetComponent<Enemy>());
                 }
-            }
+            }               
             else
                 if(currentState != PlayerStates.IN_COMBAT)
                     uiManager.DisableEnemyUI();
@@ -347,8 +358,45 @@ public class PlayerManager : MonoBehaviour {
         
     }
 
+    public void Escape()
+    {
+        //saveLoad.ResetPlayerPrefs();
+        saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
+        saveLoad.SaveCurrentMoney(this.money);
+        eventBox.addEvent("Exiting map");
+        StartCoroutine(ExitCorountine());
+    }
+
+    IEnumerator ExitCorountine()
+    {
+        int _index = Random.Range(0, maskTextures.Length);
+        Camera.main.GetComponent<ScreenTransitionImageEffect>().maskTexture = maskTextures[_index];
+        while(transitionScript.maskValue <= 1f)
+        {
+            transitionScript.maskValue += 0.01f;
+            yield return new WaitForEndOfFrame();
+        }                   
+        uiManager.LoadScene("StartScene");
+    }
+
+    public int getMaxMoney() { return maxMoney; }
     public int getMoney() { return money; }
-    public void addMoney(int money_) { money += money_; uiManager.NewPlayerValues(); }
+    public void addMoney(int money_)
+    {
+        if (money < maxMoney)
+        {
+            money += money_;
+            if (money > maxMoney)
+                money -= money - maxMoney;
+            uiManager.NewPlayerValues();
+        }
+    }
+
+    public void removeMoney(int money_)
+    {
+        money -= money_;
+    }
+
 
     public PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }

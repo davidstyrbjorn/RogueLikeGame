@@ -54,6 +54,7 @@ public class MiniMap : MonoBehaviour {
 
     public void RevealNewPart(Vector2 newPos)
     {
+        FullyRevealMap();
         for(int x = (int)newPos.x - 3; x < (int)newPos.x + 3; x++)
         {
             for(int y = (int)newPos.y - 3; y < (int)newPos.y + 3; y++)

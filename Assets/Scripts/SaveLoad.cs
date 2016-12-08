@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SaveLoad : MonoBehaviour{
     
@@ -30,4 +29,35 @@ public class SaveLoad : MonoBehaviour{
         else
             return PlayerPrefs.GetFloat("playerMaxHealth");
     }
-}
+
+    public void ResetPlayerPrefs()
+    {
+        PlayerPrefs.SetFloat("playerMaxHealth", BaseValues.PlayerBaseHP);
+        PlayerPrefs.SetFloat("playerAttack", BaseValues.PlayerBaseAttack);
+        PlayerPrefs.SetInt("playerMoney", 0);
+    }
+
+    public void SaveCurrentMoney(int money)
+    {
+        PlayerPrefs.SetInt("playerMoney", money);
+    }
+
+    public void SaveMaxMoney(int maxMoney)
+    {
+        PlayerPrefs.SetInt("playerMaxMoney", maxMoney);
+    }
+
+    public int GetPlayerMoney()
+    {
+        if (!PlayerPrefs.HasKey("playerMoney"))
+            PlayerPrefs.SetInt("playerMoney", 0);
+        return PlayerPrefs.GetInt("playerMoney");
+    }
+
+    public int GetPlayerMaxMoney()
+    {
+        if (!PlayerPrefs.HasKey("playerMaxMoney"))
+            PlayerPrefs.SetInt("playerMaxMoney", 50);
+        return PlayerPrefs.GetInt("playerMaxMoney");
+    }
+}   

@@ -135,6 +135,10 @@ public class PlayerMove : MonoBehaviour {
             else
                 playerManager.walkedOffExit();
 
+            // Escape condition
+            if (currentMap[curr_x, curr_y] == 8)
+                playerManager.Escape();
+
             // Check if we walked onto any stat increaser
             if (currentMap[curr_x, curr_y] == 5)
                 playerManager.hitStatIncreaser(new Vector2(curr_x, curr_y));
@@ -145,6 +149,7 @@ public class PlayerMove : MonoBehaviour {
 
             if (currentMap[curr_x, curr_y] == 7)
             {
+                shopKeeper.UpdatePlayerWeaponSlots();
                 shopKeeper.toggleShopHolder(true);
                 shopKeeper.StartTransaction();
             }

@@ -10,20 +10,27 @@ public class UIManager : MonoBehaviour {
     public RectTransform potionInfoContainer;
     public RectTransform characterStats;
     public RectTransform characterInventory;
+    public RectTransform potionTab, weaponsTab;
     public RectTransform nextFloorPrompt;
     public RectTransform gameOverScreen;
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
     public Text playerHealthText;
-    public Text inventoryWeaponStat;
+
     public Text inventoryPotionStat;
-    public Text playerPhysicalDamageText;
+    public Text weaponNameText;
+    public Text inventoryWeaponStats;
+
+    public Text playerDamageText;
     public Text enemyStatsText;
     public Text enemyDamageText;
     public Text playerMoneyText;
+    public Text playerMaxMoneyText;
     public Text currentFloorText;
     public Slider enemyHealthSlider;
     public Slider healthSlider;
+
+    public Image inventoryWeaponImage;
 
     public Image[] weaponSlots;
     public Image[] potionSlots;
@@ -67,13 +74,16 @@ public class UIManager : MonoBehaviour {
         healthSlider.value = playerManager.getHealth();
         // Update the player health text
         playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
+        //float healthPercentage = (playerManager.getHealth() / playerManager.getMaxHealth());
+        //playerHealthText.text = healthPercentage.ToString() + "%";
 
         // Update player physical damage 
-        playerPhysicalDamageText.text = ""+(playerManager.getAttack() + 
+        playerDamageText.text = ""+(playerManager.getAttack() + 
             (playerManager.getEquipedWeapon() != null ? playerManager.getEquipedWeapon().getNormalAttack() : 0));
 
         // Money text
         playerMoneyText.text = playerManager.getMoney().ToString();
+        playerMaxMoneyText.text = "/" + playerManager.getMaxMoney().ToString();
     }
 
     // Selects whatever weapon we clicked on if the _index inside players weapons list
@@ -84,15 +94,18 @@ public class UIManager : MonoBehaviour {
             potionInfoContainer.gameObject.SetActive(false);
             weaponInfoContainer.gameObject.SetActive(true);
 
+            weaponNameText.text = playerInventory.GetWeaponsList()[_index].getName();
+            inventoryWeaponImage.sprite = playerInventory.GetWeaponsList()[_index].getWeaponSprite();
+
             if(playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
             {
-                inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
+                inventoryWeaponStats.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
             }
             else
             {
-                inventoryWeaponStat.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
-                    "Crit Chance: " + playerInventory.GetWeaponsList()[_index].getCritChance() + "\n" +
-                    "Crit Multi: " + playerInventory.GetWeaponsList()[_index].getCriticalMultiplier();
+                inventoryWeaponStats.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
+                    playerInventory.GetWeaponsList()[_index].getCritChance() + "\n" +
+                    playerInventory.GetWeaponsList()[_index].getCriticalMultiplier();
             }
             currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
 
@@ -129,15 +142,15 @@ public class UIManager : MonoBehaviour {
 
     public void RemoveSelectedWeapon()
     {
-        if (this.playerManager.getEquipedWeapon() != this.playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex])
+        if (playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex] == playerManager.getEquipedWeapon())
         {
-            eventBox.addEvent("Removed " + playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex].getName());
-            weaponInfoContainer.gameObject.SetActive(false);
-            playerInventory.RemoveWeaponAt(currentlySelectedWeaponIndex);
-            UpdateWeaponSlots();
+            playerManager.EquipWeapon(null);
+            NewPlayerValues();
         }
-        else
-            eventBox.addEvent("Can't remove equiped weapon!");
+        eventBox.addEvent("Removed " + playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex].getName());
+        weaponInfoContainer.gameObject.SetActive(false);
+        playerInventory.RemoveWeaponAt(currentlySelectedWeaponIndex);
+        UpdateWeaponSlots();
     }
 
     // Assigns the right weaponsSlots to the i index of players weapon list
@@ -182,10 +195,10 @@ public class UIManager : MonoBehaviour {
         {
             enemyStatScreen.gameObject.SetActive(true);
 
-            // The text after the symbol
+            // The text after the symbol *attack
             enemyDamageText.text = enemy.getAttack().ToString();
 
-            // Setting up the slider
+            // Setting up the slider *health
             enemyHealthSlider.maxValue = enemy.getMaxHP();
             enemyHealthSlider.value = enemy.getHP();
 
@@ -207,6 +220,26 @@ public class UIManager : MonoBehaviour {
 
     public void DisableNextFloorPrompt() { nextFloorPrompt.gameObject.SetActive(false); }
     public void ToggleExtraStats() { /* Active the extra inventory screen once its implemented */ }
+
+    #region inventory screen
+    public void ToggleInventoryScreen()
+    {
+        potionTab.gameObject.SetActive(false);
+        weaponsTab.gameObject.SetActive(false);
+        characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf);
+    }
+    public void GoTo_WeaponsTab()
+    {
+        weaponsTab.gameObject.SetActive(true);
+        potionTab.gameObject.SetActive(false);
+    }
+    public void GoTo_PotionTab()
+    {
+        weaponsTab.gameObject.SetActive(false);
+        potionTab.gameObject.SetActive(true);
+    }
+    #endregion
+
     public void NextFloor()
     {
         DisableNextFloorPrompt();
