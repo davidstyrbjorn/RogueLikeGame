@@ -149,6 +149,7 @@ public class PlayerMove : MonoBehaviour {
 
             if (currentMap[curr_x, curr_y] == 7)
             {
+                shopKeeper.UpdatePlayerWeaponSlots();
                 shopKeeper.toggleShopHolder(true);
                 shopKeeper.StartTransaction();
             }

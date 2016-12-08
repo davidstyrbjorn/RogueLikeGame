@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour {
     public Text enemyStatsText;
     public Text enemyDamageText;
     public Text playerMoneyText;
+    public Text playerMaxMoneyText;
     public Text currentFloorText;
     public Slider enemyHealthSlider;
     public Slider healthSlider;
@@ -73,6 +74,8 @@ public class UIManager : MonoBehaviour {
         healthSlider.value = playerManager.getHealth();
         // Update the player health text
         playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
+        //float healthPercentage = (playerManager.getHealth() / playerManager.getMaxHealth());
+        //playerHealthText.text = healthPercentage.ToString() + "%";
 
         // Update player physical damage 
         playerDamageText.text = ""+(playerManager.getAttack() + 
@@ -80,6 +83,7 @@ public class UIManager : MonoBehaviour {
 
         // Money text
         playerMoneyText.text = playerManager.getMoney().ToString();
+        playerMaxMoneyText.text = "/" + playerManager.getMaxMoney().ToString();
     }
 
     // Selects whatever weapon we clicked on if the _index inside players weapons list
@@ -138,15 +142,15 @@ public class UIManager : MonoBehaviour {
 
     public void RemoveSelectedWeapon()
     {
-        if (this.playerManager.getEquipedWeapon() != this.playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex])
+        if (playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex] == playerManager.getEquipedWeapon())
         {
-            eventBox.addEvent("Removed " + playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex].getName());
-            weaponInfoContainer.gameObject.SetActive(false);
-            playerInventory.RemoveWeaponAt(currentlySelectedWeaponIndex);
-            UpdateWeaponSlots();
+            playerManager.EquipWeapon(null);
+            NewPlayerValues();
         }
-        else
-            eventBox.addEvent("Can't remove equiped weapon!");
+        eventBox.addEvent("Removed " + playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex].getName());
+        weaponInfoContainer.gameObject.SetActive(false);
+        playerInventory.RemoveWeaponAt(currentlySelectedWeaponIndex);
+        UpdateWeaponSlots();
     }
 
     // Assigns the right weaponsSlots to the i index of players weapon list

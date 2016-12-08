@@ -12,16 +12,6 @@ public class PlayerManager : MonoBehaviour {
         DEAD,
     }
 
-    public enum PouchTypes
-    {
-        SMALL,
-        MEDIUM,
-        BIG,
-        XXL,
-    }
-
-    //public bool isDead = false;
-    //public bool inCombat = false;
     private float maxHealthPoints;
     private float healthPoints;
     private float attack;       
@@ -29,6 +19,7 @@ public class PlayerManager : MonoBehaviour {
     private int visionRadius = 6;
     private int money;
     private PlayerStates currentState;
+    private int maxMoney;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -50,8 +41,8 @@ public class PlayerManager : MonoBehaviour {
     public GameObject SpriteHoverEffectObject;
     
     // TEST REMOVE AFTER TESTING IS DONE PLEEEEEASE
-    private float enemyHealth;
-    private float enemyAttack;
+    //private float enemyHealth;
+    //private float enemyAttack;
 
     public Texture2D[] maskTextures;
 
@@ -92,7 +83,8 @@ public class PlayerManager : MonoBehaviour {
         // Setting up start attack
         attack = saveLoad.GetPlayerAttack();
 
-        money = 0;
+        money = saveLoad.GetPlayerMoney();
+        maxMoney = saveLoad.GetPlayerMaxMoney();
 
         currentState = PlayerStates.NOT_IN_COMBAT;
     }
@@ -295,9 +287,16 @@ public class PlayerManager : MonoBehaviour {
 
     public void EquipWeapon(Weapon _weapon)
     {
-        equipedWeapon = _weapon;
+        if (_weapon != null)
+        {
+            equipedWeapon = _weapon;
+            eventBox.addEvent("Equiped a  " + _weapon.getName());
+        }
+        else
+        {
+            equipedWeapon = null;
+        }
         uiManager.NewPlayerValues();
-        eventBox.addEvent("Equiped a  " + _weapon.getName());
     }
 
     public void ConsumePotion(Potion.potionType _type)
@@ -363,6 +362,7 @@ public class PlayerManager : MonoBehaviour {
     {
         //saveLoad.ResetPlayerPrefs();
         saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
+        saveLoad.SaveCurrentMoney(this.money);
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());
     }
@@ -379,8 +379,24 @@ public class PlayerManager : MonoBehaviour {
         uiManager.LoadScene("StartScene");
     }
 
+    public int getMaxMoney() { return maxMoney; }
     public int getMoney() { return money; }
-    public void addMoney(int money_) { money += money_; uiManager.NewPlayerValues(); }
+    public void addMoney(int money_)
+    {
+        if (money < maxMoney)
+        {
+            money += money_;
+            if (money > maxMoney)
+                money -= money - maxMoney;
+            uiManager.NewPlayerValues();
+        }
+    }
+
+    public void removeMoney(int money_)
+    {
+        money -= money_;
+    }
+
 
     public PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }

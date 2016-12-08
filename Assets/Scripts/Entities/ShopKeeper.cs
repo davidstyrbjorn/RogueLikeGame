@@ -106,12 +106,13 @@ public class ShopKeeper : MonoBehaviour {
             if (playerManager.getMoney() >= shopKeeperWeapons[weaponIndex].getValue() && playerInventory.GetWeaponsList().Count <= 8)
             {
                 // Take money from the player
-                playerManager.addMoney(-shopKeeperWeapons[weaponIndex].getValue());
+                playerManager.removeMoney(shopKeeperWeapons[weaponIndex].getValue());
 
                 // Add weaponIndex to players inventory
                 playerInventory.addWeapon(shopKeeperWeapons[weaponIndex]);
                 uiManager.UpdateWeaponSlots();
                 UpdatePlayerWeaponSlots();
+                uiManager.NewPlayerValues();
 
                 // Add to log event that we bought a weapon
                 eventBox.addEvent("Bought a <color=green>" + shopKeeperWeapons[weaponIndex].getName() + "</color>");
@@ -129,19 +130,15 @@ public class ShopKeeper : MonoBehaviour {
     {
         if(playerWeaponIndex != -1)
         {
-            if (playerInventory.GetWeaponsList()[playerWeaponIndex] == playerManager.getEquipedWeapon())
-            {
-                eventBox.addEvent("Can't sell equiped weapon");
-            }
-            else
-            {
-                eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[playerWeaponIndex].getName() + " for " + playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
-                playerManager.addMoney(playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
+            eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[playerWeaponIndex].getName() + " for " + playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
+            playerManager.addMoney(playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
 
-                playerInventory.RemoveWeaponAt(playerWeaponIndex);
-                uiManager.UpdateWeaponSlots();
-                UpdatePlayerWeaponSlots();
-            }
+            playerInventory.RemoveWeaponAt(playerWeaponIndex);
+            uiManager.UpdateWeaponSlots();
+            UpdatePlayerWeaponSlots();
+
+            playerItemInfoText.text = "";
+            playerWeaponIndex = -1;
         }
     }
 }
