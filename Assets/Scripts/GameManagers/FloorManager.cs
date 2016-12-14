@@ -31,6 +31,7 @@ public class FloorManager : MonoBehaviour
     private EventBox eventBox;
     private ShopKeeper shopKeeper;
     private UIManager uiManager;
+    private EnemyMaster enemyMaster;
 
     public GameObject GroundTile;
     public GameObject WallTile;
@@ -38,7 +39,6 @@ public class FloorManager : MonoBehaviour
     public GameObject StatIncreaser;
     public GameObject Chest;
     public GameObject shopKeeperPrefab;
-    public GameObject[] EnemyShells;
 
     public Dictionary<Vector2, GameObject> enemyList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> statIncreaserList = new Dictionary<Vector2, GameObject>();
@@ -47,6 +47,7 @@ public class FloorManager : MonoBehaviour
 
     void Start()
     {
+        enemyMaster = FindObjectOfType<EnemyMaster>();
         uiManager = FindObjectOfType<UIManager>();
         playerMove = FindObjectOfType<PlayerMove>();
         mapGenerator = FindObjectOfType<CellularAutomateMap>();
@@ -141,13 +142,9 @@ public class FloorManager : MonoBehaviour
                         GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         groundTile.transform.parent = transform;
 
-                        // Spawning and setting up the actual enemy
-                        int randomIndex = Random.Range(0, EnemyShells.Length);
-                        GameObject enemyShell = Instantiate(EnemyShells[randomIndex], new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        GameObject enemyShell = Instantiate(enemyMaster.getNewEnemy(0, 1), new Vector3(x * tileWidth, y * tileWidth, 0), Quaternion.identity) as GameObject;
+                        enemyShell.GetComponent<Enemy>().SetUpEnemy(currentFloorNumber);
                         enemyShell.transform.parent = transform;
-
-                        // Calling functions on the enemy class
-                        enemyShell.GetComponent<Enemy>().SetUpEnemy(currentFloorNumber, EnemyShells[randomIndex].gameObject);
 
                         // Adding the enemy to the enemy-cordinate list
                         enemyList.Add(new Vector2(x, y), enemyShell);

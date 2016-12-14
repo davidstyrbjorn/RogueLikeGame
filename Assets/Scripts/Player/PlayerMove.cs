@@ -13,6 +13,7 @@ public class PlayerMove : MonoBehaviour {
     private PlayerManager playerManager;
     private MiniMap miniMap;
     private ShopKeeper shopKeeper;
+    private SpriteRenderer spre;
 
     private bool canExitFloor;
 
@@ -31,6 +32,7 @@ public class PlayerMove : MonoBehaviour {
         playerManager = FindObjectOfType<PlayerManager>();
         miniMap = FindObjectOfType<MiniMap>();
         shopKeeper = FindObjectOfType<ShopKeeper>();
+        spre = GetComponentInChildren<SpriteRenderer>();
     }
 
     void Update()
@@ -85,6 +87,7 @@ public class PlayerMove : MonoBehaviour {
                 }
                 else if (currentMap[curr_x - 1, curr_y] == 4)
                     playerManager.onEngage(curr_x - 1, curr_y);
+                spre.flipX = true;
             }
 
             // Move to the left 
@@ -99,6 +102,7 @@ public class PlayerMove : MonoBehaviour {
                 }
                 else if (currentMap[curr_x + 1, curr_y] == 4)
                     playerManager.onEngage(curr_x + 1, curr_y);
+                spre.flipX = false;
             }
 
             // Move upwards

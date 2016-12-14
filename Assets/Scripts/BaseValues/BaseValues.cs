@@ -34,7 +34,7 @@ public class BaseValues : MonoBehaviour{
 
     // Camera values
     public static int NormalCameraSize = 17;
-    public static int BattleCameraSize = 14;
+    public static int BattleCameraSize = 20;
 
     // Money
     /*
