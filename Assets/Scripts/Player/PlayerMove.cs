@@ -37,7 +37,10 @@ public class PlayerMove : MonoBehaviour {
 
     void Update()
     {
-        transform.position = Vector2.MoveTowards(transform.position, currentWorldPosition, moveSpeed * Time.deltaTime);
+        if (playerManager.getCurrentState() == PlayerManager.PlayerStates.NOT_IN_COMBAT)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, currentWorldPosition, moveSpeed * Time.deltaTime);
+        }
         if (canMove)
             MovePlayer();
         else
@@ -84,10 +87,13 @@ public class PlayerMove : MonoBehaviour {
                     curr_x--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
+                    spre.flipX = true;
                 }
                 else if (currentMap[curr_x - 1, curr_y] == 4)
+                {
+                    spre.flipX = false;
                     playerManager.onEngage(curr_x - 1, curr_y);
-                spre.flipX = true;
+                }
             }
 
             // Move to the left 
@@ -101,7 +107,9 @@ public class PlayerMove : MonoBehaviour {
                     canMove = false;
                 }
                 else if (currentMap[curr_x + 1, curr_y] == 4)
+                {
                     playerManager.onEngage(curr_x + 1, curr_y);
+                }
                 spre.flipX = false;
             }
 
@@ -116,7 +124,10 @@ public class PlayerMove : MonoBehaviour {
                     canMove = false;
                 }
                 else if (currentMap[curr_x, curr_y + 1] == 4)
+                {
+                    spre.flipX = false;
                     playerManager.onEngage(curr_x, curr_y + 1);
+                }
             }
 
             // Move downwards
@@ -130,7 +141,10 @@ public class PlayerMove : MonoBehaviour {
                     canMove = false;
                 }
                 else if (currentMap[curr_x, curr_y - 1] == 4)
+                {
+                    spre.flipX = false;
                     playerManager.onEngage(curr_x, curr_y - 1);
+                }
             }
 
             // Floor exit condition
@@ -174,6 +188,12 @@ public class PlayerMove : MonoBehaviour {
     }
 
     public Vector2 getCurrentPosition() { return new Vector2(curr_x, curr_y); }
+    public void setCurrentPosition(Vector2 pos_m)
+    {
+        curr_x = (int)pos_m.x;
+        curr_y = (int)pos_m.y;
+        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+    }
 
     void RevealNewPart(Vector2 pos)
     {

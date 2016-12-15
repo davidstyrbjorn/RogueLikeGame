@@ -24,6 +24,7 @@ public class PlayerManager : MonoBehaviour {
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
     private PlayerInventory playerInventory;
+    private PlayerMove playerMove;
     private UIManager uiManager;
     private EventBox eventBox;
     private ChestMaster chestMaster;
@@ -39,12 +40,12 @@ public class PlayerManager : MonoBehaviour {
     private Weapon equipedWeapon;
 
     public GameObject SpriteHoverEffectObject;
-    
-    // TEST REMOVE AFTER TESTING IS DONE PLEEEEEASE
-    //private float enemyHealth;
-    //private float enemyAttack;
 
     public Texture2D[] maskTextures;
+
+    // Combat position variables
+    private Vector2 playerCombatPos, enemyCombatPos;
+    private Vector2 combatTilePos;
 
     public float getHealth() { return healthPoints; }
     public float getMaxHealth() { return maxHealthPoints; }
@@ -55,11 +56,21 @@ public class PlayerManager : MonoBehaviour {
         CheckForEnemyClick();
         if (currentEnemy != null)
             uiManager.enemyStatScreen.position = currentEnemy.transform.position + Vector3.up * 7;
+
+        if(currentState == PlayerStates.IN_COMBAT || currentState == PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        {
+            Vector2 tilePos = new Vector2(currentEnemyPos.x * floorManager.GetTileWidth(), currentEnemyPos.y* floorManager.GetTileWidth());
+
+            transform.position = Vector2.MoveTowards(transform.position, playerCombatPos, 14 * Time.deltaTime);
+
+            currentEnemy.transform.position = Vector2.MoveTowards(currentEnemy.transform.position, enemyCombatPos, 14 * Time.deltaTime);
+        }
     }
 
     void Start()
     {
         // Get component calls
+        playerMove = GetComponent<PlayerMove>();
         chestMaster = FindObjectOfType<ChestMaster>();
         floorManager = FindObjectOfType<FloorManager>();
         playerInventory = GetComponent<PlayerInventory>();
@@ -105,6 +116,12 @@ public class PlayerManager : MonoBehaviour {
 
         currentEnemyPos = new Vector2(enemy_x, enemy_y);
         currentEnemyName = currentEnemy.getName();
+
+        combatTilePos = currentEnemyPos * floorManager.GetTileWidth();
+        playerCombatPos = combatTilePos + Vector2.left * floorManager.GetTileWidth() * 0.35f;
+        enemyCombatPos = combatTilePos + Vector2.right * floorManager.GetTileWidth() * 0.35f;
+
+        playerMove.setCurrentPosition(currentEnemyPos);
 
         StartCoroutine(CombatLoop());
     }
