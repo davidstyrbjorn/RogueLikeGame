@@ -34,24 +34,12 @@ public class SaveLoad : MonoBehaviour{
     {
         PlayerPrefs.SetFloat("playerMaxHealth", BaseValues.PlayerBaseHP);
         PlayerPrefs.SetFloat("playerAttack", BaseValues.PlayerBaseAttack);
-        PlayerPrefs.SetInt("playerMoney", 0);
-    }
-
-    public void SaveCurrentMoney(int money)
-    {
-        PlayerPrefs.SetInt("playerMoney", money);
+        PlayerPrefs.SetInt("playerMaxMoney", 0);
     }
 
     public void SaveMaxMoney(int maxMoney)
     {
         PlayerPrefs.SetInt("playerMaxMoney", maxMoney);
-    }
-
-    public int GetPlayerMoney()
-    {
-        if (!PlayerPrefs.HasKey("playerMoney"))
-            PlayerPrefs.SetInt("playerMoney", 0);
-        return PlayerPrefs.GetInt("playerMoney");
     }
 
     public int GetPlayerMaxMoney()

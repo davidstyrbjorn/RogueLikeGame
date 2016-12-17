@@ -14,6 +14,7 @@ public class PlayerMove : MonoBehaviour {
     private MiniMap miniMap;
     private ShopKeeper shopKeeper;
     private SpriteRenderer spre;
+    private Animator anim;
 
     private bool canExitFloor;
 
@@ -33,6 +34,7 @@ public class PlayerMove : MonoBehaviour {
         miniMap = FindObjectOfType<MiniMap>();
         shopKeeper = FindObjectOfType<ShopKeeper>();
         spre = GetComponentInChildren<SpriteRenderer>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -42,7 +44,11 @@ public class PlayerMove : MonoBehaviour {
             transform.position = Vector2.MoveTowards(transform.position, currentWorldPosition, moveSpeed * Time.deltaTime);
         }
         if (canMove)
+        {
+            anim.SetBool("WalkVertical", false);
+            anim.SetBool("WalkSide", false);
             MovePlayer();
+        }
         else
             CheckCanMove();
     }
@@ -81,13 +87,14 @@ public class PlayerMove : MonoBehaviour {
             // Move left
             if (Input.GetKey(KeyCode.A))
             {
+                anim.SetBool("WalkSide", true);
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x - 1, curr_y] != 1 && currentMap[curr_x - 1, curr_y] != 4)
                 {
                     curr_x--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
-                    spre.flipX = true;
+                    spre.flipX = false;
                 }
                 else if (currentMap[curr_x - 1, curr_y] == 4)
                 {
@@ -99,6 +106,8 @@ public class PlayerMove : MonoBehaviour {
             // Move to the left 
             else if (Input.GetKey(KeyCode.D))
             {
+                anim.SetBool("WalkSide", true);
+                spre.flipX = true;
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x + 1, curr_y] != 4)
                 {
@@ -109,13 +118,14 @@ public class PlayerMove : MonoBehaviour {
                 else if (currentMap[curr_x + 1, curr_y] == 4)
                 {
                     playerManager.onEngage(curr_x + 1, curr_y);
+                    spre.flipX = false;
                 }
-                spre.flipX = false;
             }
 
             // Move upwards
             else if (Input.GetKey(KeyCode.W))
             {
+                anim.SetBool("WalkVertical", true);
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y + 1] != 4)
                 {
@@ -133,6 +143,7 @@ public class PlayerMove : MonoBehaviour {
             // Move downwards
             else if (Input.GetKey(KeyCode.S))
             {
+                anim.SetBool("WalkVertical", true);
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y - 1] != 4)
                 {

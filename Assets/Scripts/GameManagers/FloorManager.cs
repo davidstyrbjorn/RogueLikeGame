@@ -170,7 +170,7 @@ public class FloorManager : MonoBehaviour
                         groundTile.transform.parent = transform;
                         tileList.Add(new Vector2(x, y), groundTile);
 
-                        GameObject shopKeeperObject = Instantiate(shopKeeperPrefab, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        GameObject shopKeeperObject = Instantiate(shopKeeperPrefab, new Vector3(x * tileWidth, y * tileWidth * 1.25f, -1), Quaternion.identity) as GameObject;
                         shopKeeperObject.transform.parent = transform;
                     }
                 }

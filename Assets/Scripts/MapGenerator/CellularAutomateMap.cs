@@ -424,7 +424,7 @@ public class CellularAutomateMap : MonoBehaviour
         }
 
         // Placing the shop keeper
-        map[4, shop_h - 7] = 7;
+        map[4, shop_h - 8] = 7;
 
         // Placing the entrance 
         map[4, 1] = 2;

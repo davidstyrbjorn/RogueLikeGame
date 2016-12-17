@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour {
 
     private float maxHealthPoints;
     private float healthPoints;
-    private float attack;       
+    private float attack;
     private float nextAttackBonus = 1f;
     private int visionRadius = 6;
     private int money;
@@ -30,6 +30,7 @@ public class PlayerManager : MonoBehaviour {
     private ChestMaster chestMaster;
     private SaveLoad saveLoad;
     private ScreenTransitionImageEffect transitionScript;
+    private Canvas canvas;
 
     private Camera gameCamera;
 
@@ -40,6 +41,7 @@ public class PlayerManager : MonoBehaviour {
     private Weapon equipedWeapon;
 
     public GameObject SpriteHoverEffectObject;
+    public GameObject CombatTextPrefab;
 
     public Texture2D[] maskTextures;
 
@@ -55,11 +57,11 @@ public class PlayerManager : MonoBehaviour {
     {
         CheckForEnemyClick();
         if (currentEnemy != null)
-            uiManager.enemyStatScreen.position = currentEnemy.transform.position + Vector3.up * 7;
+            uiManager.enemyStatScreen.position = (Vector3)combatTilePos + Vector3.up * 11f;
 
-        if(currentState == PlayerStates.IN_COMBAT || currentState == PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        if (currentState == PlayerStates.IN_COMBAT || currentState == PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
-            Vector2 tilePos = new Vector2(currentEnemyPos.x * floorManager.GetTileWidth(), currentEnemyPos.y* floorManager.GetTileWidth());
+            Vector2 tilePos = new Vector2(currentEnemyPos.x * floorManager.GetTileWidth(), currentEnemyPos.y * floorManager.GetTileWidth());
 
             transform.position = Vector2.MoveTowards(transform.position, playerCombatPos, 14 * Time.deltaTime);
 
@@ -79,12 +81,13 @@ public class PlayerManager : MonoBehaviour {
         eventBox = FindObjectOfType<EventBox>();
         saveLoad = FindObjectOfType<SaveLoad>();
         transitionScript = FindObjectOfType<ScreenTransitionImageEffect>();
+        canvas = FindObjectOfType<Canvas>();
 
         gameCamera = Camera.main;
 
         GameStart();
     }
-    
+
     void GameStart()
     {
         // Setting up start max health and start health    
@@ -94,16 +97,18 @@ public class PlayerManager : MonoBehaviour {
         // Setting up start attack
         attack = saveLoad.GetPlayerAttack();
 
-        money = saveLoad.GetPlayerMoney();
+        money = 0;
         maxMoney = saveLoad.GetPlayerMaxMoney();
 
         currentState = PlayerStates.NOT_IN_COMBAT;
     }
 
+   
+
     // PlayerMove calls this method each time
     public void PlayerMoved(Vector2 newPos)
     {
-
+        
     }
 
     public void onEngage(int enemy_x, int enemy_y)
@@ -128,7 +133,7 @@ public class PlayerManager : MonoBehaviour {
 
     IEnumerator CombatLoop()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.7f);
         while (currentState == PlayerStates.IN_COMBAT || currentState == PlayerStates.IN_COMBAT_CAN_ESCAPE && currentState != PlayerStates.DEAD)
         {
             if (currentEnemy != null)
@@ -148,6 +153,18 @@ public class PlayerManager : MonoBehaviour {
 
                 // Write to the text box
                 eventBox.addEvent("You hit the " + currentEnemyName + " for <color=red>" + total_attack_power + " </color>  damage!");
+
+                Vector3 spawnPos = new Vector3(enemyCombatPos.x, enemyCombatPos.y, 0);
+                GameObject combatText = Instantiate(CombatTextPrefab);
+
+                combatText.GetComponent<RectTransform>().anchoredPosition = spawnPos;
+                combatText.GetComponent<RectTransform>().localPosition = Vector3.zero + 
+                    (Vector3.right * floorManager.GetTileWidth() * 12.5f) +
+                    (Vector3.up * floorManager.GetTileWidth() * 16);
+
+                combatText.GetComponent<CombatText>().SetText(total_attack_power);
+                combatText.transform.SetParent(canvas.transform, false);
+
                 nextAttackBonus = 1f;
 
                 if (currentEnemy != null)
@@ -172,7 +189,19 @@ public class PlayerManager : MonoBehaviour {
         healthPoints -= _hp;
         eventBox.addEvent(currentEnemyName + " hit you for " + _hp + " damge!");
 
-        // Player dies here
+        // Spawning combat text
+        Vector3 spawnPos = new Vector3(playerCombatPos.x, playerCombatPos.y, 0);
+        GameObject combatText = Instantiate(CombatTextPrefab);
+
+        combatText.GetComponent<RectTransform>().anchoredPosition = spawnPos;
+        combatText.GetComponent<RectTransform>().localPosition = Vector3.zero + 
+            (Vector3.right * floorManager.GetTileWidth() * 1.233f) +
+            (Vector3.up * floorManager.GetTileWidth() * 16);
+
+        combatText.GetComponent<CombatText>().SetText(_hp);
+        combatText.transform.SetParent(canvas.transform, false);
+
+        // Player dies herek
         if (healthPoints <= 0)
         {
             died();
@@ -289,6 +318,12 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+    public void SetMaxMoney(int money)
+    {
+        maxMoney = money;
+        uiManager.NewPlayerValues();
+    }
+
     public void addHealth(float _health)
     {
         // Adds health as long as there's anything to add
@@ -372,14 +407,15 @@ public class PlayerManager : MonoBehaviour {
 
     void Disintegrate()
     {
-        
+         
     }
 
     public void Escape()
     {
         //saveLoad.ResetPlayerPrefs();
         saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
-        saveLoad.SaveCurrentMoney(this.money);
+        saveLoad.SaveMaxMoney(maxMoney);
+
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());
     }
@@ -391,7 +427,7 @@ public class PlayerManager : MonoBehaviour {
         while(transitionScript.maskValue <= 1f)
         {
             transitionScript.maskValue += 0.01f;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.01f);
         }                   
         uiManager.LoadScene("StartScene");
     }

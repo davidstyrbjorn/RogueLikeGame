@@ -17,6 +17,7 @@ public class ShopKeeper : MonoBehaviour {
     public RectTransform shopHolder;
 
     [Header("Shop Keepers Variables")]
+    public Text maxMoneyInfoText;
     public Text itemInfoText;
     public Image[] shopWeaponSlots;
     private Weapon currentWeaponSelected;
@@ -55,6 +56,7 @@ public class ShopKeeper : MonoBehaviour {
             toggleShopHolder(true);
             FillShopKeeperWeaponsList();
             UpdatePlayerWeaponSlots();
+            SetMaxMoneyInfo();
         }
     }
 
@@ -66,6 +68,26 @@ public class ShopKeeper : MonoBehaviour {
         {
             playerWeaponSlots[i].sprite = playerInventory.GetWeaponsList()[i].getWeaponSprite();
             playerWeaponSlots[i].color = Color.white;
+        }
+    }
+
+    void SetMaxMoneyInfo()
+    {
+        if(playerManager.getMaxMoney() == 50)
+        {
+            maxMoneyInfoText.text = "Type: Medium\nCost: 50"; 
+        }
+        else if(playerManager.getMaxMoney() == 100)
+        {
+            maxMoneyInfoText.text = "Type: Big\nCost: 90";
+        }
+        else if(playerManager.getMaxMoney() == 250)
+        {
+            maxMoneyInfoText.text = "Type: Big-Big\nCost: 200";
+        }
+        else if(playerManager.getMaxMoney() == 500)
+        {
+            maxMoneyInfoText.text = "No more sizes";
         }
     }
 
@@ -140,5 +162,35 @@ public class ShopKeeper : MonoBehaviour {
             playerItemInfoText.text = "";
             playerWeaponIndex = -1;
         }
+    }
+
+    public void IncreaseMaxMoney()
+    {
+        if(playerManager.getMaxMoney() == 50)
+        {
+            if(playerManager.getMoney() >= 50)
+            {
+                playerManager.removeMoney(50);
+                playerManager.SetMaxMoney(100);
+            }
+        }
+        else if(playerManager.getMaxMoney() == 100)
+        {
+            if(playerManager.getMoney() >= 90)
+            {
+                playerManager.removeMoney(90);
+                playerManager.SetMaxMoney(250);
+            }
+        }
+        else if(playerManager.getMaxMoney() == 250)
+        {
+            if(playerManager.getMoney() >= 200)
+            {
+                playerManager.removeMoney(200);
+                playerManager.SetMaxMoney(500);
+            }
+        }
+
+        SetMaxMoneyInfo();
     }
 }
