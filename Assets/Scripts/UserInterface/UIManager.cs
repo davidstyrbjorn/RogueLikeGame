@@ -30,6 +30,8 @@ public class UIManager : MonoBehaviour {
     public Slider enemyHealthSlider;
     public Slider healthSlider;
 
+    public Image fadePanel;
+
     public Image inventoryWeaponImage;
 
     public Image[] weaponSlots;
@@ -243,7 +245,8 @@ public class UIManager : MonoBehaviour {
     public void NextFloor()
     {
         DisableNextFloorPrompt();
-        floorManager.NewFloor();
+        playerManager.StartCoroutine(playerManager.AscendNextFloor());
+        //floorManager.NewFloor();
     }
     public void OnNewFloor(bool isShop)
     {

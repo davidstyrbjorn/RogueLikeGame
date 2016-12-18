@@ -8,10 +8,11 @@ using System.Collections;
 // 4 = Enemy
 // 5 = Stat Increase
 // 6 = Chest
+// 7 = Shop Keeper
 
 public class MiniMap : MonoBehaviour {
 
-    public Color groundTileColor, wallTileColor, enemyTileColor, exitTileColor, chestTileColor, statTileColor;
+    public Color groundTileColor, wallTileColor, enemyTileColor, exitTileColor, chestTileColor, statTileColor, shopKeeperTileColor;
 
     private SpriteRenderer spre;
     private FloorManager floorManager;
@@ -46,6 +47,8 @@ public class MiniMap : MonoBehaviour {
                     miniMapTexture.SetPixel(i, z, statTileColor);
                 if (floorManager.map[i, z] == 6)
                     miniMapTexture.SetPixel(i, z, chestTileColor);
+                if (floorManager.map[i, z] == 7)
+                    miniMapTexture.SetPixel(i, z, shopKeeperTileColor);
             }
         }
         miniMapTexture.Apply();
@@ -54,7 +57,7 @@ public class MiniMap : MonoBehaviour {
 
     public void RevealNewPart(Vector2 newPos)
     {
-        FullyRevealMap();
+        //FullyRevealMap();
         for(int x = (int)newPos.x - 3; x < (int)newPos.x + 3; x++)
         {
             for(int y = (int)newPos.y - 3; y < (int)newPos.y + 3; y++)
@@ -75,6 +78,8 @@ public class MiniMap : MonoBehaviour {
                             miniMapTexture.SetPixel(x, y, statTileColor);
                         if (floorManager.map[x, y] == 6)
                             miniMapTexture.SetPixel(x, y, chestTileColor);
+                        if (floorManager.map[x, y] == 7)
+                            miniMapTexture.SetPixel(x, y, shopKeeperTileColor);
                     }
                 }
             }
@@ -94,9 +99,10 @@ public class MiniMap : MonoBehaviour {
         {
             for(int y = 0; y < BaseValues.MAP_HEIGHT; y++)
             {
-                miniMapTexture.SetPixel(x, y, Color.black);
+                miniMapTexture.SetPixel(x, y, Color.clear);
             }
         }
+        miniMapTexture.alphaIsTransparency = false;
         miniMapTexture.Apply();
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
     }

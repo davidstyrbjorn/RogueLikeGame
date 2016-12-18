@@ -39,7 +39,7 @@ public class PlayerMove : MonoBehaviour {
 
     void Update()
     {
-        if (playerManager.getCurrentState() == PlayerManager.PlayerStates.NOT_IN_COMBAT)
+        if (playerManager.getCurrentState() == BaseValues.PlayerStates.NOT_IN_COMBAT)
         {
             transform.position = Vector2.MoveTowards(transform.position, currentWorldPosition, moveSpeed * Time.deltaTime);
         }
@@ -82,7 +82,7 @@ public class PlayerMove : MonoBehaviour {
 
     void MovePlayer()
     {
-        if (Input.anyKey && playerManager.getCurrentState() == PlayerManager.PlayerStates.NOT_IN_COMBAT)
+        if (Input.anyKey && playerManager.getCurrentState() == BaseValues.PlayerStates.NOT_IN_COMBAT)
         {
             // Move left
             if (Input.GetKey(KeyCode.A))
@@ -189,6 +189,15 @@ public class PlayerMove : MonoBehaviour {
 
             RevealNewPart(new Vector2(curr_x, curr_y));
             miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
+        }
+        else if(Input.GetKeyDown(KeyCode.D) ||
+            Input.GetKeyDown(KeyCode.A) ||
+            Input.GetKeyDown(KeyCode.S) ||
+            Input.GetKeyDown(KeyCode.W) && 
+            playerManager.getCurrentState() == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        {
+            print("Escape");
+            playerManager.disengageCombat();
         }
     }
 

@@ -3,15 +3,15 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
+    public string name_;
     public float maxHealth;
     public float attack;
     private float healthPoints;
     public float critChance; // 1 - this, is the actual percentage chance
     public float critMultiplier;
     private PlayerManager playerManager;
-    public string name_;
 
-    private int moneyDrop;
+    public int moneyDrop;
 
     void Start()
     {

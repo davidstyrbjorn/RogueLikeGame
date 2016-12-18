@@ -4,21 +4,13 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
-    public enum PlayerStates
-    {
-        IN_COMBAT,
-        IN_COMBAT_CAN_ESCAPE,
-        NOT_IN_COMBAT,
-        DEAD,
-    }
-
     private float maxHealthPoints;
     private float healthPoints;
     private float attack;
     private float nextAttackBonus = 1f;
     private int visionRadius = 6;
     private int money;
-    private PlayerStates currentState;
+    private BaseValues.PlayerStates currentState;
     private int maxMoney;
 
     private FloorManager floorManager;
@@ -55,11 +47,13 @@ public class PlayerManager : MonoBehaviour {
 
     void Update()
     {
-        CheckForEnemyClick();
-        if (currentEnemy != null)
-            uiManager.enemyStatScreen.position = (Vector3)combatTilePos + Vector3.up * 11f;
+        if(currentState == BaseValues.PlayerStates.NOT_IN_COMBAT || currentState == BaseValues.PlayerStates.DEAD)
+            CheckForEnemyClick();
 
-        if (currentState == PlayerStates.IN_COMBAT || currentState == PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        if (currentEnemy != null)
+            uiManager.enemyStatScreen.position = (currentEnemy.transform.position + Vector3.up * 10 + Vector3.left * 1.1f);
+
+        if (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             Vector2 tilePos = new Vector2(currentEnemyPos.x * floorManager.GetTileWidth(), currentEnemyPos.y * floorManager.GetTileWidth());
 
@@ -100,12 +94,10 @@ public class PlayerManager : MonoBehaviour {
         money = 0;
         maxMoney = saveLoad.GetPlayerMaxMoney();
 
-        currentState = PlayerStates.NOT_IN_COMBAT;
+        currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
     }
 
-   
-
-    // PlayerMove calls this method each time
+    // PlayerMove calls this method each time player moves
     public void PlayerMoved(Vector2 newPos)
     {
         
@@ -113,8 +105,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void onEngage(int enemy_x, int enemy_y)
     {
-        //inCombat = true;
-        currentState = PlayerStates.IN_COMBAT;
+        currentState = BaseValues.PlayerStates.IN_COMBAT;
 
         GameObject _enemy = floorManager.enemyList[new Vector2(enemy_x, enemy_y)];
         currentEnemy = _enemy.GetComponent<Enemy>();
@@ -134,7 +125,7 @@ public class PlayerManager : MonoBehaviour {
     IEnumerator CombatLoop()
     {
         yield return new WaitForSeconds(0.7f);
-        while (currentState == PlayerStates.IN_COMBAT || currentState == PlayerStates.IN_COMBAT_CAN_ESCAPE && currentState != PlayerStates.DEAD)
+        while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             if (currentEnemy != null)
             {
@@ -176,7 +167,7 @@ public class PlayerManager : MonoBehaviour {
                 {
                     // Now the player takes damge based on currentEnemy's attack variable
                     looseHealth(currentEnemy.getAttack());
-                    currentState = PlayerStates.IN_COMBAT_CAN_ESCAPE;
+                    currentState = BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE;
                     yield return new WaitForSeconds(0.7f);
                 }
             }
@@ -224,7 +215,7 @@ public class PlayerManager : MonoBehaviour {
             Destroy(currentEnemy.gameObject);
             currentEnemy = null;
             //inCombat = false;
-            currentState = PlayerStates.NOT_IN_COMBAT;
+            currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
 
             // Gain some money
             money += moneyDrop;
@@ -244,7 +235,7 @@ public class PlayerManager : MonoBehaviour {
             currentEnemy = null;
 
             // Set the according player state so we can do stuff
-            currentState = PlayerStates.NOT_IN_COMBAT;
+            currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
 
             // Update UI
             uiManager.DisableEnemyUI();
@@ -377,7 +368,7 @@ public class PlayerManager : MonoBehaviour {
     {
         uiManager.GameOver();
         //isDead = true;
-        currentState = PlayerStates.DEAD;
+        currentState = BaseValues.PlayerStates.DEAD;
     }
 
     public void walkedOffExit()
@@ -387,7 +378,7 @@ public class PlayerManager : MonoBehaviour {
 
     void CheckForEnemyClick()
     {
-        if (Input.GetMouseButtonDown(0) && currentState == PlayerStates.NOT_IN_COMBAT)
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
@@ -400,8 +391,7 @@ public class PlayerManager : MonoBehaviour {
                 }
             }               
             else
-                if(currentState != PlayerStates.IN_COMBAT)
-                    uiManager.DisableEnemyUI();
+                uiManager.DisableEnemyUI();
         }
     }
 
@@ -432,6 +422,26 @@ public class PlayerManager : MonoBehaviour {
         uiManager.LoadScene("StartScene");
     }
 
+    public IEnumerator AscendNextFloor()
+    {
+        // Fade in the panel
+        while(uiManager.fadePanel.color.a <= 0.95f)
+        {
+            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 4f * Time.deltaTime);
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        floorManager.NewFloor();
+
+        // After we have gotten a new floor fade out into the game again
+        while(uiManager.fadePanel.color.a > 0.05f)
+        {
+            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 1.45f * Time.deltaTime);
+            yield return new WaitForSeconds(0.01f);
+        }
+        uiManager.fadePanel.color = Color.clear;
+    }
+
     public int getMaxMoney() { return maxMoney; }
     public int getMoney() { return money; }
     public void addMoney(int money_)
@@ -450,7 +460,6 @@ public class PlayerManager : MonoBehaviour {
         money -= money_;
     }
 
-
-    public PlayerStates getCurrentState() { return currentState; }
+    public BaseValues.PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }
 }

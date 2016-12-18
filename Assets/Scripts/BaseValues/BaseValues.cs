@@ -36,6 +36,14 @@ public class BaseValues : MonoBehaviour{
     public static int NormalCameraSize = 17;
     public static int BattleCameraSize = 20;
 
+    public enum PlayerStates
+    {
+        IN_COMBAT,
+        IN_COMBAT_CAN_ESCAPE,
+        NOT_IN_COMBAT,
+        DEAD,
+    }
+
     // Money
     /*
      * Values are not final
@@ -44,14 +52,7 @@ public class BaseValues : MonoBehaviour{
      * BIG - 250
      * XXL - 500
     */
-    public enum PouchTypes
-    {
-        SMALL,
-        MEDIUM,
-        BIG,
-        XXL,
-    }
-    
+
     void Start()
     {
         healthPotionSprite = HealthPotionSprite;
