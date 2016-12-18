@@ -194,7 +194,7 @@ public class FloorManager : MonoBehaviour
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();
             Camera.main.orthographicSize = BaseValues.BattleCameraSize;
-            uiManager.OnNewFloor(true);
+            uiManager.OnNewFloor(true); 
         }
         yield return new WaitForFixedUpdate();
         RenderMap();

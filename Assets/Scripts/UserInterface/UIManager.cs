@@ -67,7 +67,7 @@ public class UIManager : MonoBehaviour {
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
-            logEventScreen.gameObject.SetActive(!logEventScreen.gameObject.active);
+            logEventScreen.gameObject.SetActive(!logEventScreen.gameObject.activeInHierarchy);
     }
 
     public void NewPlayerValues()

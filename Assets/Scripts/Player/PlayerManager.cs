@@ -23,8 +23,7 @@ public class PlayerManager : MonoBehaviour {
     private SaveLoad saveLoad;
     private ScreenTransitionImageEffect transitionScript;
     private Canvas canvas;
-
-    private Camera gameCamera;
+    private SpriteRenderer spre;
 
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
@@ -55,8 +54,6 @@ public class PlayerManager : MonoBehaviour {
 
         if (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
-            Vector2 tilePos = new Vector2(currentEnemyPos.x * floorManager.GetTileWidth(), currentEnemyPos.y * floorManager.GetTileWidth());
-
             transform.position = Vector2.MoveTowards(transform.position, playerCombatPos, 14 * Time.deltaTime);
 
             currentEnemy.transform.position = Vector2.MoveTowards(currentEnemy.transform.position, enemyCombatPos, 14 * Time.deltaTime);
@@ -76,8 +73,7 @@ public class PlayerManager : MonoBehaviour {
         saveLoad = FindObjectOfType<SaveLoad>();
         transitionScript = FindObjectOfType<ScreenTransitionImageEffect>();
         canvas = FindObjectOfType<Canvas>();
-
-        gameCamera = Camera.main;
+        spre = GetComponentInChildren<SpriteRenderer>();
 
         GameStart();
     }
@@ -112,6 +108,7 @@ public class PlayerManager : MonoBehaviour {
 
         currentEnemyPos = new Vector2(enemy_x, enemy_y);
         currentEnemyName = currentEnemy.getName();
+        currentEnemy.setState(BaseValues.EnemyStates.IN_COMBAT);
 
         combatTilePos = currentEnemyPos * floorManager.GetTileWidth();
         playerCombatPos = combatTilePos + Vector2.left * floorManager.GetTileWidth() * 0.35f;
@@ -232,6 +229,7 @@ public class PlayerManager : MonoBehaviour {
         {
             // Stop looping the combat loop
             StopCoroutine("CombatLoop");
+            currentEnemy.setState(BaseValues.EnemyStates.NOT_IN_COMBAT);
             currentEnemy = null;
 
             // Set the according player state so we can do stuff
@@ -367,8 +365,7 @@ public class PlayerManager : MonoBehaviour {
     public void died()
     {
         uiManager.GameOver();
-        //isDead = true;
-        currentState = BaseValues.PlayerStates.DEAD;
+        Destroy(gameObject);
     }
 
     public void walkedOffExit()
@@ -417,6 +414,7 @@ public class PlayerManager : MonoBehaviour {
         while(transitionScript.maskValue <= 1f)
         {
             transitionScript.maskValue += 0.01f;
+            
             yield return new WaitForSeconds(0.01f);
         }                   
         uiManager.LoadScene("StartScene");
@@ -424,21 +422,42 @@ public class PlayerManager : MonoBehaviour {
 
     public IEnumerator AscendNextFloor()
     {
+        currentState = BaseValues.PlayerStates.ASCENDING;
+
+        // Ascend upwards and fade sprite out
+        Vector3 ascendPos = new Vector3(transform.position.x, transform.position.y + 4.5f, transform.position.z);
+        while(transform.position.y < ascendPos.y-0.5f)
+        {
+            transform.position = Vector3.Lerp(transform.position, ascendPos, 2.25f * Time.deltaTime);
+            yield return new WaitForSeconds(0.01f);       
+        }
+
+        while(spre.color.a > 0.05f)
+        {
+            spre.color = Color.Lerp(spre.color, Color.clear, 5 * Time.deltaTime);
+            yield return new WaitForSeconds(0.01f);
+        }
+
         // Fade in the panel
         while(uiManager.fadePanel.color.a <= 0.95f)
         {
-            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 4f * Time.deltaTime);
+            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 5f * Time.deltaTime);
             yield return new WaitForSeconds(0.01f);
         }
 
         floorManager.NewFloor();
 
+        spre.color = Color.white;
+        currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
+
         // After we have gotten a new floor fade out into the game again
-        while(uiManager.fadePanel.color.a > 0.05f)
+        while (uiManager.fadePanel.color.a > 0.1f)
         {
-            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 1.45f * Time.deltaTime);
+            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 2.45f * Time.deltaTime);
             yield return new WaitForSeconds(0.01f);
         }
+
+        // Done
         uiManager.fadePanel.color = Color.clear;
     }
 

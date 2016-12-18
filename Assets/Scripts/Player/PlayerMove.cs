@@ -50,7 +50,9 @@ public class PlayerMove : MonoBehaviour {
             MovePlayer();
         }
         else
+        {
             CheckCanMove();
+        }
     }
 
     public void NewFloor(int[,] newMap)
@@ -62,6 +64,7 @@ public class PlayerMove : MonoBehaviour {
 
         currentWorldPosition = SetPlayerPos(curr_x, curr_y);
         transform.position = currentWorldPosition;
+        Camera.main.transform.position = transform.position;
 
         RevealNewPart(new Vector2(curr_x, curr_y));
         miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
@@ -83,7 +86,7 @@ public class PlayerMove : MonoBehaviour {
     void MovePlayer()
     {
         if (Input.anyKey && playerManager.getCurrentState() == BaseValues.PlayerStates.NOT_IN_COMBAT)
-        {
+        { 
             // Move left
             if (Input.GetKey(KeyCode.A))
             {
@@ -189,15 +192,6 @@ public class PlayerMove : MonoBehaviour {
 
             RevealNewPart(new Vector2(curr_x, curr_y));
             miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
-        }
-        else if(Input.GetKeyDown(KeyCode.D) ||
-            Input.GetKeyDown(KeyCode.A) ||
-            Input.GetKeyDown(KeyCode.S) ||
-            Input.GetKeyDown(KeyCode.W) && 
-            playerManager.getCurrentState() == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
-        {
-            print("Escape");
-            playerManager.disengageCombat();
         }
     }
 

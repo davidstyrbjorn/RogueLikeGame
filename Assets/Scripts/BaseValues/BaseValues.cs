@@ -41,7 +41,14 @@ public class BaseValues : MonoBehaviour{
         IN_COMBAT,
         IN_COMBAT_CAN_ESCAPE,
         NOT_IN_COMBAT,
+        ASCENDING,
         DEAD,
+    }
+
+    public enum EnemyStates
+    {
+        NOT_IN_COMBAT,
+        IN_COMBAT,
     }
 
     // Money

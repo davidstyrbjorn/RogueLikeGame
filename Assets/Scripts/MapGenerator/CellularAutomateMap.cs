@@ -54,7 +54,6 @@ public class CellularAutomateMap : MonoBehaviour
 
     public void GenerateMap()
     {
-        bool validMap = false;
 
         seed = Time.time.ToString();
 
@@ -74,12 +73,10 @@ public class CellularAutomateMap : MonoBehaviour
         floodFill(EntranceX, EntranceY);
         RemoveUnreachAbles();
 
-        PlaceExit();
         SpawnEnemies(); // This spawns enemies on the map
         PlaceStatIncrease();
         PlaceChest();
-
-        validMap = CheckIfValidMap();
+        PlaceExit();
     }
 
     bool CheckIfValidMap()
@@ -126,25 +123,15 @@ public class CellularAutomateMap : MonoBehaviour
                 {
                     if(num < placeChance)
                     {
-                        if (map[x + 1, y] == 1 || map[x - 1, y] == 1 || map[x, y + 1] == 1 || map[x, y - 1] == 1)
-                        {
-                            if(map[x + 1, y] == 1) { map[x + 1, y] = 5; }
-                            else if (map[x - 1, y] == 1) { map[x - 1, y] = 5; }
-                            else if (map[x, y + 1] == 1) { map[x, y + 1] = 5; }
-                            else if (map[x, y - 1] == 1) { map[x, y - 1] = 5; }
-                        }
-                        else
-                        {
-                            int _num = randomNum.Next(0, 100);
-                            if (_num >= 75 && _num <= 100)
-                                map[x + 1, y] = 5;
-                            else if (_num >= 50 && _num <= 75)
-                                map[x - 1, y] = 5;
-                            else if (_num >= 25 && _num <= 50)
-                                map[x, y + 1] = 5;
-                            else if (_num <= 25 && _num >= 0)
-                                map[x, y - 1] = 5;
-                        }
+                        int _num = randomNum.Next(0, 100);
+                        if (_num >= 75 && _num <= 100)
+                            map[x + 1, y] = 5;
+                        else if (_num >= 50 && _num <= 75)
+                            map[x - 1, y] = 5;
+                        else if (_num >= 25 && _num <= 50)
+                            map[x, y + 1] = 5;
+                        else if (_num <= 25 && _num >= 0)
+                            map[x, y - 1] = 5;
                     }
                 }
             }
@@ -199,7 +186,7 @@ public class CellularAutomateMap : MonoBehaviour
                     if (randomNum.Next(0, 100) > 98)
                     {
                         if (!placedExit)
-                        {
+                        {  
                             placedExit = true;
                             map[x, y] = 3;
                             ExitX = x;

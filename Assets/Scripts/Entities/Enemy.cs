@@ -13,8 +13,21 @@ public class Enemy : MonoBehaviour {
 
     public int moneyDrop;
 
+    private BaseValues.EnemyStates enemyState;
+    private Vector3 idlePosition;
+
+    void Update()
+    {
+        if(transform.position != idlePosition && enemyState == BaseValues.EnemyStates.NOT_IN_COMBAT)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, idlePosition, 3 * Time.deltaTime);
+        }
+    }
+    
     void Start()
     {
+        enemyState = BaseValues.EnemyStates.NOT_IN_COMBAT;
+        idlePosition = transform.position;
         critChance = Random.Range(75, 99);
         critMultiplier = 1f + Random.Range(0f, 10f) / 10;
         critMultiplier = Mathf.Round(critMultiplier * 100f) / 100f;
@@ -49,4 +62,9 @@ public class Enemy : MonoBehaviour {
 
     public int getMoneyDrop() { return moneyDrop; }
     public string getName() { return name_; }
+
+    public void setState(BaseValues.EnemyStates newState)
+    {
+        enemyState = newState;
+    }
 }

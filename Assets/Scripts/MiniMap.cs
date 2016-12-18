@@ -16,13 +16,11 @@ public class MiniMap : MonoBehaviour {
 
     private SpriteRenderer spre;
     private FloorManager floorManager;
-    private PlayerMove playerMove;
 
     Texture2D miniMapTexture;
 
     void Awake()
     {
-        playerMove = FindObjectOfType<PlayerMove>();
         spre = GetComponent<SpriteRenderer>();
         floorManager = FindObjectOfType<FloorManager>();
         CreateNewTexture();
@@ -102,7 +100,6 @@ public class MiniMap : MonoBehaviour {
                 miniMapTexture.SetPixel(x, y, Color.clear);
             }
         }
-        miniMapTexture.alphaIsTransparency = false;
         miniMapTexture.Apply();
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
     }
