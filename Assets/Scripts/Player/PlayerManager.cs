@@ -4,14 +4,15 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
+    private float attackSpeed;
     private float maxHealthPoints;
     private float healthPoints;
     private float attack;
     private float nextAttackBonus = 1f;
     private int visionRadius = 6;
     private int money;
-    private BaseValues.PlayerStates currentState;
     private int maxMoney;
+    private BaseValues.PlayerStates currentState;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -116,15 +117,21 @@ public class PlayerManager : MonoBehaviour {
 
         playerMove.setCurrentPosition(currentEnemyPos);
 
-        StartCoroutine(CombatLoop());
+        StartCombat();
     }
 
-    IEnumerator CombatLoop()
+    void StartCombat()
     {
-        yield return new WaitForSeconds(0.7f);
-        while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        StartCoroutine(Player_CombatLoop());
+        StartCoroutine(Enemy_CombatLoop());
+    }
+
+    IEnumerator Player_CombatLoop()
+    {
+        yield return new WaitForSeconds(1);
+        while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
-            if (currentEnemy != null)
+            if(currentEnemy != null)
             {
                 // Show player attack effect
                 playerAnimation.DoCombatAnimation();
@@ -146,7 +153,7 @@ public class PlayerManager : MonoBehaviour {
                 GameObject combatText = Instantiate(CombatTextPrefab);
 
                 combatText.GetComponent<RectTransform>().anchoredPosition = spawnPos;
-                combatText.GetComponent<RectTransform>().localPosition = Vector3.zero + 
+                combatText.GetComponent<RectTransform>().localPosition = Vector3.zero +
                     (Vector3.right * floorManager.GetTileWidth() * 12.5f) +
                     (Vector3.up * floorManager.GetTileWidth() * 16);
 
@@ -155,18 +162,23 @@ public class PlayerManager : MonoBehaviour {
 
                 nextAttackBonus = 1f;
 
-                if (currentEnemy != null)
-                {
-                    yield return new WaitForSeconds(0.7f);
-                }
+                yield return new WaitForSeconds(attackSpeed); // The time between each player attack
+            }
+        }
+    }
 
-                if (currentEnemy != null)
-                {
-                    // Now the player takes damge based on currentEnemy's attack variable
-                    looseHealth(currentEnemy.getAttack());
-                    currentState = BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE;
-                    yield return new WaitForSeconds(0.7f);
-                }
+    IEnumerator Enemy_CombatLoop()
+    {
+        yield return new WaitForSeconds(2);
+        while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        {
+            if (currentEnemy != null)
+            {
+                // Now the player takes damge based on currentEnemy's attack variable
+                looseHealth(currentEnemy.getAttack());
+                currentState = BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE;
+
+                yield return new WaitForSeconds(currentEnemy.getAttackSpeed()); // The time between each enemy attack
             }
         }
     }
@@ -201,7 +213,7 @@ public class PlayerManager : MonoBehaviour {
     {
         if (currentEnemy != null)
         {
-            StopCoroutine("CombatLoop");
+            StopCombatLoops();
             // Making the tile empty since the enemy just died
             if (floorManager.enemyList.ContainsValue(currentEnemy.gameObject))
             {
@@ -228,7 +240,7 @@ public class PlayerManager : MonoBehaviour {
         if(currentEnemy != null)
         {
             // Stop looping the combat loop
-            StopCoroutine("CombatLoop");
+            StopCombatLoops();
             currentEnemy.setState(BaseValues.EnemyStates.NOT_IN_COMBAT);
             currentEnemy = null;
 
@@ -252,7 +264,7 @@ public class PlayerManager : MonoBehaviour {
             addHealth(Mathf.CeilToInt(BaseValues.HealthStatIncrease));
 
             eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + BaseValues.HealthStatIncrease + " points " + "</color>");
-            
+
         }
         else if (randomNum == 1)
         {
@@ -263,7 +275,7 @@ public class PlayerManager : MonoBehaviour {
         }
 
         // Removing the stat increaser after we have used it
-        if(floorManager.statIncreaserList.ContainsKey(pos))
+        if (floorManager.statIncreaserList.ContainsKey(pos))
         {
             floorManager.statIncreaserList[pos].GetComponent<StatIncreaser>().Activated();
             floorManager.statIncreaserList.Remove(pos);
@@ -272,6 +284,12 @@ public class PlayerManager : MonoBehaviour {
 
         // Updating Player UI
         uiManager.NewPlayerValues();
+    }
+
+    void StopCombatLoops()
+    {
+        StopCoroutine(Player_CombatLoop());
+        StopCoroutine(Enemy_CombatLoop());
     }
 
     public void hitChest(Vector2 pos)

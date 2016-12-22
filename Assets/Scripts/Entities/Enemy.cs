@@ -6,13 +6,15 @@ public class Enemy : MonoBehaviour {
     public string name_;
     public float maxHealth;
     public float attack;
-    private float healthPoints;
+    public int moneyDrop;
     public float critChance; // 1 - this, is the actual percentage chance
     public float critMultiplier;
+
+    [Range(0.1f,10)]
+    public float attackSpeed;
+
     private PlayerManager playerManager;
-
-    public int moneyDrop;
-
+    private float healthPoints;
     private BaseValues.EnemyStates enemyState;
     private Vector3 idlePosition;
 
@@ -67,4 +69,6 @@ public class Enemy : MonoBehaviour {
     {
         enemyState = newState;
     }
+
+    public float getAttackSpeed() { return attackSpeed; }
 }
