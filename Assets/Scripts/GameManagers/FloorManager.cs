@@ -45,6 +45,8 @@ public class FloorManager : MonoBehaviour
     public Dictionary<Vector2, GameObject> tileList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> chestList = new Dictionary<Vector2, GameObject>();
 
+    BaseValues.FloorModifiers floorModifier;
+
     void Start()
     {
         enemyMaster = FindObjectOfType<EnemyMaster>();
@@ -79,7 +81,9 @@ public class FloorManager : MonoBehaviour
 
         currentFloorNumber++;
         StartCoroutine(MakeNewFloor());
-        miniMap.CreateNewTexture(); 
+        miniMap.CreateNewTexture();
+
+        floorModifier = BaseValues.FloorModifiers.NORMAL;
     }
 
     void RenderMap()

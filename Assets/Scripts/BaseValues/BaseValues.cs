@@ -8,6 +8,7 @@ public class BaseValues : MonoBehaviour{
     // Player base values
     public static float PlayerBaseHP = 100;
     public static float PlayerBaseAttack = 10;
+    public static float PlayerBaseAttackSpeed = 1;
     public static float HealthStatIncrease = 10;
     public static float AttackStatIncrease = 1;
 
@@ -59,6 +60,11 @@ public class BaseValues : MonoBehaviour{
      * BIG - 250
      * XXL - 500
     */
+
+    public enum FloorModifiers
+    {
+        NORMAL,
+    }
 
     void Start()
     {

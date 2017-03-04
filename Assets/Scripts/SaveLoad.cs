@@ -48,4 +48,11 @@ public class SaveLoad : MonoBehaviour{
             PlayerPrefs.SetInt("playerMaxMoney", 50);
         return PlayerPrefs.GetInt("playerMaxMoney");
     }
+
+    public float GetPlayerAttackSpeed()
+    {
+        if (!PlayerPrefs.HasKey("playerAttackSpeed"))
+            PlayerPrefs.SetFloat("playerAttackSpeed", BaseValues.PlayerBaseAttackSpeed);
+        return PlayerPrefs.GetFloat("playerAttackSpeed");
+    }
 }   

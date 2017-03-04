@@ -88,6 +88,9 @@ public class PlayerManager : MonoBehaviour {
         // Setting up start attack
         attack = saveLoad.GetPlayerAttack();
 
+        // Setting up attack speed
+        attackSpeed = saveLoad.GetPlayerAttackSpeed();
+
         money = 0;
         maxMoney = saveLoad.GetPlayerMaxMoney();
 
