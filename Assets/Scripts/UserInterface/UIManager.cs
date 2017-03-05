@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour {
 
     // UI Game Objects
+    [Header("Trasnform Objects")]
     public RectTransform weaponInfoContainer;
     public RectTransform potionInfoContainer;
     public RectTransform characterStats;
@@ -15,25 +16,33 @@ public class UIManager : MonoBehaviour {
     public RectTransform gameOverScreen;
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
-    public Text playerHealthText;
 
+    [Space(20)]
+    [Header("Text Objects")]
+    public Text playerHealthText;
     public Text inventoryPotionStat;
     public Text weaponNameText;
     public Text inventoryWeaponStats;
-
     public Text playerDamageText;
     public Text enemyStatsText;
     public Text enemyDamageText;
     public Text playerMoneyText;
     public Text playerMaxMoneyText;
     public Text currentFloorText;
+    public Text newMoneyText;
+
+    [Space(20)]
+    [Header("Slider Objects")]
     public Slider enemyHealthSlider;
     public Slider healthSlider;
 
+    [Space(20)]
+    [Header("Image Objects")]
     public Image fadePanel;
-
     public Image inventoryWeaponImage;
 
+    [Space(25)]
+    [Header("Inventory Slots")]
     public Image[] weaponSlots;
     public Image[] potionSlots;
 
@@ -68,6 +77,11 @@ public class UIManager : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.L))
             logEventScreen.gameObject.SetActive(!logEventScreen.gameObject.activeInHierarchy);
+
+        if(newMoneyText.color != Color.clear)
+        {
+            newMoneyText.color = Color.Lerp(newMoneyText.color, Color.clear, 1.5f * Time.deltaTime);
+        }
     }
 
     public void NewPlayerValues()
@@ -208,6 +222,13 @@ public class UIManager : MonoBehaviour {
             enemyStatsText.text = enemy.getName() + "\n" + enemy.getHP() + "/" + enemy.getMaxHP();
         }
     }
+
+    public void AddedNewMoney(int amount)
+    {
+        newMoneyText.text = "+" + amount.ToString();
+        newMoneyText.color = Color.white;
+    }
+
 
     public void DisableEnemyUI()
     {

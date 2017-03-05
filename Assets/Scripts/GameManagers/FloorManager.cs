@@ -146,6 +146,7 @@ public class FloorManager : MonoBehaviour
                         GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         groundTile.transform.parent = transform;
 
+                        // 0 and 1 when the game has more enemies should be something something then floor numbers to advance the enemies the higher the floor number is
                         GameObject enemyShell = Instantiate(enemyMaster.getNewEnemy(0, 1), new Vector3(x * tileWidth, y * tileWidth, 0), Quaternion.identity) as GameObject;
                         enemyShell.GetComponent<Enemy>().SetUpEnemy(currentFloorNumber);
                         enemyShell.transform.parent = transform;

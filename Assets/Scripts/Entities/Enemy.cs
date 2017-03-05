@@ -3,16 +3,24 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
+    [Header("Basic stats")]
     public string name_;
     public float maxHealth;
-    public float attack;
     public int moneyDrop;
+    [Range(0.1f, 10)]
+    public float attackSpeed;
+
+    [Space(10)]
+    [Header("Attack Stat")]
+    public float attack1; 
+    public float attack2;
+
+    [Space(10)]
+    [Header("Critical Strike Stats")]
     public float critChance; // 1 - this, is the actual percentage chance
     public float critMultiplier;
 
-    [Range(0.1f,10)]
-    public float attackSpeed;
-
+    [Space(15)]
     private PlayerManager playerManager;
     private float healthPoints;
     private BaseValues.EnemyStates enemyState;
@@ -51,7 +59,7 @@ public class Enemy : MonoBehaviour {
     public float getMaxHP() { return maxHealth; }
     public float getHP() { return healthPoints; }
                     
-    public float getAttack() { return attack; }
+    public float getAttack() { return (int)Random.Range(attack1,attack2); }
 
     public void looseHealth(float _hp)
     {

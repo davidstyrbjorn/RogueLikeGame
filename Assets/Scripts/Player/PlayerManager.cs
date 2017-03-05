@@ -486,6 +486,7 @@ public class PlayerManager : MonoBehaviour {
     public int getMoney() { return money; }
     public void addMoney(int money_)
     {
+        int moneyBefore = money;
         if (money < maxMoney)
         {
             money += money_;
@@ -493,6 +494,8 @@ public class PlayerManager : MonoBehaviour {
                 money -= money - maxMoney;
             uiManager.NewPlayerValues();
         }
+        int moneyAfter = money;
+        uiManager.AddedNewMoney(moneyAfter - moneyBefore);
     }
 
     public void removeMoney(int money_)

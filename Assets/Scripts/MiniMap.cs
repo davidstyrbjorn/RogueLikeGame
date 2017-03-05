@@ -64,7 +64,7 @@ public class MiniMap : MonoBehaviour {
                 {
                     if (x != (int)newPos.x || y != (int)newPos.y)
                     {
-                        if (floorManager.map[x, y] == 0)
+                        if (floorManager.map[x, y] == 0 || floorManager.map[x,y] == 2)
                             miniMapTexture.SetPixel(x, y, groundTileColor);
                         if (floorManager.map[x, y] == 1)
                             miniMapTexture.SetPixel(x, y, wallTileColor);
