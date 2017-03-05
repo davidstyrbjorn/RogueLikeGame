@@ -7,6 +7,7 @@ public class PlayerMove : MonoBehaviour {
     private int[,] currentMap;
     int curr_x, curr_y;
     private Vector2 currentWorldPosition;
+    private Vector2 positionBeforeCombat;
 
     private CellularAutomateMap mapGenerator;
     private FloorManager floorManager;
@@ -98,9 +99,12 @@ public class PlayerMove : MonoBehaviour {
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
                     spre.flipX = false;
+
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                 }
                 else if (currentMap[curr_x - 1, curr_y] == 4)
                 {
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                     spre.flipX = false;
                     playerManager.onEngage(curr_x - 1, curr_y);
                 }
@@ -117,6 +121,8 @@ public class PlayerMove : MonoBehaviour {
                     curr_x++;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
+
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                 }
                 else if (currentMap[curr_x + 1, curr_y] == 4)
                 {
@@ -135,9 +141,12 @@ public class PlayerMove : MonoBehaviour {
                     curr_y++;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
+
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                 }
                 else if (currentMap[curr_x, curr_y + 1] == 4)
                 {
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                     spre.flipX = false;
                     playerManager.onEngage(curr_x, curr_y + 1);
                 }
@@ -153,9 +162,12 @@ public class PlayerMove : MonoBehaviour {
                     curr_y--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
+
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                 }
                 else if (currentMap[curr_x, curr_y - 1] == 4)
                 {
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                     spre.flipX = false;
                     playerManager.onEngage(curr_x, curr_y - 1);
                 }
@@ -193,6 +205,13 @@ public class PlayerMove : MonoBehaviour {
             RevealNewPart(new Vector2(curr_x, curr_y));
             miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
         }
+    }
+
+    public void escapedCombat()
+    {
+        curr_x = (int)positionBeforeCombat.x;
+        curr_y = (int)positionBeforeCombat.y;
+        currentWorldPosition = SetPlayerPos(curr_x,curr_y);
     }
 
     void CheckCanMove()

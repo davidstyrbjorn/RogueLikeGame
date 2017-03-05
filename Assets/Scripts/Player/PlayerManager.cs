@@ -27,6 +27,7 @@ public class PlayerManager : MonoBehaviour {
     private SpriteRenderer spre;
 
     private Enemy currentEnemy;
+    private Transform lastEnemy;
     private Vector2 currentEnemyPos;
     private string currentEnemyName;
 
@@ -58,7 +59,15 @@ public class PlayerManager : MonoBehaviour {
             transform.position = Vector2.MoveTowards(transform.position, playerCombatPos, 14 * Time.deltaTime);
 
             currentEnemy.transform.position = Vector2.MoveTowards(currentEnemy.transform.position, enemyCombatPos, 14 * Time.deltaTime);
+
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                disengageCombat();
+            }
         }
+
+        if (lastEnemy != null)
+            lastEnemy.transform.position = Vector2.MoveTowards(lastEnemy.position, combatTilePos, 14 * Time.deltaTime);
     }
 
     void Start()
@@ -105,6 +114,8 @@ public class PlayerManager : MonoBehaviour {
 
     public void onEngage(int enemy_x, int enemy_y)
     {
+        lastEnemy = null;
+
         currentState = BaseValues.PlayerStates.IN_COMBAT;
 
         GameObject _enemy = floorManager.enemyList[new Vector2(enemy_x, enemy_y)];
@@ -230,7 +241,8 @@ public class PlayerManager : MonoBehaviour {
             currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
 
             // Gain some money
-            money += moneyDrop;
+            // money += moneyDrop;
+            addMoney(moneyDrop);
 
             uiManager.NewPlayerValues();
             // Disable enemy UI
@@ -242,6 +254,7 @@ public class PlayerManager : MonoBehaviour {
     {
         if(currentEnemy != null)
         {
+            lastEnemy = currentEnemy.transform;
             // Stop looping the combat loop
             StopCombatLoops();
             currentEnemy.setState(BaseValues.EnemyStates.NOT_IN_COMBAT);
@@ -249,6 +262,8 @@ public class PlayerManager : MonoBehaviour {
 
             // Set the according player state so we can do stuff
             currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
+
+            playerMove.escapedCombat();
 
             // Update UI
             uiManager.DisableEnemyUI();
