@@ -35,11 +35,13 @@ public class UIManager : MonoBehaviour {
     [Header("Slider Objects")]
     public Slider enemyHealthSlider;
     public Slider healthSlider;
+    public Slider healthRemovedSlider;
 
     [Space(20)]
     [Header("Image Objects")]
     public Image fadePanel;
     public Image inventoryWeaponImage;
+    public Image healthRemovedSliderImage;
 
     [Space(25)]
     [Header("Inventory Slots")]
@@ -82,12 +84,18 @@ public class UIManager : MonoBehaviour {
         {
             newMoneyText.color = Color.Lerp(newMoneyText.color, Color.clear, 1.5f * Time.deltaTime);
         }
+
+        if (healthRemovedSliderImage.color != Color.clear)
+            healthRemovedSliderImage.color = Color.Lerp(healthRemovedSliderImage.color, Color.clear, 1 * Time.deltaTime);
     }
 
     public void NewPlayerValues()
     {
+        healthRemovedSliderImage.color = Color.red;
+
         healthSlider.maxValue = playerManager.getMaxHealth();
         healthSlider.value = playerManager.getHealth();
+
         // Update the player health text
         playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
         //float healthPercentage = (playerManager.getHealth() / playerManager.getMaxHealth());
@@ -211,8 +219,9 @@ public class UIManager : MonoBehaviour {
         {
             enemyStatScreen.gameObject.SetActive(true);
 
-            // The text after the symbol *attack
-            enemyDamageText.text = enemy.getAttack().ToString();
+            // The text after the attack symbol
+            //enemyDamageText.text = enemy.getAttack().ToString(); // @
+            enemyDamageText.text = enemy.getAverageAttack().ToString();
 
             // Setting up the slider *health
             enemyHealthSlider.maxValue = enemy.getMaxHP();
@@ -284,5 +293,11 @@ public class UIManager : MonoBehaviour {
     public void LoadScene(string _name)
     {
         SceneManager.LoadScene(_name);
+    }
+    
+    public void setHPremovelEffectSlider(float health)
+    {
+        healthRemovedSlider.maxValue = playerManager.getMaxHealth();
+        healthRemovedSlider.value = health;
     }
 }

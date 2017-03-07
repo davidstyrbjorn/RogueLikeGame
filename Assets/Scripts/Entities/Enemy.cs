@@ -69,6 +69,10 @@ public class Enemy : MonoBehaviour {
             playerManager.enemyDied(moneyDrop);
         }
     }
+    public void setHP(float _hp)
+    {
+        healthPoints = _hp;
+    }
 
     public int getMoneyDrop() { return moneyDrop; }
     public string getName() { return name_; }
@@ -79,4 +83,9 @@ public class Enemy : MonoBehaviour {
     }
 
     public float getAttackSpeed() { return attackSpeed; }
+
+    public int getAverageAttack()
+    {
+        return (int)((attack1 + attack2) / 2);
+    }
 }

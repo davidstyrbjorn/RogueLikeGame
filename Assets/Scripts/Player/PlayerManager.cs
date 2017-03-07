@@ -142,7 +142,7 @@ public class PlayerManager : MonoBehaviour {
 
     IEnumerator Player_CombatLoop()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(attackSpeed);
         while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             if(currentEnemy != null)
@@ -183,11 +183,12 @@ public class PlayerManager : MonoBehaviour {
 
     IEnumerator Enemy_CombatLoop()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(attackSpeed);
         while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             if (currentEnemy != null)
             {
+                uiManager.setHPremovelEffectSlider(healthPoints);
                 // Now the player takes damge based on currentEnemy's attack variable
                 looseHealth(currentEnemy.getAttack());
                 currentState = BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE;
@@ -252,11 +253,12 @@ public class PlayerManager : MonoBehaviour {
 
     public void disengageCombat()
     {
-        if(currentEnemy != null)
+        if(currentEnemy != null && currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             lastEnemy = currentEnemy.transform;
             // Stop looping the combat loop
             StopCombatLoops();
+            currentEnemy.setHP(currentEnemy.maxHealth);
             currentEnemy.setState(BaseValues.EnemyStates.NOT_IN_COMBAT);
             currentEnemy = null;
 
