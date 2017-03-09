@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 /// <summary>
-/// This class makes a two dimensional integer that holds either 0,1,2,3,4 representing different things on the map
+/// This class makes a two dimensional integer that holds either 0,1,2,3,4... representing different things on the map
 /// The map is then passed to the Floor class map which then based on what numbers it has, spawns various objects on the map
 /// This class only does this and leaves all the game logic to the FloorManager class
 /// Also spawns gemstones randomly around certain random enemies
@@ -50,11 +50,11 @@ public class CellularAutomateMap : MonoBehaviour
     public int ExitX;
     public int ExitY;
 
-    public int enemySpawnChance; 
+    public int enemySpawnChance;
 
     public void GenerateMap()
     {
-
+        // @ FILL
         seed = Time.time.ToString();
 
         BaseValues.MAP_WIDTH = width;
@@ -73,7 +73,7 @@ public class CellularAutomateMap : MonoBehaviour
         floodFill(EntranceX, EntranceY);
         RemoveUnreachAbles();
 
-        SpawnEnemies(); // This spawns enemies on the map
+        SpawnEnemies(); // This spawns enemies on the map... etc
         PlaceStatIncrease();
         PlaceChest();
         PlaceExit();
@@ -212,11 +212,15 @@ public class CellularAutomateMap : MonoBehaviour
                 {
                     // Places chest randomly based on the number of walls nearby
                     int neighbours = GetSurroundingWallCount(x, y);
+
                     if(neighbours >= 3)
                     {
                         if(randomNum.Next(0,100) >= 99)
                         {
                             map[x, y] = 6;
+                            int distanceToSpawn = 0;
+                            distanceToSpawn = (int)Vector2.Distance(new Vector2(EntranceX, EntranceY), new Vector2(x, y));
+                            print(distanceToSpawn);
                         }
                     }
                     else if(neighbours >= 1)
@@ -224,6 +228,9 @@ public class CellularAutomateMap : MonoBehaviour
                         if (randomNum.Next(0, 1001) > 999)
                         {
                             map[x, y] = 6;
+                            int distanceToSpawn = 0;
+                            distanceToSpawn = (int)Vector2.Distance(new Vector2(EntranceX, EntranceY), new Vector2(x, y));
+                            print(distanceToSpawn);
                         }
                     }
                 }
@@ -319,7 +326,7 @@ public class CellularAutomateMap : MonoBehaviour
             }
             catch
             {
-
+                // *Stack Overflow probably
             }
         }
     }

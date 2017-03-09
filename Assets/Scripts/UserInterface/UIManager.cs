@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform gameOverScreen;
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
+    public Transform mapTranform;
 
     [Space(20)]
     [Header("Text Objects")]
@@ -60,12 +61,19 @@ public class UIManager : MonoBehaviour {
 
     private int currentlySelectedPotionIndex = -1;
 
+    // Saving map positions
+    private Vector3 mapNormalPos;
+    private Vector3 mapShopPos;
+
     void Awake()
     {
         floorManager = FindObjectOfType<FloorManager>();
         playerInventory = FindObjectOfType<PlayerInventory>();
         playerManager = FindObjectOfType<PlayerManager>();
         eventBox = FindObjectOfType<EventBox>();
+
+        mapNormalPos = mapTranform.position;
+        mapShopPos = new Vector3(0, 0, 0);
     }
 
     void Start()
@@ -86,12 +94,12 @@ public class UIManager : MonoBehaviour {
         }
 
         if (healthRemovedSliderImage.color != Color.clear)
-            healthRemovedSliderImage.color = Color.Lerp(healthRemovedSliderImage.color, Color.clear, 1 * Time.deltaTime);
+            healthRemovedSliderImage.color = Color.Lerp(healthRemovedSliderImage.color, Color.clear, 1f * Time.deltaTime);
     }
 
     public void NewPlayerValues()
     {
-        healthRemovedSliderImage.color = Color.red;
+        healthRemovedSliderImage.color = Color.white;
 
         healthSlider.maxValue = playerManager.getMaxHealth();
         healthSlider.value = playerManager.getHealth();
@@ -220,7 +228,7 @@ public class UIManager : MonoBehaviour {
             enemyStatScreen.gameObject.SetActive(true);
 
             // The text after the attack symbol
-            //enemyDamageText.text = enemy.getAttack().ToString(); // @
+            //enemyDamageText.text = enemy.getAttack().ToString(); 
             enemyDamageText.text = enemy.getAverageAttack().ToString();
 
             // Setting up the slider *health
@@ -282,9 +290,16 @@ public class UIManager : MonoBehaviour {
     {
         DisableEnemyUI();
         if (isShop)
+        {
+            // @
+            mapTranform.localPosition = mapShopPos;
             currentFloorText.text = "Shop";
+        }
         else
+        {
+            mapTranform.localPosition = mapNormalPos;
             currentFloorText.text = "Floor  " + floorManager.getCurrentFloor();
+        }
     }
     public void GameOver()
     {
