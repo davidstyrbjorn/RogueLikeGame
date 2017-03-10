@@ -185,13 +185,22 @@ public class FloorManager : MonoBehaviour
 
     IEnumerator MakeNewFloor()
     {
+        bool validMap = false;
         if ((currentFloorNumber%5) != 0)
         {
-            eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
-            mapGenerator.GenerateMap();
-            map = mapGenerator.getMap();
-            Camera.main.orthographicSize = BaseValues.NormalCameraSize;
-            uiManager.OnNewFloor(false);
+            while (!validMap)
+            {
+                eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
+                mapGenerator.GenerateMap();
+                map = mapGenerator.getMap();
+                Camera.main.orthographicSize = BaseValues.NormalCameraSize;
+                uiManager.OnNewFloor(false);
+
+                validMap = mapGenerator.CheckIfValidMap();
+
+                yield return new WaitForEndOfFrame();
+            }
+            
         }else
         {
             shopKeeper.shopActive = false;

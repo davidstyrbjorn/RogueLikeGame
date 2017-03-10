@@ -30,13 +30,6 @@ public class SaveLoad : MonoBehaviour{
             return PlayerPrefs.GetFloat("playerMaxHealth");
     }
 
-    public void ResetPlayerPrefs()
-    {
-        PlayerPrefs.SetFloat("playerMaxHealth", BaseValues.PlayerBaseHP);
-        PlayerPrefs.SetFloat("playerAttack", BaseValues.PlayerBaseAttack);
-        PlayerPrefs.SetInt("playerMaxMoney", 0);
-    }
-
     public void SaveMaxMoney(int maxMoney)
     {
         PlayerPrefs.SetInt("playerMaxMoney", maxMoney);
@@ -54,5 +47,12 @@ public class SaveLoad : MonoBehaviour{
         if (!PlayerPrefs.HasKey("playerAttackSpeed"))
             PlayerPrefs.SetFloat("playerAttackSpeed", BaseValues.PlayerBaseAttackSpeed);
         return PlayerPrefs.GetFloat("playerAttackSpeed");
+    }
+
+    public void ResetPlayerPrefs()
+    {
+        PlayerPrefs.SetFloat("playerMaxHealth", BaseValues.PlayerBaseHP);
+        PlayerPrefs.SetFloat("playerAttack", BaseValues.PlayerBaseAttack);
+        PlayerPrefs.SetInt("playerMaxMoney", 50);
     }
 }   

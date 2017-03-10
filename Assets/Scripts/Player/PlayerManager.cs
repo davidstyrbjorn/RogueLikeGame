@@ -383,10 +383,12 @@ public class PlayerManager : MonoBehaviour {
         if(_type == Potion.potionType.HEALING)
         {
             addHealth(maxHealthPoints * BaseValues.healthPotionFactor);
+            eventBox.addEvent("Consumed a potion, <color=green>Healed</color> for <color=green>" + (int)maxHealthPoints * BaseValues.healthPotionFactor +  " points</color>");
         }
         if(_type == Potion.potionType.STRENTGH)
         {
             nextAttackBonus = BaseValues.strengthPotionMultiplier;
+            eventBox.addEvent("You feel <color=blue>energized</color>");
         }
     }
 

@@ -54,7 +54,6 @@ public class CellularAutomateMap : MonoBehaviour
 
     public void GenerateMap()
     {
-        // @ FILL
         seed = Time.time.ToString();
 
         BaseValues.MAP_WIDTH = width;
@@ -75,11 +74,11 @@ public class CellularAutomateMap : MonoBehaviour
 
         SpawnEnemies(); // This spawns enemies on the map... etc
         PlaceStatIncrease();
-        PlaceChest();
+        PlaceChest(false);
         PlaceExit();
     }
 
-    bool CheckIfValidMap()
+    public bool CheckIfValidMap()
     {
         int tileCount = 0;
         for(int x = 1; x < width-1; x++)
@@ -200,9 +199,14 @@ public class CellularAutomateMap : MonoBehaviour
             map[lastX, lastY] = 3;
     }
 
-    void PlaceChest()
+    void PlaceChest(bool secondPassThrough)
     {
         System.Random randomNum = new System.Random(seed.GetHashCode());
+
+        bool secondPass_ = secondPassThrough;
+
+        // Used to check if we placed enough chests
+        int placedChests = 0;
 
         for(int x = 1; x < width-1; x++)
         {
@@ -213,29 +217,49 @@ public class CellularAutomateMap : MonoBehaviour
                     // Places chest randomly based on the number of walls nearby
                     int neighbours = GetSurroundingWallCount(x, y);
 
-                    if(neighbours >= 3)
+                    int distanceToSpawn = 0;
+                    distanceToSpawn = (int)Vector2.Distance(new Vector2(EntranceX, EntranceY), new Vector2(x, y));
+
+                    /*
+                     * DON'T REMOVE WILL CAUSE STACK OVERFLOW(probably)
+                     * Guarantee a chest if its the second time through
+                     * It's to stop recursion call causing Stack Overflow!
+                    */
+                    if (secondPass_)
                     {
-                        if(randomNum.Next(0,100) >= 99)
-                        {
-                            map[x, y] = 6;
-                            int distanceToSpawn = 0;
-                            distanceToSpawn = (int)Vector2.Distance(new Vector2(EntranceX, EntranceY), new Vector2(x, y));
-                            print(distanceToSpawn);
-                        }
+                        map[x, y] = 6;
+                        secondPass_ = !secondPass_;
+                        placedChests++;
                     }
-                    else if(neighbours >= 1)
+
+                    /*
+                     * If we're far enough from spawn start spawning chests
+                    */ 
+                    if (distanceToSpawn > 3)
                     {
-                        if (randomNum.Next(0, 1001) > 999)
+                        if (neighbours >= 3)
                         {
-                            map[x, y] = 6;
-                            int distanceToSpawn = 0;
-                            distanceToSpawn = (int)Vector2.Distance(new Vector2(EntranceX, EntranceY), new Vector2(x, y));
-                            print(distanceToSpawn);
+                            if (randomNum.Next(0, 10000) >= 9850 - distanceToSpawn)
+                            {
+                                map[x, y] = 6;
+                                placedChests++;
+                            }
+                        }
+                        else if (neighbours >= 2)
+                        {
+                            if (randomNum.Next(0, 10000) >= 9750 - distanceToSpawn*5)
+                            {
+                                map[x, y] = 6;
+                                placedChests++;
+                            }
                         }
                     }
                 }
             }
         }
+        //print(placedChests);
+        if (placedChests == 0)
+            PlaceChest(true);
     }
 
     void RandomFillMap()

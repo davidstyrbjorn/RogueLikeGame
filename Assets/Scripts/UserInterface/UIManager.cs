@@ -71,9 +71,6 @@ public class UIManager : MonoBehaviour {
         playerInventory = FindObjectOfType<PlayerInventory>();
         playerManager = FindObjectOfType<PlayerManager>();
         eventBox = FindObjectOfType<EventBox>();
-
-        mapNormalPos = mapTranform.position;
-        mapShopPos = new Vector3(0, 0, 0);
     }
 
     void Start()
@@ -291,13 +288,10 @@ public class UIManager : MonoBehaviour {
         DisableEnemyUI();
         if (isShop)
         {
-            // @
-            mapTranform.localPosition = mapShopPos;
             currentFloorText.text = "Shop";
         }
         else
         {
-            mapTranform.localPosition = mapNormalPos;
             currentFloorText.text = "Floor  " + floorManager.getCurrentFloor();
         }
     }
