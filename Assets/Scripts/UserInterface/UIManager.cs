@@ -261,8 +261,8 @@ public class UIManager : MonoBehaviour {
     #region inventory screen
     public void ToggleInventoryScreen()
     {
-        potionTab.gameObject.SetActive(false);
-        weaponsTab.gameObject.SetActive(false);
+        //potionTab.gameObject.SetActive(false);
+        //weaponsTab.gameObject.SetActive(false);
         characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf);
     }
     public void GoTo_WeaponsTab()

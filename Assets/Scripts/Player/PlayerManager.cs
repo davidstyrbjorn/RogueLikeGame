@@ -327,8 +327,13 @@ public class PlayerManager : MonoBehaviour {
                 weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
 
                 // Message the player he obtained a weapon
-                if(playerInventory.addWeapon(foundWeapon) == true)
-                    EquipWeapon(foundWeapon);
+                // Checking if we can add the new weapon the the weapon list
+                if (playerInventory.addWeapon(foundWeapon) == true)
+                {
+                    // Only equip the new weapon if the player is empty handed
+                    if(equipedWeapon == null)
+                        EquipWeapon(foundWeapon);
+                }
                 uiManager.UpdateWeaponSlots();
             }
             else if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.POTION)
