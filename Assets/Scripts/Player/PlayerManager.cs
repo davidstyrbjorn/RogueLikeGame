@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
+    /* Player Stats */
     private float attackSpeed;
     private float maxHealthPoints;
     private float healthPoints;
     private float attack;
     private float nextAttackBonus = 1f;
+    private float armor;
     private int visionRadius = 6;
     private int money;
     private int maxMoney;
@@ -48,11 +50,15 @@ public class PlayerManager : MonoBehaviour {
 
     void Update()
     {
-        if(currentState == BaseValues.PlayerStates.NOT_IN_COMBAT || currentState == BaseValues.PlayerStates.DEAD)
+        if (currentState == BaseValues.PlayerStates.NOT_IN_COMBAT || currentState == BaseValues.PlayerStates.DEAD)
+        {
             CheckForEnemyClick();
+        }
 
         if (currentEnemy != null)
+        {
             uiManager.enemyStatScreen.position = (currentEnemy.transform.position + Vector3.up * 10 + Vector3.left * 1.1f);
+        }
 
         if (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
@@ -97,12 +103,18 @@ public class PlayerManager : MonoBehaviour {
         // Setting up start attack
         attack = saveLoad.GetPlayerAttack();
 
+        // Armor set up
+        // @ for now starts at 0 implement save and load!
+        armor = 0;
+
         // Setting up attack speed
         attackSpeed = saveLoad.GetPlayerAttackSpeed();
 
+        // Setting up player money
         money = 0;
         maxMoney = saveLoad.GetPlayerMaxMoney();
 
+        // Initial state
         currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
     }
 
@@ -201,6 +213,8 @@ public class PlayerManager : MonoBehaviour {
     void looseHealth(float _hp)
     {
         // Player takes the actual damage here
+        _hp = Mathf.CeilToInt((_hp * (1 - armor)));
+
         healthPoints -= _hp;
         eventBox.addEvent(currentEnemyName + " hit you for " + _hp + " damge!");
 
@@ -275,7 +289,8 @@ public class PlayerManager : MonoBehaviour {
 
     public void hitStatIncreaser(Vector2 pos)
     {
-        int randomNum = Random.Range(0, 2);
+        //int randomNum = Random.Range(0, 3);
+        int randomNum = 3;
         // Increasing the actual stat HERE
         if (randomNum == 0)
         {
@@ -292,6 +307,13 @@ public class PlayerManager : MonoBehaviour {
             attack = newAttack;
 
             eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + BaseValues.AttackStatIncrease + " point " + "</color>");
+        }
+        else if(randomNum == 3)
+        {
+            float newArmor = armor + BaseValues.ArmorStatIncrease;
+            armor = newArmor;
+
+            eventBox.addEvent("<color=#8d94a0>Armor</color>  increased to <color=#8d94a0>" + armor*100 + "points</color>");
         }
 
         // Removing the stat increaser after we have used it
@@ -323,7 +345,7 @@ public class PlayerManager : MonoBehaviour {
             {
                 Weapon foundWeapon = chestMaster.makeNewWeapon();
 
-                GameObject weaponEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
+                GameObject weaponEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), (pos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
                 weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
 
                 // Message the player he obtained a weapon
@@ -504,6 +526,18 @@ public class PlayerManager : MonoBehaviour {
 
         // Done
         uiManager.fadePanel.color = Color.clear;
+    }
+
+    public float getArmor()
+    {
+        /*
+         * @
+        if(equipedArmor)
+            return armor + equipedArmor;
+        else
+            return armor
+        */
+        return armor;
     }
 
     public int getMaxMoney() { return maxMoney; }

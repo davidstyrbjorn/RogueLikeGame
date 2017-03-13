@@ -20,7 +20,6 @@ using System.Collections.Generic;
 
 public class FloorManager : MonoBehaviour
 {
-
     public int[,] map;
     private int currentFloorNumber = 0;
     private float chestHeight;
@@ -44,8 +43,6 @@ public class FloorManager : MonoBehaviour
     public Dictionary<Vector2, GameObject> statIncreaserList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> tileList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> chestList = new Dictionary<Vector2, GameObject>();
-
-    BaseValues.FloorModifiers floorModifier;
 
     void Start()
     {
@@ -82,8 +79,6 @@ public class FloorManager : MonoBehaviour
         currentFloorNumber++;
         StartCoroutine(MakeNewFloor());
         miniMap.CreateNewTexture();
-
-        floorModifier = BaseValues.FloorModifiers.NORMAL;
     }
 
     void RenderMap()
@@ -164,7 +159,7 @@ public class FloorManager : MonoBehaviour
                         tileList.Add(new Vector2(x, y), groundTile);
 
                         // Spawning chest
-                        GameObject chestClone = Instantiate(Chest, new Vector3(x * tileWidth, y * tileWidth + chestHeight/3, -1), Quaternion.identity) as GameObject;
+                        GameObject chestClone = Instantiate(Chest, new Vector3(x * tileWidth, y * tileWidth + chestHeight/2.75f, -1), Quaternion.identity) as GameObject;
                         chestClone.transform.parent = transform;
                         chestList.Add(new Vector2(x, y), chestClone);
                     }

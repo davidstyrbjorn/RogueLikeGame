@@ -2,19 +2,24 @@
 using UnityEngine;
 
 public class BaseValues : MonoBehaviour{
-    public static int MAP_WIDTH = 25;
-    public static int MAP_HEIGHT = 25;
+    public static int   MAP_WIDTH               = 25;
+    public static int   MAP_HEIGHT              = 25;
 
     // Player base values
-    public static float PlayerBaseHP = 100;
-    public static float PlayerBaseAttack = 10;
-    public static float PlayerBaseAttackSpeed = 1;
-    public static float HealthStatIncrease = 10;
-    public static float AttackStatIncrease = 1;
+    public static float PlayerBaseHP            = 100;
+    public static float PlayerBaseAttack        = 10;
+    public static float PlayerBaseAttackSpeed   = 1;
+
+    // Player stat increaser numbers
+    public static float HealthStatIncrease      = 10;
+    public static float AttackStatIncrease      = 1;
+
+    // attack deflected represented in decimal percent form
+    public static float ArmorStatIncrease       = 0.005f; 
 
     // Enemy base values
-    public static float EnemyBaseHP = 50;
-    public static float EnemyBaseAttack = 5;
+    public static float EnemyBaseHP             = 50;
+    public static float EnemyBaseAttack         = 5;
 
     // Weapon stats
     public static float WeaponCriticalMultiplier = 1.6f;
@@ -35,7 +40,7 @@ public class BaseValues : MonoBehaviour{
 
     // Camera values
     public static int NormalCameraSize = 17;
-    public static int BattleCameraSize = 20;
+    public static int BattleCameraSize = 14;
 
     public enum PlayerStates
     {
@@ -64,6 +69,12 @@ public class BaseValues : MonoBehaviour{
     public enum FloorModifiers
     {
         NORMAL,
+    }
+
+    public enum ArmorTypes
+    {
+        LIGHT   = 0,
+        HEAVY   = 25,
     }
 
     void Start()

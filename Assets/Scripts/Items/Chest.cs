@@ -14,6 +14,13 @@ public class Chest : MonoBehaviour {
     private ChestDrops chestDrop;
     private bool isOpen;
 
+    // Skipping animation controller making my own thing instead
+    // Reason: Since the animatio is only three sprites long anim controller will just
+    // end up being over complicating a simple task
+    [Tooltip("Plays in ascending index order.")]
+    public Sprite[] openAnimation;
+    public SpriteRenderer spre;
+
     void Start()
     {
         int num = Random.Range(0, 2);
@@ -27,5 +34,19 @@ public class Chest : MonoBehaviour {
 
     public ChestDrops getChestDrop() { return chestDrop; }
     public bool getIsOpen() { return isOpen; }
-    public void open() { isOpen = true; }
+    public void open()
+    {
+        StartCoroutine("openChest");
+        isOpen = true;
+    }
+
+    IEnumerator openChest()
+    {
+        yield return null;
+        for (int i = 0; i < openAnimation.Length; i++)
+        {
+            spre.sprite = openAnimation[i];
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
 }

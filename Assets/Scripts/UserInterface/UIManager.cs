@@ -31,6 +31,7 @@ public class UIManager : MonoBehaviour {
     public Text playerMaxMoneyText;
     public Text currentFloorText;
     public Text newMoneyText;
+    public Text playerArmorText;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -109,6 +110,9 @@ public class UIManager : MonoBehaviour {
         // Update player physical damage 
         playerDamageText.text = ""+(playerManager.getAttack() + 
             (playerManager.getEquipedWeapon() != null ? playerManager.getEquipedWeapon().getNormalAttack() : 0));
+
+        // Update player armor text
+        playerArmorText.text = "" + (playerManager.getArmor()*100);
 
         // Money text
         playerMoneyText.text = playerManager.getMoney().ToString();
