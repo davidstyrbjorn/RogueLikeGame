@@ -43,12 +43,19 @@ public class UIManager : MonoBehaviour {
     [Header("Image Objects")]
     public Image fadePanel;
     public Image inventoryWeaponImage;
+    public Image inventoryPotionImage;
     public Image healthRemovedSliderImage;
 
     [Space(25)]
     [Header("Inventory Slots")]
     public Image[] weaponSlots;
     public Image[] potionSlots;
+
+    [Space(25)]
+    [Header("Inventory/Currently Equiped Weapon")]
+    public Image inventoryCurrentWeaponImage;
+    public Text inventoryCurrentWeaponStats;
+    public Text inventoryCurrentWeaponName;
 
     // Attribute classes
     private PlayerManager playerManager;
@@ -117,6 +124,24 @@ public class UIManager : MonoBehaviour {
         // Money text
         playerMoneyText.text = playerManager.getMoney().ToString();
         playerMaxMoneyText.text = "/" + playerManager.getMaxMoney().ToString();
+
+        // Path: Inventory/Currently Equiped Weapon
+        if (playerManager.getEquipedWeapon() != null)
+        {
+            inventoryCurrentWeaponImage.color = Color.white;
+            inventoryCurrentWeaponImage.sprite = playerManager.getEquipedWeapon().getWeaponSprite();
+            inventoryCurrentWeaponName.text = playerManager.getEquipedWeapon().getName();
+            if (playerManager.getEquipedWeapon().getCritChance() == -1)
+            {
+                inventoryCurrentWeaponStats.text = playerManager.getEquipedWeapon().getNormalAttack().ToString();
+            }
+            else
+            {
+                inventoryCurrentWeaponStats.text = "" + playerManager.getEquipedWeapon().getNormalAttack() + "\n" +
+                    playerManager.getEquipedWeapon().getCritChance() + "\n" +
+                    playerManager.getEquipedWeapon().getCriticalMultiplier();
+            }
+        }
     }
 
     // Selects whatever weapon we clicked on if the _index inside players weapons list
@@ -132,11 +157,11 @@ public class UIManager : MonoBehaviour {
 
             if(playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
             {
-                inventoryWeaponStats.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack();
+                inventoryWeaponStats.text = ""+ playerInventory.GetWeaponsList()[_index].getNormalAttack();
             }
             else
             {
-                inventoryWeaponStats.text = "Attack: " + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
+                inventoryWeaponStats.text = "" + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
                     playerInventory.GetWeaponsList()[_index].getCritChance() + "\n" +
                     playerInventory.GetWeaponsList()[_index].getCriticalMultiplier();
             }
@@ -152,7 +177,16 @@ public class UIManager : MonoBehaviour {
         {
             potionInfoContainer.gameObject.SetActive(true);
             weaponInfoContainer.gameObject.SetActive(false);
-            inventoryPotionStat.text = (playerInventory.GetPotionsList()[_index].getPotionType() == Potion.potionType.HEALING) ? "Type: Healing\n" : "Type: Strength\n";
+            if (playerInventory.GetPotionsList()[_index].getPotionType() == Potion.potionType.HEALING)
+            {
+                inventoryPotionImage.sprite = BaseValues.healthPotionSprite;
+                inventoryPotionStat.text = "Type: Healing";
+            }
+            else
+            {
+                inventoryPotionImage.sprite = BaseValues.strengthPotionSprite;
+                inventoryPotionStat.text = "Type: Strength";
+            }
             currentlySelectedPotionIndex = _index;
         }
     }

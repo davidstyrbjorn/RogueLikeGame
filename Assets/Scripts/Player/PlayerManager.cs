@@ -289,8 +289,8 @@ public class PlayerManager : MonoBehaviour {
 
     public void hitStatIncreaser(Vector2 pos)
     {
-        //int randomNum = Random.Range(0, 3);
-        int randomNum = 3;
+        int randomNum = Random.Range(0, 3);
+        
         // Increasing the actual stat HERE
         if (randomNum == 0)
         {
