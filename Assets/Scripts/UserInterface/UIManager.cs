@@ -57,6 +57,12 @@ public class UIManager : MonoBehaviour {
     public Text inventoryCurrentWeaponStats;
     public Text inventoryCurrentWeaponName;
 
+    [Space(25)]
+    [Header("Inventory/Bottom Right")]
+    public Text inventoryPhysicalDamageText;
+    public Text inventoryCriticalChanceText;
+    public Text inventoryArmorText;
+
     // Attribute classes
     private PlayerManager playerManager;
     private PlayerInventory playerInventory;
@@ -126,21 +132,40 @@ public class UIManager : MonoBehaviour {
         playerMaxMoneyText.text = "/" + playerManager.getMaxMoney().ToString();
 
         // Path: Inventory/Currently Equiped Weapon
+        // Path: Inventory/Bottom Right
         if (playerManager.getEquipedWeapon() != null)
         {
+            inventoryPhysicalDamageText.text = (playerManager.getAttack() + playerManager.getEquipedWeapon().getAttack()).ToString();
+
             inventoryCurrentWeaponImage.color = Color.white;
             inventoryCurrentWeaponImage.sprite = playerManager.getEquipedWeapon().getWeaponSprite();
             inventoryCurrentWeaponName.text = playerManager.getEquipedWeapon().getName();
             if (playerManager.getEquipedWeapon().getCritChance() == -1)
             {
+                inventoryCriticalChanceText.text = "0%";
                 inventoryCurrentWeaponStats.text = playerManager.getEquipedWeapon().getNormalAttack().ToString();
             }
             else
             {
+                inventoryCriticalChanceText.text = playerManager.getEquipedWeapon().getCritChance().ToString() + "%";
                 inventoryCurrentWeaponStats.text = "" + playerManager.getEquipedWeapon().getNormalAttack() + "\n" +
                     playerManager.getEquipedWeapon().getCritChance() + "\n" +
                     playerManager.getEquipedWeapon().getCriticalMultiplier();
             }
+        }
+        // If the player has no weapon equipeds
+        else
+        {
+            // Currently equiped weapon
+            inventoryCurrentWeaponImage.color = Color.clear;
+            inventoryCurrentWeaponImage.sprite = null;
+            inventoryCurrentWeaponName.text = "None Equiped";
+            inventoryCurrentWeaponStats.text = "0";
+
+            // Inventory bottom right
+            inventoryPhysicalDamageText.text = playerManager.getAttack().ToString();
+            inventoryCriticalChanceText.text = "0%";
+            inventoryArmorText.text = (playerManager.getArmor()).ToString(); // Add actual armor piece to this when implemented
         }
     }
 
@@ -154,6 +179,25 @@ public class UIManager : MonoBehaviour {
 
             weaponNameText.text = playerInventory.GetWeaponsList()[_index].getName();
             inventoryWeaponImage.sprite = playerInventory.GetWeaponsList()[_index].getWeaponSprite();
+
+            // Calculating new damage
+            float excessDamage = 0;
+            if (playerManager.getEquipedWeapon() != null)
+            {
+                excessDamage = (playerInventory.GetWeaponsList()[_index].getNormalAttack()) - (playerManager.getEquipedWeapon().getNormalAttack());
+                inventoryPhysicalDamageText.text = (playerManager.getAttack() + playerManager.getEquipedWeapon().attack).ToString();
+            }else
+            {
+                excessDamage = (playerInventory.GetWeaponsList()[_index].getNormalAttack() - 0);
+                inventoryPhysicalDamageText.text = playerManager.getAttack().ToString();
+            }
+
+            if (excessDamage > 0)
+                inventoryPhysicalDamageText.text += " <color=green>+" + excessDamage + "</color>";
+            if (excessDamage < 0)
+                inventoryPhysicalDamageText.text += " <color=red>" + excessDamage + "</color>";
+            if (excessDamage == 0)
+                inventoryPhysicalDamageText.text += " +0";   
 
             if(playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
             {
