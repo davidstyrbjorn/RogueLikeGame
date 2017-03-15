@@ -135,7 +135,7 @@ public class UIManager : MonoBehaviour {
         // Path: Inventory/Bottom Right
         if (playerManager.getEquipedWeapon() != null)
         {
-            inventoryPhysicalDamageText.text = (playerManager.getAttack() + playerManager.getEquipedWeapon().getAttack()).ToString();
+            inventoryPhysicalDamageText.text = (playerManager.getAttack() + playerManager.getEquipedWeapon().getNormalAttack()).ToString();
 
             inventoryCurrentWeaponImage.color = Color.white;
             inventoryCurrentWeaponImage.sprite = playerManager.getEquipedWeapon().getWeaponSprite();
@@ -165,8 +165,10 @@ public class UIManager : MonoBehaviour {
             // Inventory bottom right
             inventoryPhysicalDamageText.text = playerManager.getAttack().ToString();
             inventoryCriticalChanceText.text = "0%";
-            inventoryArmorText.text = (playerManager.getArmor()).ToString(); // Add actual armor piece to this when implemented
         }
+
+        // Armor
+        inventoryArmorText.text = (playerManager.getArmor()).ToString(); // Add actual armor piece to this when implemented
     }
 
     // Selects whatever weapon we clicked on if the _index inside players weapons list
@@ -181,6 +183,7 @@ public class UIManager : MonoBehaviour {
             inventoryWeaponImage.sprite = playerInventory.GetWeaponsList()[_index].getWeaponSprite();
 
             // Calculating new damage
+            #region + - On Stats in the inventory
             float excessDamage = 0;
             if (playerManager.getEquipedWeapon() != null)
             {
@@ -196,10 +199,33 @@ public class UIManager : MonoBehaviour {
                 inventoryPhysicalDamageText.text += " <color=green>+" + excessDamage + "</color>";
             if (excessDamage < 0)
                 inventoryPhysicalDamageText.text += " <color=red>" + excessDamage + "</color>";
-            if (excessDamage == 0)
-                inventoryPhysicalDamageText.text += " +0";   
+            //if (excessDamage == 0)
+                //inventoryPhysicalDamageText.text += " +0";
 
-            if(playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
+            float excessCritChance = 0;
+            // Check if theres a weapon equiped
+            if(playerManager.getEquipedWeapon() != null)
+            {
+                excessCritChance = (playerInventory.GetWeaponsList()[_index].getCritChance() - playerManager.getEquipedWeapon().getCritChance());
+                if (playerManager.getEquipedWeapon().getCritChance() != -1)
+                    inventoryCriticalChanceText.text = playerManager.getEquipedWeapon().getCritChance().ToString() + "%";
+                else
+                    inventoryCriticalChanceText.text = "0%";
+            }
+            else
+            {
+                if (playerInventory.GetWeaponsList()[_index].getCritChance() != -1)
+                    excessCritChance = playerInventory.GetWeaponsList()[_index].getCritChance();
+            }
+
+            if (excessCritChance > 0)
+                inventoryCriticalChanceText.text += " <color=green>+" + (excessCritChance+1) + "</color>";
+            if (excessCritChance < 0)
+                inventoryCriticalChanceText.text += " <color=red>" + (excessCritChance+1) + "</color>";
+
+            #endregion
+
+            if (playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
             {
                 inventoryWeaponStats.text = ""+ playerInventory.GetWeaponsList()[_index].getNormalAttack();
             }

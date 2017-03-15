@@ -39,8 +39,8 @@ public class BaseValues : MonoBehaviour{
     public static float healthPotionFactor = 0.1f;
 
     // Camera values
-    public static int NormalCameraSize = 17;
-    public static int BattleCameraSize = 14;
+    public static int NormalCameraSize = 17; // not shop
+    public static int BattleCameraSize = 16; // shop
 
     public enum PlayerStates
     {
