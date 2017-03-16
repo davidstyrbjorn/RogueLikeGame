@@ -30,6 +30,7 @@ public class Weapon : MonoBehaviour
     // Gets value when selling the weapon
     public int getValue() { return value; }
 
+    // Returns attack with a chance for a crit multipliers
     public float getAttack()
     {
         System.Random randomNum = new System.Random(Time.time.ToString().GetHashCode());
@@ -41,5 +42,11 @@ public class Weapon : MonoBehaviour
         {
             return attack;
         }
+    }
+
+    // Returns the info about weapon 
+    public string getDescription()
+    {
+        return description;
     }
 }

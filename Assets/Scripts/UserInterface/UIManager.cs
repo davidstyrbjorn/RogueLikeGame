@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform gameOverScreen;
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
+    public RectTransform weaponInfoBox;
     public Transform mapTranform;
 
     [Space(20)]
@@ -32,6 +33,8 @@ public class UIManager : MonoBehaviour {
     public Text currentFloorText;
     public Text newMoneyText;
     public Text playerArmorText;
+    public Text weaponInfoName;
+    public Text weaponInfo;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -79,6 +82,8 @@ public class UIManager : MonoBehaviour {
     private Vector3 mapNormalPos;
     private Vector3 mapShopPos;
 
+    private Vector2 weaponInfoBoxOffset;
+
     void Awake()
     {
         floorManager = FindObjectOfType<FloorManager>();
@@ -92,6 +97,10 @@ public class UIManager : MonoBehaviour {
         NewPlayerValues();
         UpdatePotionSlots();
         UpdateWeaponSlots();
+
+        float width = weaponInfoBox.rect.width;
+        float height = weaponInfoBox.rect.height;
+        weaponInfoBoxOffset = new Vector2(width*0.75f, 60);
     }
 
     void Update()
@@ -106,6 +115,12 @@ public class UIManager : MonoBehaviour {
 
         if (healthRemovedSliderImage.color != Color.clear)
             healthRemovedSliderImage.color = Color.Lerp(healthRemovedSliderImage.color, Color.clear, 1f * Time.deltaTime);
+
+        // If the weapon info box is enabled glue it to the mouse
+        if (weaponInfoBox.gameObject.activeSelf)
+        {
+            weaponInfoBox.position = Input.mousePosition + (Vector3)weaponInfoBoxOffset;
+        }
     }
 
     public void NewPlayerValues()
@@ -171,6 +186,23 @@ public class UIManager : MonoBehaviour {
         inventoryArmorText.text = (playerManager.getArmor()).ToString(); // Add actual armor piece to this when implemented
     }
 
+    // Hovered over a weapon in the inventory
+    public void HoveredoverWeapon(int _index)
+    {
+        if(playerInventory.GetWeaponsList().Count > _index)
+        {
+            weaponInfoBox.gameObject.SetActive(true);
+
+            weaponInfoName.text = playerInventory.GetWeaponsList()[_index].getName();
+            weaponInfo.text = playerInventory.GetWeaponsList()[_index].getDescription();
+        }
+    }
+
+    public void MouseLeftWeapon()
+    {
+        weaponInfoBox.gameObject.SetActive(false);
+    }
+
     // Selects whatever weapon we clicked on if the _index inside players weapons list
     public void ClickedOnWeapon(int _index)
     {
@@ -215,13 +247,16 @@ public class UIManager : MonoBehaviour {
             else
             {
                 if (playerInventory.GetWeaponsList()[_index].getCritChance() != -1)
+                {
                     excessCritChance = playerInventory.GetWeaponsList()[_index].getCritChance();
+                }
+                inventoryCriticalChanceText.text = "0%";
             }
 
             if (excessCritChance > 0)
-                inventoryCriticalChanceText.text += " <color=green>  (+" + (excessCritChance+1) + ")</color>";
+                inventoryCriticalChanceText.text += " <color=green>  (+" + (excessCritChance-1) + ")</color>";
             if (excessCritChance < 0)
-                inventoryCriticalChanceText.text += " <color=red>  (" + (excessCritChance+1) + "</color>";
+                inventoryCriticalChanceText.text += " <color=red>  (" + (excessCritChance-1) + ")</color>";
 
             #endregion
 
