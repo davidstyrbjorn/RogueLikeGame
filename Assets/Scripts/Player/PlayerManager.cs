@@ -148,8 +148,10 @@ public class PlayerManager : MonoBehaviour {
 
     void StartCombat()
     {
-        StartCoroutine(Player_CombatLoop());
-        StartCoroutine(Enemy_CombatLoop());
+        //StartCoroutine(Player_CombatLoop());
+        StartCoroutine("Player_CombatLoop");
+        //StartCoroutine(Enemy_CombatLoop());
+        StartCoroutine("Enemy_CombatLoop");
     }
 
     IEnumerator Player_CombatLoop()
@@ -330,8 +332,11 @@ public class PlayerManager : MonoBehaviour {
 
     void StopCombatLoops()
     {
-        StopCoroutine(Player_CombatLoop());
-        StopCoroutine(Enemy_CombatLoop());
+        /* Somehow stopping using a string to call works better */
+        //StopCoroutine(Player_CombatLoop());
+        StopCoroutine("Player_CombatLoop");
+        // StopCoroutine(Enemy_CombatLoop());
+        StopCoroutine("Enemy_CombatLoop");
     }
 
     public void hitChest(Vector2 pos)
