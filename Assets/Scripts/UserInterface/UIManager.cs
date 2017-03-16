@@ -196,9 +196,9 @@ public class UIManager : MonoBehaviour {
             }
 
             if (excessDamage > 0)
-                inventoryPhysicalDamageText.text += " <color=green>+" + excessDamage + "</color>";
+                inventoryPhysicalDamageText.text += " <color=green>   (+" + excessDamage + ")</color>";
             if (excessDamage < 0)
-                inventoryPhysicalDamageText.text += " <color=red>" + excessDamage + "</color>";
+                inventoryPhysicalDamageText.text += " <color=red>   (" + excessDamage + ")</color>";
             //if (excessDamage == 0)
                 //inventoryPhysicalDamageText.text += " +0";
 
@@ -219,9 +219,9 @@ public class UIManager : MonoBehaviour {
             }
 
             if (excessCritChance > 0)
-                inventoryCriticalChanceText.text += " <color=green>+" + (excessCritChance+1) + "</color>";
+                inventoryCriticalChanceText.text += " <color=green>  (+" + (excessCritChance+1) + ")</color>";
             if (excessCritChance < 0)
-                inventoryCriticalChanceText.text += " <color=red>" + (excessCritChance+1) + "</color>";
+                inventoryCriticalChanceText.text += " <color=red>  (" + (excessCritChance+1) + "</color>";
 
             #endregion
 
