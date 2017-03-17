@@ -42,6 +42,10 @@ public class BaseValues : MonoBehaviour{
     public static int NormalCameraSize = 17; // not shop
     public static int BattleCameraSize = 16; // shop
 
+    // Overworld Constants
+    public static int OverworldWidth    = 8;
+    public static int OverworldHeight   = 8;
+
     public enum PlayerStates
     {
         IN_COMBAT,

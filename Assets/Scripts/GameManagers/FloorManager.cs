@@ -185,18 +185,17 @@ public class FloorManager : MonoBehaviour
         {
             while (!validMap)
             {
-                eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
                 mapGenerator.GenerateMap();
                 map = mapGenerator.getMap();
                 Camera.main.orthographicSize = BaseValues.NormalCameraSize;
                 uiManager.OnNewFloor(false);
-
                 validMap = mapGenerator.CheckIfValidMap();
 
                 yield return new WaitForEndOfFrame();
             }
-            
-        }else
+            eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
+        }
+        else
         {
             shopKeeper.shopActive = false;
             eventBox.addEvent("Welcome to the shop!");

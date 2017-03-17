@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
     public RectTransform weaponInfoBox;
+    public RectTransform pauseTransform;
     public Transform mapTranform;
 
     [Space(20)]
@@ -35,6 +36,8 @@ public class UIManager : MonoBehaviour {
     public Text playerArmorText;
     public Text weaponInfoName;
     public Text weaponInfo;
+    public Text inventoryHealthText;
+    public Text inventoryHealthAddedText;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -121,6 +124,21 @@ public class UIManager : MonoBehaviour {
         {
             weaponInfoBox.position = Input.mousePosition + (Vector3)weaponInfoBoxOffset;
         }
+
+        // Pause
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Time.timeScale == 0)
+            {
+                pauseTransform.gameObject.SetActive(false);
+                Time.timeScale = 1;
+            }
+            else
+            {
+                pauseTransform.gameObject.SetActive(true);
+                Time.timeScale = 0;
+            }
+        }
     }
 
     public void NewPlayerValues()
@@ -184,6 +202,10 @@ public class UIManager : MonoBehaviour {
 
         // Armor
         inventoryArmorText.text = (playerManager.getArmor()).ToString(); // Add actual armor piece to this when implemented
+
+        // Health
+        inventoryHealthText.text = (playerManager.getHealth() + "/" + playerManager.getMaxHealth());
+        inventoryHealthAddedText.text = string.Empty;
     }
 
     // Hovered over a weapon in the inventory
@@ -286,6 +308,8 @@ public class UIManager : MonoBehaviour {
             {
                 inventoryPotionImage.sprite = BaseValues.healthPotionSprite;
                 inventoryPotionStat.text = "Type: Healing";
+
+                inventoryHealthAddedText.text = "<color=green>(+" + (playerManager.getMaxHealth() * BaseValues.healthPotionFactor).ToString() + ")</color>";
             }
             else
             {
