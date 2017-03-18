@@ -568,7 +568,7 @@ public class UIManager : MonoBehaviour {
         pauseTimer = 0;
         while (true)
         {
-            pauseTimer += 0.6f;
+            pauseTimer += 10;
             //print(pauseTimer);
 
             if (pauseTimer >= 0) pauseText.text = "Paused";
@@ -579,7 +579,7 @@ public class UIManager : MonoBehaviour {
             {
                 pauseTimer = 0;
             }
-            yield return null;
+            yield return new WaitForSecondsRealtime(0.1f);
         }
     }
 }

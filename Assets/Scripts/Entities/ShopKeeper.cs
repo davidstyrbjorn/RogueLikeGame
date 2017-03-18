@@ -155,9 +155,16 @@ public class ShopKeeper : MonoBehaviour {
             eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[playerWeaponIndex].getName() + " for " + playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
             playerManager.addMoney(playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
 
+            if (playerInventory.GetWeaponsList()[playerWeaponIndex] == playerManager.getEquipedWeapon())
+            {
+                playerManager.EquipWeapon(null);
+            }
+
             playerInventory.RemoveWeaponAt(playerWeaponIndex);
             uiManager.UpdateWeaponSlots();
             UpdatePlayerWeaponSlots();
+            uiManager.NewPlayerValues();
+            uiManager.weaponInfoContainer.gameObject.SetActive(false);
 
             playerItemInfoText.text = "";
             playerWeaponIndex = -1;

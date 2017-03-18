@@ -216,7 +216,10 @@ public class PlayerManager : MonoBehaviour {
     void looseHealth(float _hp)
     {
         // Player takes the actual damage here
-        _hp = Mathf.CeilToInt((_hp * (1 - armor)));
+        if (equipedArmor == null)
+            _hp = Mathf.CeilToInt((_hp * (1 - armor)));
+        else
+            _hp = Mathf.CeilToInt((_hp * (1 - (armor + equipedArmor.getArmor()))));
 
         healthPoints -= _hp;
         eventBox.addEvent(currentEnemyName + " hit you for " + _hp + " damge!");
@@ -524,7 +527,7 @@ public class PlayerManager : MonoBehaviour {
         {
             transitionScript.maskValue += 0.01f;
             
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }                   
         uiManager.LoadScene("StartScene");
     }
@@ -537,21 +540,21 @@ public class PlayerManager : MonoBehaviour {
         Vector3 ascendPos = new Vector3(transform.position.x, transform.position.y + 4.5f, transform.position.z);
         while(transform.position.y < ascendPos.y-0.5f)
         {
-            transform.position = Vector3.Lerp(transform.position, ascendPos, 2.25f * Time.deltaTime);
-            yield return new WaitForSeconds(0.01f);       
+            transform.position = Vector3.Lerp(transform.position, ascendPos, 0.01f);
+            yield return new WaitForSecondsRealtime(0.01f);       
         }
 
         while(spre.color.a > 0.05f)
         {
-            spre.color = Color.Lerp(spre.color, Color.clear, 5 * Time.deltaTime);
-            yield return new WaitForSeconds(0.01f);
+            spre.color = Color.Lerp(spre.color, Color.clear, 0.05f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
 
         // Fade in the panel
         while(uiManager.fadePanel.color.a <= 0.95f)
         {
-            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 5f * Time.deltaTime);
-            yield return new WaitForSeconds(0.01f);
+            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 0.05f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
 
         floorManager.NewFloor();
@@ -562,8 +565,8 @@ public class PlayerManager : MonoBehaviour {
         // After we have gotten a new floor fade out into the game again
         while (uiManager.fadePanel.color.a > 0.1f)
         {
-            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 2.45f * Time.deltaTime);
-            yield return new WaitForSeconds(0.01f);
+            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 0.01f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
 
         // Done
