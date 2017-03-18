@@ -19,6 +19,11 @@ public class MiniMap : MonoBehaviour {
 
     Texture2D miniMapTexture;
 
+    int playerX, playerY;
+    float timer;
+    int _timer;
+    bool showPlayer;
+
     void Awake()
     {
         spre = GetComponent<SpriteRenderer>();
@@ -26,9 +31,33 @@ public class MiniMap : MonoBehaviour {
         CreateNewTexture();
     }
 
+    void Update()
+    {
+        timer += Time.deltaTime*2.5f;
+        if (timer >= 1)
+            showPlayer = true;
+
+        if (showPlayer)
+        {
+            _timer = (int)timer;
+            if ((_timer % 2) == 0)
+            {
+                miniMapTexture.SetPixel(playerX, playerY, Color.yellow);
+                miniMapTexture.Apply();
+            }
+            else
+            {
+                miniMapTexture.SetPixel(playerX, playerY, groundTileColor);
+                miniMapTexture.Apply();
+            }
+
+            if (timer >= 10)
+                timer = 0;
+        }
+    }
+
     public void FullyRevealMap()
     {
-
         for(int i = 0; i < BaseValues.MAP_WIDTH; i++)
         {
             for(int z = 0; z < BaseValues.MAP_HEIGHT; z++)
@@ -82,7 +111,10 @@ public class MiniMap : MonoBehaviour {
                 }
             }
         }
-        miniMapTexture.SetPixel((int)newPos.x, (int)newPos.y, Color.yellow);
+        playerX = (int)newPos.x;
+        playerY = (int)newPos.y;
+        //miniMapTexture.SetPixel(playerX, playerY, Color.yellow);
+
         miniMapTexture.Apply();
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
     }

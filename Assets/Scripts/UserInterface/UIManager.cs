@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
     public RectTransform weaponInfoBox;
-    public Transform mapTranform;
+    public RectTransform pauseTransform;
 
     [Space(20)]
     [Header("Text Objects")]
@@ -35,6 +35,9 @@ public class UIManager : MonoBehaviour {
     public Text playerArmorText;
     public Text weaponInfoName;
     public Text weaponInfo;
+    public Text inventoryHealthText;
+    public Text inventoryHealthAddedText;
+    public Text pauseText;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -78,11 +81,9 @@ public class UIManager : MonoBehaviour {
 
     private int currentlySelectedPotionIndex = -1;
 
-    // Saving map positions
-    private Vector3 mapNormalPos;
-    private Vector3 mapShopPos;
-
     private Vector2 weaponInfoBoxOffset;
+
+    private float pauseTimer;
 
     void Awake()
     {
@@ -99,7 +100,7 @@ public class UIManager : MonoBehaviour {
         UpdateWeaponSlots();
 
         float width = weaponInfoBox.rect.width;
-        float height = weaponInfoBox.rect.height;
+        //float height = weaponInfoBox.rect.height;
         weaponInfoBoxOffset = new Vector2(width*0.75f, 60);
     }
 
@@ -120,6 +121,23 @@ public class UIManager : MonoBehaviour {
         if (weaponInfoBox.gameObject.activeSelf)
         {
             weaponInfoBox.position = Input.mousePosition + (Vector3)weaponInfoBoxOffset;
+        }
+
+        // Pause
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(Time.timeScale == 0)
+            {
+                pauseTransform.gameObject.SetActive(false);
+                Time.timeScale = 1;
+                StopCoroutine("pausedCoruntine");
+            }
+            else
+            {
+                pauseTransform.gameObject.SetActive(true);
+                Time.timeScale = 0;
+                StartCoroutine("pausedCoruntine");
+            }
         }
     }
 
@@ -184,6 +202,10 @@ public class UIManager : MonoBehaviour {
 
         // Armor
         inventoryArmorText.text = (playerManager.getArmor()).ToString(); // Add actual armor piece to this when implemented
+
+        // Health
+        inventoryHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
+        inventoryHealthAddedText.text = string.Empty;
     }
 
     // Hovered over a weapon in the inventory
@@ -286,6 +308,8 @@ public class UIManager : MonoBehaviour {
             {
                 inventoryPotionImage.sprite = BaseValues.healthPotionSprite;
                 inventoryPotionStat.text = "Type: Healing";
+
+                inventoryHealthAddedText.text = "<color=green>(+" + playerManager.getMaxHealth() * BaseValues.healthPotionFactor + ")</color>";
             }
             else
             {
@@ -451,5 +475,25 @@ public class UIManager : MonoBehaviour {
     {
         healthRemovedSlider.maxValue = playerManager.getMaxHealth();
         healthRemovedSlider.value = health;
+    }
+
+    IEnumerator pausedCoruntine()
+    {
+        pauseTimer = 0;
+        while (true)
+        {
+            pauseTimer += 0.6f;
+            //print(pauseTimer);
+
+            if (pauseTimer >= 0) pauseText.text = "Paused";
+            if (pauseTimer >= 33) pauseText.text = "Paused.";
+            if (pauseTimer >= 66) pauseText.text = "Paused..";
+            if (pauseTimer >= 100) pauseText.text = "Paused...";
+            if (pauseTimer >= 133)
+            {
+                pauseTimer = 0;
+            }
+            yield return null;
+        }
     }
 }

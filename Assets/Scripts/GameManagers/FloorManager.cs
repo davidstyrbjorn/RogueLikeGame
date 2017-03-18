@@ -38,11 +38,16 @@ public class FloorManager : MonoBehaviour
     public GameObject StatIncreaser;
     public GameObject Chest;
     public GameObject shopKeeperPrefab;
+    public Transform mapTranform;
 
     public Dictionary<Vector2, GameObject> enemyList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> statIncreaserList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> tileList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> chestList = new Dictionary<Vector2, GameObject>();
+
+    /* Different map positions */
+    private Vector3 mapOrgPos;
+    public Vector3 mapShopPos;
 
     void Start()
     {
@@ -56,6 +61,9 @@ public class FloorManager : MonoBehaviour
 
         NewFloor();
         chestHeight = getChestHeight();
+
+        /* Setting map positions for later use */
+        mapOrgPos = mapTranform.localPosition;
     }
 
     void Update()
@@ -185,7 +193,6 @@ public class FloorManager : MonoBehaviour
         {
             while (!validMap)
             {
-                eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
                 mapGenerator.GenerateMap();
                 map = mapGenerator.getMap();
                 Camera.main.orthographicSize = BaseValues.NormalCameraSize;
@@ -195,15 +202,20 @@ public class FloorManager : MonoBehaviour
 
                 yield return new WaitForEndOfFrame();
             }
-            
-        }else
+            mapTranform.localPosition = mapOrgPos;
+            eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
+        }
+        else
         {
             shopKeeper.shopActive = false;
             eventBox.addEvent("Welcome to the shop!");
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();
             Camera.main.orthographicSize = BaseValues.BattleCameraSize;
-            uiManager.OnNewFloor(true); 
+            uiManager.OnNewFloor(true);
+
+            mapTranform.localPosition = mapShopPos;
+            //miniMap.FullyRevealMap();
         }
         yield return new WaitForFixedUpdate();
         RenderMap();
