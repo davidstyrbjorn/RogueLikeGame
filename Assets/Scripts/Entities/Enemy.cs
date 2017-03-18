@@ -20,7 +20,10 @@ public class Enemy : MonoBehaviour {
     public float critChance; // 1 - this, is the actual percentage chance
     public float critMultiplier;
 
-    [Space(15)]
+    [Space(10)]
+    [Header("Positioning")]
+    public float yOffset;   
+
     private PlayerManager playerManager;
     private float healthPoints;
     private BaseValues.EnemyStates enemyState;

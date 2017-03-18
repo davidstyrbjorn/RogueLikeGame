@@ -140,7 +140,7 @@ public class PlayerManager : MonoBehaviour {
 
         combatTilePos = currentEnemyPos * floorManager.GetTileWidth();
         playerCombatPos = combatTilePos + Vector2.left * floorManager.GetTileWidth() * 0.35f;
-        enemyCombatPos = combatTilePos + Vector2.right * floorManager.GetTileWidth() * 0.35f;
+        enemyCombatPos = combatTilePos + (Vector2.right * floorManager.GetTileWidth() * 0.35f) + (Vector2.up * currentEnemy.yOffset);
 
         playerMove.setCurrentPosition(currentEnemyPos);
 
