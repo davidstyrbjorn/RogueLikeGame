@@ -10,6 +10,25 @@ public class PlayerInventory : MonoBehaviour {
     public List<Potion> potionsList = new List<Potion>();
     private int maxPotionCount = 8;
 
+    public List<Armor> armorList = new List<Armor>();
+    private int maxArmorCount = 8;
+
+    public void RemoveArmorAt(int _index)
+    {
+        armorList.RemoveAt(_index);
+    }
+
+    public bool addArmor(Armor _armor)
+    {
+        if (armorList.Count < maxArmorCount)
+        {
+            armorList.Add(_armor);
+            return true;
+        }
+        else
+            return false;
+    }
+
     public void RemovePotionAt(int _index)
     {
         potionsList.RemoveAt(_index);
@@ -45,6 +64,11 @@ public class PlayerInventory : MonoBehaviour {
     public List<Potion> GetPotionsList()
     {
         return potionsList;
+    }
+
+    public List<Armor> GetArmorList()
+    {
+        return armorList;
     }
 
 }

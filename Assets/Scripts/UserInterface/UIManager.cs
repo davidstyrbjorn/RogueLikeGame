@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform potionInfoContainer;
     public RectTransform characterStats;
     public RectTransform characterInventory;
-    public RectTransform potionTab, weaponsTab;
+    public RectTransform potionTab, weaponsTab, armorTab;
     public RectTransform nextFloorPrompt;
     public RectTransform gameOverScreen;
     public RectTransform enemyStatScreen;
@@ -55,6 +55,7 @@ public class UIManager : MonoBehaviour {
     [Space(25)]
     [Header("Inventory Slots")]
     public Image[] weaponSlots;
+    public Image[] armorSlots;
     public Image[] potionSlots;
 
     [Space(25)]
@@ -69,6 +70,13 @@ public class UIManager : MonoBehaviour {
     public Text inventoryCriticalChanceText;
     public Text inventoryArmorText;
 
+    [Space(25)]
+    [Header("Inventory/Armor Info")]
+    public RectTransform armorInfoHolder;
+    public Text armorInfoStat;
+    public Image armorImage;
+    public Text inventoryArmorName;
+
     // Attribute classes
     private PlayerManager playerManager;
     private PlayerInventory playerInventory;
@@ -80,6 +88,9 @@ public class UIManager : MonoBehaviour {
     private int currentlySelectedWeaponIndex = -1;
 
     private int currentlySelectedPotionIndex = -1;
+
+    private Armor currentlySelectedInventoryArmor;
+    private int currentlySelectedArmorIndex = -1;
 
     private Vector2 weaponInfoBoxOffset;
 
@@ -158,7 +169,14 @@ public class UIManager : MonoBehaviour {
             (playerManager.getEquipedWeapon() != null ? playerManager.getEquipedWeapon().getNormalAttack() : 0));
 
         // Update player armor text
-        playerArmorText.text = "" + (playerManager.getArmor()*100);
+        if (playerManager.getEquipedArmor() == null)
+        {
+            playerArmorText.text = ((playerManager.getArmor()) * 100).ToString(); // Add actual armor piece to this when implemented
+        }
+        else
+        {
+            playerArmorText.text = ((playerManager.getArmor() * 100) + playerManager.getEquipedArmor().getArmor() * 100).ToString();
+        }
 
         // Money text
         playerMoneyText.text = playerManager.getMoney().ToString();
@@ -201,7 +219,13 @@ public class UIManager : MonoBehaviour {
         }
 
         // Armor
-        inventoryArmorText.text = (playerManager.getArmor()).ToString(); // Add actual armor piece to this when implemented
+        if (playerManager.getEquipedArmor() == null)
+        {
+            inventoryArmorText.text = ((playerManager.getArmor()) * 100).ToString(); // Add actual armor piece to this when implemented
+        }else
+        {
+            inventoryArmorText.text = ((playerManager.getArmor() * 100) + playerManager.getEquipedArmor().getArmor() * 100).ToString();
+        }
 
         // Health
         inventoryHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
@@ -230,6 +254,7 @@ public class UIManager : MonoBehaviour {
     {
         if (playerInventory.GetWeaponsList().Count > _index)
         {
+            armorInfoHolder.gameObject.SetActive(false);
             potionInfoContainer.gameObject.SetActive(false);
             weaponInfoContainer.gameObject.SetActive(true);
 
@@ -320,11 +345,34 @@ public class UIManager : MonoBehaviour {
         }
     }
 
+    public void ClickedOnArmor(int _index)
+    {
+        if(playerInventory.GetArmorList().Count > _index)
+        {
+            armorInfoHolder.gameObject.SetActive(true);
+            potionInfoContainer.gameObject.SetActive(false);
+            weaponInfoContainer.gameObject.SetActive(false);
+
+            armorImage.sprite = playerInventory.GetArmorList()[_index].getArmorSprite();
+            armorInfoStat.text = (playerInventory.GetArmorList()[_index].getArmor()*100).ToString();
+            inventoryArmorName.text = playerInventory.GetArmorList()[_index].getName();
+
+            currentlySelectedArmorIndex = _index;
+            currentlySelectedInventoryArmor = playerInventory.GetArmorList()[_index];
+        }
+    }
+
     // Equips the currently inventory selected weapon
     public void EquipSelectedWeapon()
     {
         if(currentlySelectedInventoryWeapon != null)
             playerManager.EquipWeapon(currentlySelectedInventoryWeapon);
+    }
+
+    public void EquipSelectedArmor()
+    {
+        if (currentlySelectedInventoryArmor != null)
+            playerManager.EquipArmor(currentlySelectedInventoryArmor);
     }
 
     public void DrinkPotion()
@@ -347,6 +395,19 @@ public class UIManager : MonoBehaviour {
         weaponInfoContainer.gameObject.SetActive(false);
         playerInventory.RemoveWeaponAt(currentlySelectedWeaponIndex);
         UpdateWeaponSlots();
+    }
+
+    public void RemoveSelectedArmor()
+    {
+        if(playerInventory.GetArmorList()[currentlySelectedArmorIndex] == playerManager.getEquipedArmor())
+        {
+            playerManager.EquipArmor(null);
+            NewPlayerValues();
+        }
+        eventBox.addEvent("Removed" + playerInventory.GetArmorList()[currentlySelectedArmorIndex].getName());
+        armorInfoHolder.gameObject.SetActive(false);
+        playerInventory.RemoveArmorAt(currentlySelectedArmorIndex);
+        UpdateArmorSlots();
     }
 
     // Assigns the right weaponsSlots to the i index of players weapon list
@@ -380,6 +441,23 @@ public class UIManager : MonoBehaviour {
             {
                 potionSlots[i].sprite = null;
                 potionSlots[i].color = Color.clear;
+            }
+        }
+    }
+
+    public void UpdateArmorSlots()
+    {
+        for(int i = 0; i < armorSlots.Length; i++)
+        {
+            if(playerInventory.GetArmorList().Count > i)
+            {
+                armorSlots[i].color = Color.white;
+                armorSlots[i].sprite = playerInventory.GetArmorList()[i].getArmorSprite();
+            }
+            else
+            {
+                armorSlots[i].color = Color.clear;
+                armorSlots[i].sprite = null;
             }
         }
     }
@@ -436,11 +514,19 @@ public class UIManager : MonoBehaviour {
     {
         weaponsTab.gameObject.SetActive(true);
         potionTab.gameObject.SetActive(false);
+        armorTab.gameObject.SetActive(false);
     }
     public void GoTo_PotionTab()
     {
         weaponsTab.gameObject.SetActive(false);
         potionTab.gameObject.SetActive(true);
+        armorTab.gameObject.SetActive(false);
+    }
+    public void GoTo_ArmorTab()
+    {
+        armorTab.gameObject.SetActive(true);
+        potionTab.gameObject.SetActive(false);
+        weaponsTab.gameObject.SetActive(false);
     }
     #endregion
 

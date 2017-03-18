@@ -34,6 +34,7 @@ public class PlayerManager : MonoBehaviour {
     private string currentEnemyName;
 
     private Weapon equipedWeapon;
+    private Armor equipedArmor;
 
     public GameObject SpriteHoverEffectObject;
     public GameObject CombatTextPrefab;
@@ -292,6 +293,7 @@ public class PlayerManager : MonoBehaviour {
     public void hitStatIncreaser(Vector2 pos)
     {
         int randomNum = Random.Range(0, 3);
+        print(randomNum);
         
         // Increasing the actual stat HERE
         if (randomNum == 0)
@@ -310,7 +312,7 @@ public class PlayerManager : MonoBehaviour {
 
             eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + BaseValues.AttackStatIncrease + " point " + "</color>");
         }
-        else if(randomNum == 3)
+        else if(randomNum == 2)
         {
             float newArmor = armor + BaseValues.ArmorStatIncrease;
             armor = newArmor;
@@ -363,6 +365,23 @@ public class PlayerManager : MonoBehaviour {
                 }
                 uiManager.UpdateWeaponSlots();
             }
+            else if(floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.ARMOR)
+            {
+                Armor foundArmor = chestMaster.makeNewArmor();
+
+                GameObject armorEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), (pos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
+                armorEffect.GetComponent<SpriteRenderer>().sprite = foundArmor.getArmorSprite();
+
+                // Check if we can add the found armors
+                if(playerInventory.addArmor(foundArmor) == true)
+                {
+                    if(equipedArmor == null)
+                    {
+                        // @ Equip armor here and update UI here!
+                    }
+                }
+                uiManager.UpdateArmorSlots();
+            }
             else if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.POTION)
             {
                 // Create and try to add the potion to players inventory
@@ -410,6 +429,19 @@ public class PlayerManager : MonoBehaviour {
         uiManager.NewPlayerValues();
     }
 
+    public void EquipArmor(Armor _armor)
+    {
+        if(_armor != null)
+        {
+            equipedArmor = _armor;
+            eventBox.addEvent("Equiped a " + _armor.getName());
+        }else
+        {
+            equipedArmor = null;
+        }
+        uiManager.NewPlayerValues();
+    }
+
     public void ConsumePotion(Potion.potionType _type)
     {
         if(_type == Potion.potionType.HEALING)
@@ -427,6 +459,11 @@ public class PlayerManager : MonoBehaviour {
     public Weapon getEquipedWeapon()
     {
         return equipedWeapon;
+    }
+
+    public Armor getEquipedArmor()
+    {
+        return equipedArmor;
     }
 
     public void walkedOnExit()

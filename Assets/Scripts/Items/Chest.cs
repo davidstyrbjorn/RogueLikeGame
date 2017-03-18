@@ -7,6 +7,7 @@ public class Chest : MonoBehaviour {
     public enum ChestDrops
     {
         WEAPON,
+        ARMOR,
         POTION,
     }
 
@@ -23,11 +24,13 @@ public class Chest : MonoBehaviour {
 
     void Start()
     {
-        int num = Random.Range(0, 2);
+        int num = Random.Range(0, 3);
         if (num == 0)
             chestDrop = ChestDrops.WEAPON;
         else if (num == 1)
             chestDrop = ChestDrops.POTION;
+        else if (num == 2)
+            chestDrop = ChestDrops.ARMOR;
 
         isOpen = false;
     }
