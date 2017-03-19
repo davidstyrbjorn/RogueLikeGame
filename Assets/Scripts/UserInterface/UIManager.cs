@@ -17,7 +17,6 @@ public class UIManager : MonoBehaviour {
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
     public RectTransform weaponInfoBox;
-    public RectTransform pauseTransform;
 
     [Space(20)]
     [Header("Text Objects")]
@@ -37,7 +36,6 @@ public class UIManager : MonoBehaviour {
     public Text weaponInfo;
     public Text inventoryHealthText;
     public Text inventoryHealthAddedText;
-    public Text pauseText;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -94,8 +92,6 @@ public class UIManager : MonoBehaviour {
 
     private Vector2 weaponInfoBoxOffset;
 
-    private float pauseTimer;
-
     void Awake()
     {
         floorManager = FindObjectOfType<FloorManager>();
@@ -132,23 +128,6 @@ public class UIManager : MonoBehaviour {
         if (weaponInfoBox.gameObject.activeSelf)
         {
             weaponInfoBox.position = Input.mousePosition + (Vector3)weaponInfoBoxOffset;
-        }
-
-        // Pause
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if(Time.timeScale == 0)
-            {
-                pauseTransform.gameObject.SetActive(false);
-                Time.timeScale = 1;
-                StopCoroutine("pausedCoruntine");
-            }
-            else
-            {
-                pauseTransform.gameObject.SetActive(true);
-                Time.timeScale = 0;
-                StartCoroutine("pausedCoruntine");
-            }
         }
     }
 
@@ -561,25 +540,5 @@ public class UIManager : MonoBehaviour {
     {
         healthRemovedSlider.maxValue = playerManager.getMaxHealth();
         healthRemovedSlider.value = health;
-    }
-
-    IEnumerator pausedCoruntine()
-    {
-        pauseTimer = 0;
-        while (true)
-        {
-            pauseTimer += 10;
-            //print(pauseTimer);
-
-            if (pauseTimer >= 0) pauseText.text = "Paused";
-            if (pauseTimer >= 33) pauseText.text = "Paused.";
-            if (pauseTimer >= 66) pauseText.text = "Paused..";
-            if (pauseTimer >= 100) pauseText.text = "Paused...";
-            if (pauseTimer >= 133)
-            {
-                pauseTimer = 0;
-            }
-            yield return new WaitForSecondsRealtime(0.1f);
-        }
     }
 }

@@ -3,7 +3,10 @@ using System.Collections;
 
 public class ChestMaster : MonoBehaviour {
 
+    [Header("Weapon Tiers")]
     public GameObject[] tier1Weapons, tier2Weapons, tier3Weapons;
+
+    [Header("Armor Tiers")]
     public GameObject[] tier1Armor, tier2Armor, tier3Armor;
 
     private FloorManager floorManager;

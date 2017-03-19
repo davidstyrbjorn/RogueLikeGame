@@ -380,7 +380,7 @@ public class PlayerManager : MonoBehaviour {
                 {
                     if(equipedArmor == null)
                     {
-                        // @ Equip armor here and update UI here!
+                        EquipArmor(foundArmor);
                     }
                 }
                 uiManager.UpdateArmorSlots();
@@ -454,7 +454,7 @@ public class PlayerManager : MonoBehaviour {
         }
         if(_type == Potion.potionType.STRENTGH)
         {
-            nextAttackBonus = BaseValues.strengthPotionMultiplier;
+            nextAttackBonus += BaseValues.strengthPotionMultiplier;
             eventBox.addEvent("You feel <color=blue>energized</color>");
         }
     }
