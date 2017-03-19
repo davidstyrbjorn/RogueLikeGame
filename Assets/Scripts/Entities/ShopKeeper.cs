@@ -26,7 +26,10 @@ public class ShopKeeper : MonoBehaviour {
     private int weaponIndex;
 
     [Header("Player Variables")]
-    public Text playerItemInfoText;
+    public RectTransform playerWeaponInfo;
+    public Text playerWeaponName;
+    public Text playerWeaponAttackText;
+    public Text playerWeaponCostText;
     public Image[] playerWeaponSlots;
 
     private int playerWeaponIndex;
@@ -116,9 +119,14 @@ public class ShopKeeper : MonoBehaviour {
     public void ClickedOnWeapon_Player(int _index)
     {
         playerWeaponIndex = _index;
-        playerItemInfoText.text = "Name: " + playerInventory.GetWeaponsList()[_index].getName() + "\nAttack: " +
-            playerInventory.GetWeaponsList()[_index].getNormalAttack() +
-            "\nCost: " + playerInventory.GetWeaponsList()[_index].getValue();
+        //playerItemInfoText.text = "Name: " + playerInventory.GetWeaponsList()[_index].getName() + "\nAttack: " +
+        //    playerInventory.GetWeaponsList()[_index].getNormalAttack() +
+        //    "\nCost: " + playerInventory.GetWeaponsList()[_index].getValue();
+        playerWeaponAttackText.text = playerInventory.GetWeaponsList()[_index].getNormalAttack().ToString();
+        playerWeaponName.text = playerInventory.GetWeaponsList()[_index].getName();
+        playerWeaponCostText.text = playerInventory.GetWeaponsList()[_index].getValue().ToString();
+
+        playerWeaponInfo.gameObject.SetActive(true);
     }
 
     public void BuyWeapon()
@@ -166,7 +174,8 @@ public class ShopKeeper : MonoBehaviour {
             uiManager.NewPlayerValues();
             uiManager.weaponInfoContainer.gameObject.SetActive(false);
 
-            playerItemInfoText.text = "";
+            playerWeaponInfo.gameObject.SetActive(false);
+
             playerWeaponIndex = -1;
         }
     }

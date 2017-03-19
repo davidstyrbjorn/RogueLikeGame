@@ -54,7 +54,7 @@ public class CellularAutomateMap : MonoBehaviour
 
     public void GenerateMap()
     {
-        seed = Time.time.ToString();
+        seed = Guid.NewGuid().ToString();
 
         BaseValues.MAP_WIDTH = width;
         BaseValues.MAP_HEIGHT = height;
@@ -72,9 +72,9 @@ public class CellularAutomateMap : MonoBehaviour
         floodFill(EntranceX, EntranceY);
         RemoveUnreachAbles();
 
-        SpawnEnemies(); // This spawns enemies on the map... etc
         PlaceStatIncrease();
         PlaceChest(false);
+        SpawnEnemies(); // This spawns enemies on the map... etc
         PlaceExit();
     }
 
@@ -118,7 +118,7 @@ public class CellularAutomateMap : MonoBehaviour
             for(int y = 0; y < height; y++)
             {
                 int num = randomNum.Next(0, 100);
-                if(map[x,y] == 4)
+                if(randomNum.Next(0,100) > enemySpawnChance && map[x,y] == 0)
                 {
                     if(num < placeChance)
                     {
@@ -135,6 +135,19 @@ public class CellularAutomateMap : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool test()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (map[x, y] == 5)
+                    return true;
+            }
+        }
+        return false;
     }
 
     void PlaceEntrance()
@@ -190,13 +203,57 @@ public class CellularAutomateMap : MonoBehaviour
                             map[x, y] = 3;
                             ExitX = x;
                             ExitY = y;
+
+                            //print("placed exit");
+                            SurroundWithEnemies(x, y);
                         }
                     }
                 }
             }
         }
         if (!placedExit)
+        {
             map[lastX, lastY] = 3;
+
+            //print("placed exit");
+            SurroundWithEnemies(lastX, lastY);
+        }
+    }
+
+    void SurroundWithEnemies(int _x, int _y)
+    {
+        System.Random randomNum = new System.Random(seed.GetHashCode());
+
+        for(int x = _x-1; x < _x+2; x++)
+        {
+            for(int y = _y-1; y < _y + 2; y++)
+            {
+                if(x != _x || y != _y)
+                {
+                    if (x == _x || y == _y)
+                    {
+
+                        if (randomNum.Next(1, 5) > 2)
+                        {
+                            if (map[x, y] == 0)
+                            {
+                                map[x, y] = 4;
+                            }
+                        }else
+                        {
+                            if (randomNum.Next(1, 5) > 2)
+                            {
+                                if(map[x,y] == 0)
+                                {
+                                    map[x, y] = 4;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     void PlaceChest(bool secondPassThrough)
@@ -243,6 +300,7 @@ public class CellularAutomateMap : MonoBehaviour
                             {
                                 map[x, y] = 6;
                                 placedChests++;
+                                SurroundWithEnemies(x, y);
                             }
                         }
                         else if (neighbours >= 2)
@@ -251,6 +309,7 @@ public class CellularAutomateMap : MonoBehaviour
                             {
                                 map[x, y] = 6;
                                 placedChests++;
+                                SurroundWithEnemies(x, y);
                             }
                         }
                     }
@@ -285,6 +344,16 @@ public class CellularAutomateMap : MonoBehaviour
 
     void SpawnEnemies()
     {
+        // 1 = wall
+        // 0 = ground
+        // 2 = Entrance
+        // 3 = Exit
+        // 4 = Enemy
+        // 5 = Stat Increase
+        // 6 = Chest
+        // 7 = Shop Keeper
+        // 8 = Exit Escape
+
         System.Random randomNum = new System.Random(seed.GetHashCode());
 
         // Sprinkles enemies randomly throughout the map

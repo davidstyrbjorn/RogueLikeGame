@@ -70,6 +70,9 @@ public class FloorManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.N))
             NewFloor();
+
+        if (Input.GetKeyDown(KeyCode.Z))
+            print(mapGenerator.test());
     }
 
     public void NewFloor()
@@ -195,14 +198,14 @@ public class FloorManager : MonoBehaviour
             while (!validMap)
             {
                 mapGenerator.GenerateMap();
-                map = mapGenerator.getMap();
-                Camera.main.orthographicSize = BaseValues.NormalCameraSize;
-                uiManager.OnNewFloor(false);
 
                 validMap = mapGenerator.CheckIfValidMap();
 
                 yield return new WaitForEndOfFrame();
             }
+            Camera.main.orthographicSize = BaseValues.NormalCameraSize;
+            uiManager.OnNewFloor(false);
+            map = mapGenerator.getMap();
             mapTranform.localPosition = mapOrgPos;
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
         }
