@@ -35,7 +35,7 @@ public class BaseValues : MonoBehaviour{
     // Potion stats
     // Health potion increase health instantly
     // Strength potion gives the next attack a bonus
-    public static float strengthPotionMultiplier = 1.25f;
+    public static float strengthPotionMultiplier = 1.2f;
     public static float healthPotionFactor = 0.1f;
 
     // Camera values

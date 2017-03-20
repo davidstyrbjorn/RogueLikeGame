@@ -90,6 +90,8 @@ public class UIManager : MonoBehaviour {
     private Armor currentlySelectedInventoryArmor;
     private int currentlySelectedArmorIndex = -1;
 
+    private const float doubleClickInterval = 0.1f;
+
     private Vector2 weaponInfoBoxOffset;
 
     void Awake()
@@ -286,6 +288,8 @@ public class UIManager : MonoBehaviour {
 
             #endregion
 
+            StartCoroutine("DoubleClick");
+
             if (playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
             {
                 inventoryWeaponStats.text = ""+ playerInventory.GetWeaponsList()[_index].getNormalAttack();
@@ -308,6 +312,9 @@ public class UIManager : MonoBehaviour {
         {
             potionInfoContainer.gameObject.SetActive(true);
             weaponInfoContainer.gameObject.SetActive(false);
+
+            StartCoroutine("DoubleClick_Potion");
+
             if (playerInventory.GetPotionsList()[_index].getPotionType() == Potion.potionType.HEALING)
             {
                 inventoryPotionImage.sprite = BaseValues.healthPotionSprite;
@@ -331,6 +338,8 @@ public class UIManager : MonoBehaviour {
             armorInfoHolder.gameObject.SetActive(true);
             potionInfoContainer.gameObject.SetActive(false);
             weaponInfoContainer.gameObject.SetActive(false);
+
+            StartCoroutine("DoubleClick_Armor");
 
             armorImage.sprite = playerInventory.GetArmorList()[_index].getArmorSprite();
             armorInfoStat.text = (playerInventory.GetArmorList()[_index].getArmor()*100).ToString();
@@ -540,5 +549,58 @@ public class UIManager : MonoBehaviour {
     {
         healthRemovedSlider.maxValue = playerManager.getMaxHealth();
         healthRemovedSlider.value = health;
+    }
+
+    IEnumerator DoubleClick_Armor()
+    {
+        float timer = 0;
+        while (timer <= doubleClickInterval)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                EquipSelectedArmor();
+                break;
+            }
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+    }
+
+    IEnumerator DoubleClick_Potion()
+    {
+        float timer = 0;
+        while (timer <= doubleClickInterval)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                DrinkPotion();
+                break;
+            }
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+    }
+
+    IEnumerator DoubleClick()
+    {
+        //print("Started Double Click");
+
+        float timer = 0;
+        while(timer <= doubleClickInterval)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                EquipSelectedWeapon();
+                break;
+            }
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
     }
 }

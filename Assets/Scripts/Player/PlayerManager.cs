@@ -455,7 +455,7 @@ public class PlayerManager : MonoBehaviour {
         if(_type == Potion.potionType.STRENTGH)
         {
             nextAttackBonus += BaseValues.strengthPotionMultiplier;
-            eventBox.addEvent("You feel <color=blue>energized</color>");
+            eventBox.addEvent("You feel <color=#0099cc>energized</color>");
         }
     }
 
