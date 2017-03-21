@@ -131,6 +131,32 @@ public class UIManager : MonoBehaviour {
         {
             weaponInfoBox.position = Input.mousePosition + (Vector3)weaponInfoBoxOffset;
         }
+
+        #region Hot Keys
+        // Player Inventory Hot Keys
+
+        // Toggle Inventory on and off
+        if (Input.GetKeyDown(KeyCode.I))
+            ToggleInventoryScreen();
+
+        // Navigating inside the inventory
+        if (characterInventory.gameObject.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                GoTo_WeaponsTab();
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                GoTo_ArmorTab();
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                GoTo_PotionTab();
+            }
+        }
+
+        #endregion
     }
 
     public void NewPlayerValues()

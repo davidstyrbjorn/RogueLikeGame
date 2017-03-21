@@ -70,9 +70,6 @@ public class FloorManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.N))
             NewFloor();
-
-        if (Input.GetKeyDown(KeyCode.Z))
-            print(mapGenerator.test());
     }
 
     public void NewFloor()

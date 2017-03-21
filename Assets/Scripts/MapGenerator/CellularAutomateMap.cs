@@ -111,7 +111,7 @@ public class CellularAutomateMap : MonoBehaviour
     void PlaceStatIncrease()
     {
         System.Random randomNum = new System.Random(seed.GetHashCode());
-        int placeChance = 11;
+        int placeChance = 10;
 
         for (int x = 0; x < width; x++)
         {
@@ -135,19 +135,6 @@ public class CellularAutomateMap : MonoBehaviour
                 }
             }
         }
-    }
-
-    public bool test()
-    {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                if (map[x, y] == 5)
-                    return true;
-            }
-        }
-        return false;
     }
 
     void PlaceEntrance()

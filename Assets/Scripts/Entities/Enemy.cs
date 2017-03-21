@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour {
     {
         if(transform.position != idlePosition && enemyState == BaseValues.EnemyStates.NOT_IN_COMBAT)
         {
-            transform.position = Vector3.MoveTowards(transform.position, idlePosition, 3 * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, idlePosition + Vector3.up*yOffset, 3 * Time.deltaTime);
         }
     }
     

@@ -296,7 +296,7 @@ public class PlayerManager : MonoBehaviour {
     public void hitStatIncreaser(Vector2 pos)
     {
         int randomNum = Random.Range(0, 3);
-        print(randomNum);
+        //print(randomNum);
         
         // Increasing the actual stat HERE
         if (randomNum == 0)
@@ -423,7 +423,7 @@ public class PlayerManager : MonoBehaviour {
         if (_weapon != null)
         {
             equipedWeapon = _weapon;
-            eventBox.addEvent("Equiped a  " + _weapon.getName());
+            eventBox.addEvent("Equiped " + _weapon.getName());
         }
         else
         {
@@ -437,7 +437,7 @@ public class PlayerManager : MonoBehaviour {
         if(_armor != null)
         {
             equipedArmor = _armor;
-            eventBox.addEvent("Equiped a " + _armor.getName());
+            eventBox.addEvent("Equiped " + _armor.getName());
         }else
         {
             equipedArmor = null;
@@ -504,11 +504,6 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
-    void Disintegrate()
-    {
-         
-    }
-
     public void Escape()
     {
         //saveLoad.ResetPlayerPrefs();
@@ -540,7 +535,7 @@ public class PlayerManager : MonoBehaviour {
         Vector3 ascendPos = new Vector3(transform.position.x, transform.position.y + 4.5f, transform.position.z);
         while(transform.position.y < ascendPos.y-0.5f)
         {
-            transform.position = Vector3.Lerp(transform.position, ascendPos, 0.01f);
+            transform.position = Vector3.Lerp(transform.position, ascendPos, 0.015f);
             yield return new WaitForSecondsRealtime(0.01f);       
         }
 
@@ -551,7 +546,7 @@ public class PlayerManager : MonoBehaviour {
         }
 
         // Fade in the panel
-        while(uiManager.fadePanel.color.a <= 0.95f)
+        while(uiManager.fadePanel.color.a <= 0.995f)
         {
             uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 0.05f);
             yield return new WaitForSecondsRealtime(0.01f);
@@ -563,9 +558,9 @@ public class PlayerManager : MonoBehaviour {
         currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
 
         // After we have gotten a new floor fade out into the game again
-        while (uiManager.fadePanel.color.a > 0.1f)
+        while (uiManager.fadePanel.color.a > 0.05f)
         {
-            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 0.01f);
+            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 0.05f);
             yield return new WaitForSecondsRealtime(0.01f);
         }
 

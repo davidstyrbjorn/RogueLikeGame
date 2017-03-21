@@ -145,7 +145,7 @@ public class ShopKeeper : MonoBehaviour {
                 uiManager.NewPlayerValues();
 
                 // Add to log event that we bought a weapon
-                eventBox.addEvent("Bought a <color=green>" + shopKeeperWeapons[weaponIndex].getName() + "</color>");
+                eventBox.addEvent("Bought <color=green>" + shopKeeperWeapons[weaponIndex].getName() + "</color>");
 
                 // Remove the weapon from the shop
                 shopKeeperWeapons[weaponIndex] = null;
