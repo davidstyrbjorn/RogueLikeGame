@@ -5,7 +5,7 @@ public class Enemy : MonoBehaviour {
 
     [Header("Basic stats")]
     public string name_;
-    public float maxHealth;
+    public int maxHealth;
     public int moneyDrop;
     [Range(0.1f, 10)]
     public float attackSpeed;
@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour {
     public float yOffset;   
 
     private PlayerManager playerManager;
-    private float healthPoints;
+    private double healthPoints;
     private BaseValues.EnemyStates enemyState;
     private Vector3 idlePosition;
 
@@ -33,14 +33,13 @@ public class Enemy : MonoBehaviour {
     {
         if(transform.position != idlePosition && enemyState == BaseValues.EnemyStates.NOT_IN_COMBAT)
         {
-            transform.position = Vector3.MoveTowards(transform.position, idlePosition + Vector3.up*yOffset, 3 * Time.deltaTime);
+            transform.position = idlePosition;
         }
     }
     
     void Start()
     {
         enemyState = BaseValues.EnemyStates.NOT_IN_COMBAT;
-        idlePosition = transform.position;
         critChance = Random.Range(75, 99);
         critMultiplier = 1f + Random.Range(0f, 10f) / 10;
         critMultiplier = Mathf.Round(critMultiplier * 100f) / 100f;
@@ -60,7 +59,7 @@ public class Enemy : MonoBehaviour {
     }
 
     public float getMaxHP() { return maxHealth; }
-    public float getHP() { return healthPoints; }
+    public double getHP() { return healthPoints; }
                     
     public float getAttack() { return (int)Random.Range(attack1,attack2); }
 
@@ -90,5 +89,10 @@ public class Enemy : MonoBehaviour {
     public int getAverageAttack()
     {
         return (int)((attack1 + attack2) / 2);
+    }
+
+    public void setIdlePosition()
+    {
+        idlePosition = transform.position;
     }
 }

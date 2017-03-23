@@ -160,11 +160,12 @@ public class UIManager : MonoBehaviour {
     }
 
     public void NewPlayerValues()
-    {
-        healthRemovedSliderImage.color = Color.white;
-
-        healthSlider.maxValue = playerManager.getMaxHealth();
-        healthSlider.value = playerManager.getHealth();
+    {    
+        // Player Health Slider
+        {
+            healthSlider.maxValue = playerManager.getMaxHealth();
+            healthSlider.value = playerManager.getHealth();
+        }
 
         // Update the player health text
         playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
@@ -489,7 +490,7 @@ public class UIManager : MonoBehaviour {
 
             // Setting up the slider *health
             enemyHealthSlider.maxValue = enemy.getMaxHP();
-            enemyHealthSlider.value = enemy.getHP();
+            enemyHealthSlider.value = 
 
             // The text at the top ie the name and health text
             enemyStatsText.text = enemy.getName() + "\n" + enemy.getHP() + "/" + enemy.getMaxHP();
@@ -575,6 +576,8 @@ public class UIManager : MonoBehaviour {
     {
         healthRemovedSlider.maxValue = playerManager.getMaxHealth();
         healthRemovedSlider.value = health;
+
+        healthRemovedSliderImage.color = Color.white;
     }
 
     IEnumerator DoubleClick_Armor()

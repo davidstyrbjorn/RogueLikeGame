@@ -153,7 +153,8 @@ public class FloorManager : MonoBehaviour
                         GameObject enemyShell = Instantiate(enemyMaster.getNewEnemy(currentFloorNumber), new Vector3(x * tileWidth, (y * tileWidth), 0), Quaternion.identity) as GameObject;
                         enemyShell.GetComponent<Enemy>().SetUpEnemy(currentFloorNumber);
                         enemyShell.transform.parent = transform;
-                        enemyShell.transform.position = new Vector2(enemyShell.transform.position.x, enemyShell.transform.position.y + enemyShell.GetComponent<Enemy>().yOffset);
+                        enemyShell.transform.position = new Vector2(enemyShell.transform.position.x, enemyShell.transform.position.y) + Vector2.up * enemyShell.GetComponent<Enemy>().yOffset;
+                        enemyShell.GetComponent<Enemy>().setIdlePosition(); // After the enemy position is good we can set it's idle position
 
                         // Adding the enemy to the enemy-cordinate list
                         enemyList.Add(new Vector2(x, y), enemyShell);
