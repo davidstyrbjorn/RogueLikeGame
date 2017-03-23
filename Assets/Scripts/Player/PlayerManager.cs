@@ -29,7 +29,6 @@ public class PlayerManager : MonoBehaviour {
     private SpriteRenderer spre;
 
     private Enemy currentEnemy;
-    private Transform lastEnemy;
     private Vector2 currentEnemyPos;
     private string currentEnemyName;
 
@@ -72,9 +71,6 @@ public class PlayerManager : MonoBehaviour {
                 disengageCombat();
             }
         }
-
-        if (lastEnemy != null)
-            lastEnemy.transform.position = Vector2.MoveTowards(lastEnemy.position, combatTilePos, 14 * Time.deltaTime);
     }
 
     void Start()
@@ -127,7 +123,6 @@ public class PlayerManager : MonoBehaviour {
 
     public void onEngage(int enemy_x, int enemy_y)
     {
-        lastEnemy = null;
 
         currentState = BaseValues.PlayerStates.IN_COMBAT;
 
@@ -275,7 +270,6 @@ public class PlayerManager : MonoBehaviour {
     {
         if(currentEnemy != null && currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
-            lastEnemy = currentEnemy.transform;
             // Stop looping the combat loop
             StopCombatLoops();
             currentEnemy.setHP(currentEnemy.maxHealth);
