@@ -101,8 +101,7 @@ public class PlayerManager : MonoBehaviour {
         attack = saveLoad.GetPlayerAttack();
 
         // Armor set up
-        // @ for now starts at 0 implement save and load!
-        armor = 0;
+        armor = saveLoad.GetPlayerArmor();
 
         // Setting up attack speed
         attackSpeed = saveLoad.GetPlayerAttackSpeed();
@@ -503,6 +502,7 @@ public class PlayerManager : MonoBehaviour {
         //saveLoad.ResetPlayerPrefs();
         saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
         saveLoad.SaveMaxMoney(maxMoney);
+        saveLoad.SavePlayerArmor(armor);
 
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());

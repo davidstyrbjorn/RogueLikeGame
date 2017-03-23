@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour {
     public float yOffset;   
 
     private PlayerManager playerManager;
-    private double healthPoints;
+    private float healthPoints;
     private BaseValues.EnemyStates enemyState;
     private Vector3 idlePosition;
 
@@ -59,7 +59,7 @@ public class Enemy : MonoBehaviour {
     }
 
     public float getMaxHP() { return maxHealth; }
-    public double getHP() { return healthPoints; }
+    public float getHP() { return healthPoints; }
                     
     public float getAttack() { return (int)Random.Range(attack1,attack2); }
 

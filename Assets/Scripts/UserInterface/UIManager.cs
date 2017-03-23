@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -202,14 +203,13 @@ public class UIManager : MonoBehaviour {
             if (playerManager.getEquipedWeapon().getCritChance() == -1)
             {
                 inventoryCriticalChanceText.text = "0%";
-                inventoryCurrentWeaponStats.text = playerManager.getEquipedWeapon().getNormalAttack().ToString();
+                inventoryCurrentWeaponStats.text = playerManager.getEquipedWeapon().getNormalAttack().ToString() + "\n0%";
             }
             else
             {
                 inventoryCriticalChanceText.text = playerManager.getEquipedWeapon().getCritChance().ToString() + "%";
-                inventoryCurrentWeaponStats.text = "" + playerManager.getEquipedWeapon().getNormalAttack() + "\n" +
-                    playerManager.getEquipedWeapon().getCritChance() + "\n" +
-                    playerManager.getEquipedWeapon().getCriticalMultiplier();
+                inventoryCurrentWeaponStats.text = "" + playerManager.getEquipedWeapon().getNormalAttack() + "\n"
+                    + playerManager.getEquipedWeapon().getCritChance() + "%";
             }
         }
         // If the player has no weapon equipeds
@@ -219,7 +219,7 @@ public class UIManager : MonoBehaviour {
             inventoryCurrentWeaponImage.color = Color.clear;
             inventoryCurrentWeaponImage.sprite = null;
             inventoryCurrentWeaponName.text = "None Equiped";
-            inventoryCurrentWeaponStats.text = "0";
+            inventoryCurrentWeaponStats.text = "0\n0%";
 
             // Inventory bottom right
             inventoryPhysicalDamageText.text = playerManager.getAttack().ToString();
@@ -309,9 +309,9 @@ public class UIManager : MonoBehaviour {
             }
 
             if (excessCritChance > 0)
-                inventoryCriticalChanceText.text += " <color=green>  (+" + (excessCritChance-1) + ")</color>";
+                inventoryCriticalChanceText.text += " <color=green>  (+" + (excessCritChance) + ")</color>";
             if (excessCritChance < 0)
-                inventoryCriticalChanceText.text += " <color=red>  (" + (excessCritChance-1) + ")</color>";
+                inventoryCriticalChanceText.text += " <color=red>  (" + (excessCritChance) + ")</color>";
 
             #endregion
 
@@ -490,10 +490,11 @@ public class UIManager : MonoBehaviour {
 
             // Setting up the slider *health
             enemyHealthSlider.maxValue = enemy.getMaxHP();
-            enemyHealthSlider.value = 
+
+            enemyHealthSlider.value = enemy.getHP();
 
             // The text at the top ie the name and health text
-            enemyStatsText.text = enemy.getName() + "\n" + enemy.getHP() + "/" + enemy.getMaxHP();
+            enemyStatsText.text = enemy.getName() + "\n" + Mathf.CeilToInt(enemy.getHP())  + "/" + enemy.getMaxHP();
         }
     }
 

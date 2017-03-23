@@ -49,10 +49,23 @@ public class SaveLoad : MonoBehaviour{
         return PlayerPrefs.GetFloat("playerAttackSpeed");
     }
 
+    public float GetPlayerArmor()
+    {
+        if (!PlayerPrefs.HasKey("playerArmor"))
+            PlayerPrefs.SetFloat("playerArmor", 0);
+        return PlayerPrefs.GetFloat("playerArmor");
+    }
+
+    public void SavePlayerArmor(float armor)
+    {
+        PlayerPrefs.SetFloat("playerArmor", armor);
+    }
+
     public void ResetPlayerPrefs()
     {
         PlayerPrefs.SetFloat("playerMaxHealth", BaseValues.PlayerBaseHP);
         PlayerPrefs.SetFloat("playerAttack", BaseValues.PlayerBaseAttack);
         PlayerPrefs.SetInt("playerMaxMoney", 50);
+        PlayerPrefs.SetFloat("playerArmor", 0);
     }
 }   
