@@ -92,6 +92,7 @@ public class UIManager : MonoBehaviour {
     private int currentlySelectedArmorIndex = -1;
 
     private const float doubleClickInterval = 0.1f;
+    private const float fadeSpeed = 3.5f;
 
     private Vector2 weaponInfoBoxOffset;
 
@@ -105,6 +106,8 @@ public class UIManager : MonoBehaviour {
 
     void Start()
     {
+        StartCoroutine("FadeIn");
+
         NewPlayerValues();
         UpdatePotionSlots();
         UpdateWeaponSlots();
@@ -632,5 +635,18 @@ public class UIManager : MonoBehaviour {
 
             yield return null;
         }
+    }
+
+    IEnumerator FadeIn()
+    {
+        fadePanel.color = Color.black;
+
+        while (fadePanel.color != Color.clear)
+        {
+            fadePanel.color = Color.Lerp(fadePanel.color, Color.clear, fadeSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        fadePanel.color = Color.clear;
     }
 }

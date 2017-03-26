@@ -5,6 +5,9 @@ public class BaseValues : MonoBehaviour{
     public static int   MAP_WIDTH               = 25;
     public static int   MAP_HEIGHT              = 25;
 
+    public static int   HUB_WIDTH               = 9;
+    public static int   HUB_HEIGHT              = 9;
+
     // Player base values
     public static float PlayerBaseHP            = 100;
     public static float PlayerBaseAttack        = 10;

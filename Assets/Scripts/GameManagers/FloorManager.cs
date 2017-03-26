@@ -238,11 +238,4 @@ public class FloorManager : MonoBehaviour
     {
         return currentFloorNumber;
     }
-
-    /*
-    void OnGUI()
-    {
-        GUI.TextField(new Rect(800 / 2 - 30, 4, 60, 25), "Floor: " + currentFloorNumber);
-    }
-     */
 }

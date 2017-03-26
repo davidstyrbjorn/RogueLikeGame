@@ -32,18 +32,30 @@ public class Pause : MonoBehaviour {
         {
             if (Time.timeScale == 0)
             {
-                pauseTransform.gameObject.SetActive(false);
-                Time.timeScale = 1;
-                StopCoroutine("pausedCoruntine");
+                PauseOff();
             }
             else
             {
-                pauseTransform.gameObject.SetActive(true);
-                Time.timeScale = 0;
-                PickRandomTip();
-                StartCoroutine("pausedCoruntine");
+                PauseOn();
             }
         }
+    }
+
+    void PauseOn()
+    {
+        pauseTransform.gameObject.SetActive(true);
+        Time.timeScale = 0;
+        AudioListener.pause = true;
+        PickRandomTip();
+        StartCoroutine("pausedCoruntine");
+    }
+
+    void PauseOff()
+    {
+        pauseTransform.gameObject.SetActive(false);
+        Time.timeScale = 1;
+        AudioListener.pause = false;
+        StopCoroutine("pausedCoruntine");
     }
 
     void PickRandomTip()

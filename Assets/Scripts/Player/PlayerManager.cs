@@ -57,7 +57,7 @@ public class PlayerManager : MonoBehaviour {
 
         if (currentEnemy != null)
         {
-            uiManager.enemyStatScreen.position = (currentEnemy.transform.position + Vector3.up * 10 + Vector3.left * 1.1f);
+            uiManager.enemyStatScreen.position = (currentEnemy.transform.position + Vector3.up * 7 + Vector3.left * 1.1f);
         }
 
         if (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
@@ -313,7 +313,7 @@ public class PlayerManager : MonoBehaviour {
             float newArmor = armor + BaseValues.ArmorStatIncrease;
             armor = newArmor;
 
-            eventBox.addEvent("<color=#8d94a0>Armor</color>  increased to <color=#8d94a0>" + armor*100 + "points</color>");
+            eventBox.addEvent("<color=#8d94a0>Armor</color>  increased by  <color=#8d94a0>" + BaseValues.ArmorStatIncrease*100 + "</color>  points");
         }
 
         // Removing the stat increaser after we have used it
