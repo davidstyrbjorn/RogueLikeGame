@@ -169,6 +169,8 @@ public class PlayerManager : MonoBehaviour {
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
 
+                PlayerPrefs.SetInt("STATS_DAMAGE_DEALT", PlayerPrefs.GetInt("STATS_DAMAGE_DEALT",0) + (int)total_attack_power);
+
                 // Write to the text box
                 eventBox.addEvent("You hit the " + currentEnemyName + " for <color=red>" + total_attack_power + " </color>  damage!");
 
@@ -215,6 +217,7 @@ public class PlayerManager : MonoBehaviour {
         else
             _hp = Mathf.CeilToInt((_hp * (1 - (armor + equipedArmor.getArmor()))));
 
+        PlayerPrefs.SetInt("STATS_DAMAGE_TAKEN", PlayerPrefs.GetInt("STATS_DAMAGE_TAKEN",0) + (int)_hp);
         healthPoints -= _hp;
         eventBox.addEvent(currentEnemyName + " hit you for " + _hp + " damge!");
 
@@ -249,6 +252,9 @@ public class PlayerManager : MonoBehaviour {
                 floorManager.enemyList.Remove(currentEnemyPos);
                 floorManager.map[(int)currentEnemyPos.x, (int)currentEnemyPos.y] = 0;
             }
+
+            PlayerPrefs.SetInt("STATS_ENEMIES_KILLED", PlayerPrefs.GetInt("STATS_ENEMIES_KILLED",0) + 1);
+
             // Destroy our currentEnemy since it died
             Destroy(currentEnemy.gameObject);
             currentEnemy = null;
@@ -518,7 +524,7 @@ public class PlayerManager : MonoBehaviour {
             
             yield return new WaitForSecondsRealtime(0.01f);
         }                   
-        uiManager.LoadScene("StartScene");
+        uiManager.LoadScene("Hub");
     }
 
     public IEnumerator AscendNextFloor()

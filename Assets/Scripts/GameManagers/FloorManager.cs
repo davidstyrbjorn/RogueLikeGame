@@ -222,6 +222,8 @@ public class FloorManager : MonoBehaviour
         yield return new WaitForFixedUpdate();
         RenderMap();
         playerMove.NewFloor(map);
+
+        PlayerPrefs.SetInt("STATS_FLOORS_ASCENDED", PlayerPrefs.GetInt("STATS_FLOORS_ASCENDED") + 1);
     }
 
     public float GetTileWidth()

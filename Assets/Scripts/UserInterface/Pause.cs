@@ -6,10 +6,17 @@ using UnityEngine.SceneManagement;
 public class Pause : MonoBehaviour {
 
     private float pauseTimer;
-    public RectTransform pauseTransform;
+    public RectTransform pauseTransform, confirmExit;
     public Text pauseText, tipsText;
 
+    private UIManager uiManager;
+
     public string[] tips;
+
+    void Start()
+    {
+        uiManager = FindObjectOfType<UIManager>();
+    }
 
     void Update()
     {
@@ -19,10 +26,27 @@ public class Pause : MonoBehaviour {
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                Time.timeScale = 1;
-                SceneManager.LoadScene("StartScene");
+                if (!confirmExit.gameObject.activeSelf)
+                {
+                    confirmExit.gameObject.SetActive(true);
+                }
+                else
+                {
+                    Exit();
+                }
             }
         }
+    }
+
+    public void DisableConfirmedExit()
+    {
+        confirmExit.gameObject.SetActive(false);
+    }
+
+    public void Exit()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Hub");
     }
 
     void TogglePauseInput()
@@ -30,13 +54,19 @@ public class Pause : MonoBehaviour {
         // Pause
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (Time.timeScale == 0)
+            if (!uiManager.characterInventory.gameObject.activeSelf)
             {
-                PauseOff();
-            }
-            else
+                if (Time.timeScale == 0)
+                {
+                    PauseOff();
+                }
+                else
+                {
+                    PauseOn();
+                }
+            }else
             {
-                PauseOn();
+                uiManager.ToggleInventoryScreen();
             }
         }
     }

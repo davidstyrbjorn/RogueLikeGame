@@ -144,6 +144,7 @@ public class PlayerMove_Hub : MonoBehaviour {
 
             if(currentMap[curr_x,curr_y] == 2)
             {
+                StopAllCoroutines();
                 StartCoroutine("StartGame");
             }
         }
