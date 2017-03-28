@@ -86,7 +86,7 @@ public class PlayerMove_Hub : MonoBehaviour {
         if (Input.anyKey)
         {
             // Move left
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
                 anim.SetBool("WalkSide", true);
                 // Move as long as we arent hitting any wall or an enemy
@@ -101,7 +101,7 @@ public class PlayerMove_Hub : MonoBehaviour {
             }
 
             // Move to the left 
-            else if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             {
                 anim.SetBool("WalkSide", true);
                 spre.flipX = true;
@@ -116,7 +116,7 @@ public class PlayerMove_Hub : MonoBehaviour {
             }
 
             // Move upwards
-            else if (Input.GetKey(KeyCode.W))
+            else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             {
                 anim.SetBool("WalkVertical", true);
                 // Move as long as we arent hitting any wall or an enemy
@@ -129,7 +129,7 @@ public class PlayerMove_Hub : MonoBehaviour {
             }
 
             // Move downwards
-            else if (Input.GetKey(KeyCode.S))
+            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
             {
                 anim.SetBool("WalkVertical", true);
                 // Move as long as we arent hitting any wall or an enemy

@@ -217,7 +217,9 @@ public class PlayerMove : MonoBehaviour {
     void CheckCanMove()
     {
         if ((Vector2)transform.position == currentWorldPosition)
-            canMove = true;                                     
+            canMove = true;
+        //if (Mathf.Approximately(transform.position.x, currentWorldPosition.x) && Mathf.Approximately(transform.position.y, currentWorldPosition.y))
+           //canMove = true;                              
     }
 
     public Vector2 getCurrentPosition() { return new Vector2(curr_x, curr_y); }

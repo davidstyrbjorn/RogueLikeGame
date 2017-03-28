@@ -16,12 +16,17 @@ public class ShopKeeper : MonoBehaviour {
     [Header("Canvas Holder")]
     public RectTransform shopHolder;
 
-    [Header("Shop Keepers Variables")]
+    [Header("Shop Keepers Variables/Weapons")]
     public Text maxMoneyInfoText;
     public Text itemInfoText;
     public Image[] shopWeaponSlots;
     private Weapon currentWeaponSelected;
     private Weapon[] shopKeeperWeapons;
+
+    [Header("Shop Keepers Variables/Armor")]
+    public Image[] shopArmorSlots;
+    private Armor currentArmorSelected;
+    private Armor[] shopKeeperArmor;
 
     private int weaponIndex;
 
