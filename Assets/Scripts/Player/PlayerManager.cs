@@ -38,6 +38,8 @@ public class PlayerManager : MonoBehaviour {
     public GameObject SpriteHoverEffectObject;
     public GameObject CombatTextPrefab;
 
+    private SoundManager soundManager;
+
     public Texture2D[] maskTextures;
 
     // Combat position variables
@@ -87,6 +89,7 @@ public class PlayerManager : MonoBehaviour {
         transitionScript = FindObjectOfType<ScreenTransitionImageEffect>();
         canvas = FindObjectOfType<Canvas>();
         spre = GetComponentInChildren<SpriteRenderer>();
+        soundManager = FindObjectOfType<SoundManager>();
 
         GameStart();
     }
@@ -170,6 +173,9 @@ public class PlayerManager : MonoBehaviour {
                 uiManager.UpdateEnemyUI(currentEnemy);
 
                 PlayerPrefs.SetInt("STATS_DAMAGE_DEALT", PlayerPrefs.GetInt("STATS_DAMAGE_DEALT",0) + (int)total_attack_power);
+
+                // Sound
+                soundManager.SwingSword();
 
                 // Write to the text box
                 eventBox.addEvent("You hit the " + currentEnemyName + " for <color=red>" + total_attack_power + " </color>  damage!");
@@ -357,6 +363,9 @@ public class PlayerManager : MonoBehaviour {
                 GameObject weaponEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), (pos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
                 weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
 
+                // Sound
+                soundManager.OpenedChest();
+
                 // Message the player he obtained a weapon
                 // Checking if we can add the new weapon the the weapon list
                 if (playerInventory.addWeapon(foundWeapon) == true)
@@ -374,8 +383,11 @@ public class PlayerManager : MonoBehaviour {
                 GameObject armorEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), (pos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
                 armorEffect.GetComponent<SpriteRenderer>().sprite = foundArmor.getArmorSprite();
 
+                // Sound
+                soundManager.OpenedChest();
+
                 // Check if we can add the found armors
-                if(playerInventory.addArmor(foundArmor) == true)
+                if (playerInventory.addArmor(foundArmor) == true)
                 {
                     if(equipedArmor == null)
                     {
@@ -392,6 +404,9 @@ public class PlayerManager : MonoBehaviour {
 
                 GameObject spriteHover = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
                 spriteHover.GetComponent<SpriteRenderer>().sprite = foundPotion.getPotionSprite();
+
+                // Sound
+                soundManager.OpenedChest();
 
                 uiManager.UpdatePotionSlots();
             }
