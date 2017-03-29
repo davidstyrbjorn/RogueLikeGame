@@ -96,6 +96,8 @@ public class UIManager : MonoBehaviour {
 
     private Vector2 weaponInfoBoxOffset;
 
+    private SoundManager soundManager;
+
     void Awake()
     {
         floorManager = FindObjectOfType<FloorManager>();
@@ -115,6 +117,8 @@ public class UIManager : MonoBehaviour {
         float width = weaponInfoBox.rect.width;
         //float height = weaponInfoBox.rect.height;
         weaponInfoBoxOffset = new Vector2(width*0.75f, 60);
+
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
     void Update()
@@ -383,14 +387,24 @@ public class UIManager : MonoBehaviour {
     // Equips the currently inventory selected weapon
     public void EquipSelectedWeapon()
     {
-        if(currentlySelectedInventoryWeapon != null)
+        if (currentlySelectedInventoryWeapon != null)
+        {
+            soundManager.InventoryEquip();
             playerManager.EquipWeapon(currentlySelectedInventoryWeapon);
+
+            currentlySelectedInventoryWeapon = null;
+        }
     }
 
     public void EquipSelectedArmor()
     {
         if (currentlySelectedInventoryArmor != null)
+        {
+            soundManager.InventoryEquip();
             playerManager.EquipArmor(currentlySelectedInventoryArmor);
+
+            currentlySelectedInventoryArmor = null;
+        }
     }
 
     public void DrinkPotion()
@@ -527,6 +541,11 @@ public class UIManager : MonoBehaviour {
     {
         //potionTab.gameObject.SetActive(false);
         //weaponsTab.gameObject.SetActive(false);
+        if (!characterInventory.gameObject.activeSelf)
+        {
+            soundManager.OpenedInventory();
+        }
+            
         characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf);
     }
     public void GoTo_WeaponsTab()

@@ -3,9 +3,13 @@ using System.Collections;
 
 public class SoundManager : MonoBehaviour {
 
+    [Header("Combat Sound Effects")]
     public GameObject ChestSFX;
-
     public GameObject[] SwordSwishSFX;
+
+    [Header("User Interface Sound Effects")]
+    public GameObject ClothInventory;
+    public GameObject MetalClash;
 
     public void OpenedChest()
     {
@@ -18,5 +22,18 @@ public class SoundManager : MonoBehaviour {
         int randIndex = Random.Range(0, SwordSwishSFX.Length);
         GameObject temp = Instantiate(SwordSwishSFX[randIndex], transform.position, Quaternion.identity) as GameObject;
         Destroy(temp, 2.25f);
+    }
+
+    /* User Interface */
+    public void OpenedInventory()
+    {
+        GameObject temp = Instantiate(ClothInventory, transform.position, Quaternion.identity) as GameObject;
+        Destroy(temp,1);
+    }
+
+    public void InventoryEquip()
+    {
+        GameObject temp = Instantiate(MetalClash, transform.position, Quaternion.identity) as GameObject;
+        Destroy(temp, 0.6f);
     }
 }
