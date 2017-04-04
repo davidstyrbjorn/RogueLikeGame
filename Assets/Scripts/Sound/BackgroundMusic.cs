@@ -8,13 +8,9 @@ public class BackgroundMusic : MonoBehaviour {
     [Range(0, 1)]
     public float volume;
 
-    void Start()
-    {
-        StartBackgroundMusic();    
-    }
-
     public void StartBackgroundMusic()
     {
+        audioSource.Play();
         StartCoroutine(startBackgroundMusic());
     }
 
@@ -22,7 +18,6 @@ public class BackgroundMusic : MonoBehaviour {
     {
         /* Starting volume should be zero */
         audioSource.volume = 0;
-        audioSource.Play();
         while(audioSource.volume < volume)
         {
             /* Exponential increase of volume */

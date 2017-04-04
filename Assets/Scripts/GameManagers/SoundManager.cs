@@ -11,6 +11,19 @@ public class SoundManager : MonoBehaviour {
     public GameObject ClothInventory;
     public GameObject MetalClash;
 
+    private BackgroundMusic backgroundAudioSource;
+
+    void Start()
+    {
+        backgroundAudioSource = GetComponentInChildren<BackgroundMusic>();
+        PlayBackgroundMusic();
+    }
+
+    public void PlayBackgroundMusic()
+    {
+        backgroundAudioSource.StartBackgroundMusic();
+    }
+
     public void OpenedChest()
     {
         GameObject temp = Instantiate(ChestSFX, transform.position, Quaternion.identity) as GameObject;
