@@ -4,6 +4,18 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
+    struct FoundWeapon
+    {
+        public Weapon weapon;
+        public Vector2 chestPos;
+    }
+
+    struct FoundArmor
+    {
+        public Armor armor;
+        public Vector2 chestPos; 
+    }
+
     /* Player Stats */
     private float attackSpeed;
     private float maxHealthPoints;
@@ -34,6 +46,9 @@ public class PlayerManager : MonoBehaviour {
 
     private Weapon equipedWeapon;
     private Armor equipedArmor;
+
+    private FoundWeapon foundWeapon;
+    private FoundArmor foundArmor;
 
     public GameObject SpriteHoverEffectObject;
     public GameObject CombatTextPrefab;
@@ -358,43 +373,35 @@ public class PlayerManager : MonoBehaviour {
 
             if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.WEAPON)
             {
-                Weapon foundWeapon = chestMaster.makeNewWeapon();
+                // Getting the actual weapon
+                Weapon _foundWeapon = chestMaster.makeNewWeapon();
+                foundWeapon.weapon = _foundWeapon;
+                foundWeapon.chestPos = pos;
 
-                GameObject weaponEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), (pos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
-                weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.getWeaponSprite();
+                // Stopping the player animations
+                playerMove.getAnim().SetBool("WalkVertical", false);
+                playerMove.getAnim().SetBool("WalkSide", false);
 
                 // Sound
                 soundManager.OpenedChest();
 
-                // Message the player he obtained a weapon
-                // Checking if we can add the new weapon the the weapon list
-                if (playerInventory.addWeapon(foundWeapon) == true)
-                {
-                    // Only equip the new weapon if the player is empty handed
-                    if(equipedWeapon == null)
-                        EquipWeapon(foundWeapon);
-                }
-                uiManager.UpdateWeaponSlots();
+                // Toggling the confirm weapon window
+                uiManager.ConfirmWeapon(foundWeapon.weapon);
             }
             else if(floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.ARMOR)
             {
-                Armor foundArmor = chestMaster.makeNewArmor();
+                Armor _foundArmor = chestMaster.makeNewArmor();
+                foundArmor.armor = _foundArmor;
+                foundArmor.chestPos = pos;
 
-                GameObject armorEffect = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), (pos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
-                armorEffect.GetComponent<SpriteRenderer>().sprite = foundArmor.getArmorSprite();
+                // Stopping the player animations
+                playerMove.getAnim().SetBool("WalkVertical", false);
+                playerMove.getAnim().SetBool("WalkSide", false);
 
                 // Sound
                 soundManager.OpenedChest();
 
-                // Check if we can add the found armors
-                if (playerInventory.addArmor(foundArmor) == true)
-                {
-                    if(equipedArmor == null)
-                    {
-                        EquipArmor(foundArmor);
-                    }
-                }
-                uiManager.UpdateArmorSlots();
+                uiManager.ConfirmArmor(foundArmor.armor);
             }
             else if (floorManager.chestList[pos].GetComponent<Chest>().getChestDrop() == Chest.ChestDrops.POTION)
             {
@@ -516,6 +523,53 @@ public class PlayerManager : MonoBehaviour {
             else
                 uiManager.DisableEnemyUI();
         }
+    }
+
+    public void ConfirmWeapon_PickUp()
+    {
+        // Checking if we can add the new weapon the the weapon list
+        if (playerInventory.addWeapon(foundWeapon.weapon) == true)
+        {
+            // The weapon coming out of the chest effect
+            GameObject weaponEffect = Instantiate(SpriteHoverEffectObject, new Vector3(foundWeapon.chestPos.x * floorManager.GetTileWidth(), (foundWeapon.chestPos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
+            weaponEffect.GetComponent<SpriteRenderer>().sprite = foundWeapon.weapon.getWeaponSprite();
+
+            // Only equip the new weapon if the player is empty handed
+            if (equipedWeapon == null)
+                EquipWeapon(foundWeapon.weapon);
+        }
+
+        uiManager.confirmWeapon.gameObject.SetActive(false);
+        uiManager.UpdateWeaponSlots();
+    }
+
+    public void ConfirmArmor_PickUp()
+    {
+        // Check if we can add the found armors
+        if (playerInventory.addArmor(foundArmor.armor) == true)
+        {
+            // The armor coming out of the chest effect
+            GameObject armorEffect = Instantiate(SpriteHoverEffectObject, new Vector3(foundArmor.chestPos.x * floorManager.GetTileWidth(), (foundArmor.chestPos.y * floorManager.GetTileWidth()) + floorManager.getChestHeight(), 0), Quaternion.identity) as GameObject;
+            armorEffect.GetComponent<SpriteRenderer>().sprite = foundArmor.armor.getArmorSprite();
+
+            if (equipedArmor == null)
+            {
+                EquipArmor(foundArmor.armor);
+            }
+        }
+
+        uiManager.confirmWeapon.gameObject.SetActive(false);
+        uiManager.UpdateArmorSlots();
+    }
+
+    public void ConfirmWeapon_Decline()
+    {
+        uiManager.confirmWeapon.gameObject.SetActive(false);
+
+        /*
+        uiManager.UpdateWeaponSlots();
+        uiManager.UpdateArmorSlots();
+        */
     }
 
     public void Escape()

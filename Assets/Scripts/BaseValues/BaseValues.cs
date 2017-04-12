@@ -35,6 +35,15 @@ public class BaseValues : MonoBehaviour{
     public static Sprite healthPotionSprite;
     public static Sprite strengthPotionSprite;
 
+    // Inventory icon
+    // Weapon, Crit symbol, armor symbol, money
+    public Sprite AttackSymbolSprite;
+    public Sprite CriticalSymbolSprite;
+    public Sprite ArmorSymbolSprite;
+    public static Sprite attackSymbolSprite;
+    public static Sprite criticalSymbolSprite;
+    public static Sprite armorSymbolSprite;
+
     // Potion stats
     // Health potion increase health instantly
     // Strength potion gives the next attack a bonus
@@ -80,9 +89,13 @@ public class BaseValues : MonoBehaviour{
         HEAVY   = 25,
     }
 
-    void Start()
+    private void Start()
     {
         healthPotionSprite = HealthPotionSprite;
         strengthPotionSprite = StrengthPotionSprite;
+
+        attackSymbolSprite = AttackSymbolSprite;
+        criticalSymbolSprite = CriticalSymbolSprite;
+        armorSymbolSprite = ArmorSymbolSprite;
     }
 }

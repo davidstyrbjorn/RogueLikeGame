@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour {
     public Text weaponInfo;
     public Text inventoryHealthText;
     public Text inventoryHealthAddedText;
+    public Text fullyExploredMap;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -76,6 +77,16 @@ public class UIManager : MonoBehaviour {
     public Image armorImage;
     public Text inventoryArmorName;
 
+    [Space(25)]
+    [Header("Chest/Confirm Weapon")]
+    public RectTransform confirmWeapon;
+    public Text itemName;
+    public Text stat1; // Damage
+    public Text stat2; // Crit Chance
+    public Image icon1;
+    public Image icon2;
+    public Button actionButton;
+
     // Attribute classes
     private PlayerManager playerManager;
     private PlayerInventory playerInventory;
@@ -98,7 +109,9 @@ public class UIManager : MonoBehaviour {
 
     private SoundManager soundManager;
 
-    void Awake()
+    private float fullyExploredMapTimer = 0;
+
+    private void Awake()
     {
         floorManager = FindObjectOfType<FloorManager>();
         playerInventory = FindObjectOfType<PlayerInventory>();
@@ -106,7 +119,7 @@ public class UIManager : MonoBehaviour {
         eventBox = FindObjectOfType<EventBox>();
     }
 
-    void Start()
+    private void Start()
     {
         StartCoroutine("FadeIn");
 
@@ -121,14 +134,26 @@ public class UIManager : MonoBehaviour {
         soundManager = FindObjectOfType<SoundManager>();
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
             logEventScreen.gameObject.SetActive(!logEventScreen.gameObject.activeInHierarchy);
 
+        // Flash text things
         if(newMoneyText.color != Color.clear)
         {
             newMoneyText.color = Color.Lerp(newMoneyText.color, Color.clear, 1.5f * Time.deltaTime);
+        }
+        if(fullyExploredMap.color != Color.clear)
+        {   
+            if(fullyExploredMapTimer >= 0)
+            {
+                fullyExploredMapTimer -= Time.deltaTime;
+            }
+            else
+            {
+                fullyExploredMap.color = Color.Lerp(fullyExploredMap.color, Color.clear, 0.5f * Time.deltaTime);
+            }
         }
 
         if (healthRemovedSliderImage.color != Color.clear)
@@ -601,6 +626,56 @@ public class UIManager : MonoBehaviour {
         healthRemovedSlider.value = health;
 
         healthRemovedSliderImage.color = Color.white;
+    }
+
+    public void FullyExploredMap()
+    {
+        fullyExploredMapTimer = 3;
+        fullyExploredMap.color = Color.white;
+    }
+
+    public void ConfirmArmor(Armor armor)
+    {
+        actionButton.onClick.RemoveAllListeners();
+        actionButton.onClick.AddListener(playerManager.ConfirmArmor_PickUp);
+
+        /* Setting icon and sprites */
+        icon1.sprite = BaseValues.armorSymbolSprite;
+        icon2.sprite = null;
+        icon2.color = Color.clear;
+        stat1.text = string.Empty;
+        stat2.text = string.Empty;
+
+        confirmWeapon.gameObject.SetActive(true);
+
+        itemName.text = armor.getName();
+
+        /* Defense Points DP(hehe) */
+        stat1.text = armor.armorPercentage.ToString();
+    }
+
+    public void ConfirmWeapon(Weapon weapon)
+    {
+        actionButton.onClick.RemoveAllListeners();
+        actionButton.onClick.AddListener(playerManager.ConfirmWeapon_PickUp);
+
+        /* Setting icon and sprites */
+        icon1.sprite = BaseValues.attackSymbolSprite;
+        icon2.sprite = BaseValues.criticalSymbolSprite;
+        icon2.color = Color.white;
+        stat1.text = string.Empty;
+        stat2.text = string.Empty;
+
+        confirmWeapon.gameObject.SetActive(true);
+
+        itemName.text = weapon.getName();
+
+        /* Weapon - Critical */
+        stat1.text = weapon.getNormalAttack().ToString();
+        if (weapon.getCritChance() != -1)
+            stat2.text = weapon.getCritChance().ToString() + "%";
+        else
+            stat2.text = "0%";
     }
 
     IEnumerator DoubleClick_Armor()

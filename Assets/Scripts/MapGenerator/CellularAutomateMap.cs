@@ -52,9 +52,33 @@ public class CellularAutomateMap : MonoBehaviour
 
     public int enemySpawnChance;
 
+    [SerializeField]
+    public int groundCount;
+
     public void GenerateMap()
     {
         seed = Guid.NewGuid().ToString();
+
+        System.Random rand = new System.Random(seed.GetHashCode());
+
+        int num = rand.Next(0, 100);
+
+        /* Map dimensions */
+        if(num >= 0 && num <= 50) // 32x32
+        {
+            width = 32;
+            height = 32;
+        }
+        else if(num >= 51 && num <= 75) // 48x16
+        {
+            width = 48;
+            height = 16;
+        }
+        else if(num >= 76 && num <= 100) // 16x48
+        {
+            width = 16;
+            height = 48;
+        }
 
         BaseValues.MAP_WIDTH = width;
         BaseValues.MAP_HEIGHT = height;
@@ -89,6 +113,8 @@ public class CellularAutomateMap : MonoBehaviour
                     tileCount++;
             }
         }
+
+        groundCount = tileCount;
 
         if (tileCount >= minimumGroundCount)
             return true;

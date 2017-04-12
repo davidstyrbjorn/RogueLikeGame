@@ -15,6 +15,8 @@ public class ShopKeeper : MonoBehaviour {
 
     [Header("Canvas Holder")]
     public RectTransform shopHolder;
+    public RectTransform[] WEAPON;
+    public RectTransform[] ARMOR;
 
     [Header("Shop Keepers Variables/Weapons")]
     public Text maxMoneyInfoText;
@@ -29,15 +31,22 @@ public class ShopKeeper : MonoBehaviour {
     private Armor[] shopKeeperArmor;
 
     private int weaponIndex;
+    private int armorIndex;
 
     [Header("Player Variables")]
     public RectTransform playerWeaponInfo;
+    public RectTransform playerArmorInfo;
+
     public Text playerWeaponName;
     public Text playerWeaponAttackText;
     public Text playerWeaponCostText;
+
+    [Space(25)]
     public Image[] playerWeaponSlots;
+    public Image[] playerArmorSlots;
 
     private int playerWeaponIndex;
+    private int playerArmorIndex;
 
     void Start()
     {
@@ -58,12 +67,17 @@ public class ShopKeeper : MonoBehaviour {
 
     public void StartTransaction()
     {
+        toggleShopHolder(true);
+        UpdatePlayerWeaponSlots();
+        UpdatePlayerArmorSlots();
+
         if (!shopActive)
         {
             shopActive = true;
-            toggleShopHolder(true);
+
             FillShopKeeperWeaponsList();
-            UpdatePlayerWeaponSlots();
+            FillShopKeeperArmorList();
+
             SetMaxMoneyInfo();
         }
     }
@@ -79,23 +93,16 @@ public class ShopKeeper : MonoBehaviour {
         }
     }
 
-    void SetMaxMoneyInfo()
+    public void UpdatePlayerArmorSlots()
     {
-        if(playerManager.getMaxMoney() == 50)
+        for(int i = 0; i < playerArmorSlots.Length; i++)
         {
-            maxMoneyInfoText.text = "Type: Medium\nCost: 50"; 
+            playerArmorSlots[i].color = Color.clear;
         }
-        else if(playerManager.getMaxMoney() == 100)
+        for(int i = 0; i < playerInventory.GetArmorList().Count; i++)
         {
-            maxMoneyInfoText.text = "Type: Big\nCost: 90";
-        }
-        else if(playerManager.getMaxMoney() == 250)
-        {
-            maxMoneyInfoText.text = "Type: Big-Big\nCost: 200";
-        }
-        else if(playerManager.getMaxMoney() == 500)
-        {
-            maxMoneyInfoText.text = "No more sizes";
+            playerArmorSlots[i].sprite = playerInventory.GetArmorList()[i].getArmorSprite();
+            playerArmorSlots[i].color = Color.white;
         }
     }
 
@@ -114,11 +121,31 @@ public class ShopKeeper : MonoBehaviour {
         }
     }
 
+    void FillShopKeeperArmorList()
+    {
+        shopKeeperArmor = new Armor[6];
+        for(int i = 0; i < shopArmorSlots.Length; i++)
+        {
+            Armor armor = chestMaster.makeNewArmor();
+
+            shopKeeperArmor[i] = armor;
+
+            shopArmorSlots[i].sprite = armor.getArmorSprite();
+            shopArmorSlots[i].color = Color.white;
+        }
+    }
+
     public void ClickedOnWeapon(int _index)
     {
         weaponIndex = _index;
         itemInfoText.text = "Name: " + shopKeeperWeapons[weaponIndex].getName() + "\nAttack: " + shopKeeperWeapons[weaponIndex].getNormalAttack()
             + "\nCost: " + shopKeeperWeapons[weaponIndex].getValue();
+    }
+
+    public void ClickedOnArmor(int _index)
+    {
+        armorIndex = _index;
+        itemInfoText.text = "Name: " + shopKeeperArmor[armorIndex].getName();
     }
 
     public void ClickedOnWeapon_Player(int _index)
@@ -132,6 +159,40 @@ public class ShopKeeper : MonoBehaviour {
         playerWeaponCostText.text = playerInventory.GetWeaponsList()[_index].getValue().ToString();
 
         playerWeaponInfo.gameObject.SetActive(true);
+    }
+
+    public void ClickeOnArmor_Player(int _index)
+    {
+        playerArmorIndex = _index;
+    }
+
+    public void BuyArmor()
+    {
+        if(armorIndex != -1)
+        {
+            if(playerManager.getMoney() >= shopKeeperArmor[armorIndex].getValue() && playerInventory.GetArmorList().Count <= 8)
+            {
+                // Take money from the player
+                playerManager.removeMoney(shopKeeperArmor[armorIndex].getValue());
+
+                // Add armorIndex to players inventory
+                playerInventory.addArmor(shopKeeperArmor[armorIndex]);
+                uiManager.UpdateArmorSlots();
+                UpdatePlayerArmorSlots();
+                uiManager.NewPlayerValues();
+
+                // Add to log event that we bought a armor
+                eventBox.addEvent("Bought <color=#8d94a0> " + shopKeeperArmor[armorIndex].getName() + "</color>");
+
+                // Remove the armor from the shop
+                shopKeeperArmor[armorIndex] = null;
+                shopArmorSlots[armorIndex].sprite = null;
+                shopArmorSlots[armorIndex].color = Color.clear;
+                itemInfoText.text = string.Empty;
+
+                armorIndex = -1;
+            }
+        }
     }
 
     public void BuyWeapon()
@@ -157,7 +218,31 @@ public class ShopKeeper : MonoBehaviour {
                 shopWeaponSlots[weaponIndex].sprite = null;
                 shopWeaponSlots[weaponIndex].color = Color.clear;
                 itemInfoText.text = string.Empty;
+
+                weaponIndex = -1;
             }
+        }
+    }
+
+    public void SellArmor()
+    {
+        if(playerArmorIndex != -1)
+        {
+            eventBox.addEvent("Sold " + playerInventory.GetArmorList()[playerArmorIndex].getName() + " for " + playerInventory.GetArmorList()[playerArmorIndex].getValue());
+            playerManager.addMoney(playerInventory.GetArmorList()[playerArmorIndex].getValue());
+
+            if(playerInventory.GetArmorList()[playerArmorIndex] == playerManager.getEquipedArmor())
+            {
+                playerManager.EquipArmor(null);
+            }
+
+            playerInventory.RemoveArmorAt(playerArmorIndex);
+            uiManager.UpdateArmorSlots();
+            UpdatePlayerArmorSlots();
+            uiManager.NewPlayerValues();
+            playerArmorInfo.gameObject.SetActive(false);
+
+            playerArmorIndex = -1;
         }
     }
 
@@ -165,7 +250,7 @@ public class ShopKeeper : MonoBehaviour {
     {
         if(playerWeaponIndex != -1)
         {
-            eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[playerWeaponIndex].getName() + " for " + playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
+            eventBox.addEvent("Sold <color=green>" + playerInventory.GetWeaponsList()[playerWeaponIndex].getName() + "</color> for " + playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
             playerManager.addMoney(playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
 
             if (playerInventory.GetWeaponsList()[playerWeaponIndex] == playerManager.getEquipedWeapon())
@@ -182,6 +267,32 @@ public class ShopKeeper : MonoBehaviour {
             playerWeaponInfo.gameObject.SetActive(false);
 
             playerWeaponIndex = -1;
+        }
+    }
+
+    public void goto_armorTab()
+    {
+        for(int i = 0; i < ARMOR.Length; i++)
+        {
+            ARMOR[i].gameObject.SetActive(true);
+        }
+
+        for(int i = 0; i < WEAPON.Length; i++)
+        {
+            WEAPON[i].gameObject.SetActive(false);
+        }
+    }
+
+    public void goto_weaponTab()
+    {
+        for (int i = 0; i < ARMOR.Length; i++)
+        {
+            ARMOR[i].gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i < WEAPON.Length; i++)
+        {
+            WEAPON[i].gameObject.SetActive(true);
         }
     }
 
@@ -213,5 +324,25 @@ public class ShopKeeper : MonoBehaviour {
         }
 
         SetMaxMoneyInfo();
+    }
+
+    void SetMaxMoneyInfo()
+    {
+        if (playerManager.getMaxMoney() == 50)
+        {
+            maxMoneyInfoText.text = "Type: Medium\nCost: 50";
+        }
+        else if (playerManager.getMaxMoney() == 100)
+        {
+            maxMoneyInfoText.text = "Type: Big\nCost: 90";
+        }
+        else if (playerManager.getMaxMoney() == 250)
+        {
+            maxMoneyInfoText.text = "Type: Big-Big\nCost: 200";
+        }
+        else if (playerManager.getMaxMoney() == 500)
+        {
+            maxMoneyInfoText.text = "No more sizes";
+        }
     }
 }

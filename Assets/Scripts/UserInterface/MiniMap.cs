@@ -16,6 +16,8 @@ public class MiniMap : MonoBehaviour {
 
     private SpriteRenderer spre;
     private FloorManager floorManager;
+    private CellularAutomateMap mapGenerator;
+    private UIManager uiManager;
 
     Texture2D miniMapTexture;
 
@@ -24,11 +26,18 @@ public class MiniMap : MonoBehaviour {
     int _timer;
     bool showPlayer;
 
+    public bool newMapFlag;
+
     void Awake()
     {
         spre = GetComponent<SpriteRenderer>();
         floorManager = FindObjectOfType<FloorManager>();
+        mapGenerator = FindObjectOfType<CellularAutomateMap>();
+        uiManager = FindObjectOfType<UIManager>();
+
         CreateNewTexture();
+
+        newMapFlag = false;
     }
 
     void Update()
@@ -54,6 +63,20 @@ public class MiniMap : MonoBehaviour {
             if (timer >= 10)
                 timer = 0;
         }
+    }
+
+    int getGroundTilesCount()
+    {
+        int count = 0;
+        for (int i = 0; i < BaseValues.MAP_WIDTH; i++)
+        {
+            for (int z = 0; z < BaseValues.MAP_HEIGHT; z++)
+            {
+                if (miniMapTexture.GetPixel(i, z) == groundTileColor)
+                    count++;
+            }
+        }
+        return count;
     }
 
     public void FullyRevealMap()
@@ -85,9 +108,9 @@ public class MiniMap : MonoBehaviour {
     public void RevealNewPart(Vector2 newPos)
     {
         //FullyRevealMap();
-        for(int x = (int)newPos.x - 3; x < (int)newPos.x + 3; x++)
+        for(int x = (int)newPos.x - 4; x < (int)newPos.x + 4; x++)
         {
-            for(int y = (int)newPos.y - 3; y < (int)newPos.y + 3; y++)
+            for(int y = (int)newPos.y - 4; y < (int)newPos.y + 4; y++)
             {
                 if (x >= 0 && x < BaseValues.MAP_WIDTH && y >= 0 && y < BaseValues.MAP_HEIGHT)
                 {
@@ -114,6 +137,13 @@ public class MiniMap : MonoBehaviour {
         playerX = (int)newPos.x;
         playerY = (int)newPos.y;
         //miniMapTexture.SetPixel(playerX, playerY, Color.yellow);
+
+        if (getGroundTilesCount() >= mapGenerator.groundCount && newMapFlag == false)
+        {
+            newMapFlag = true;
+            uiManager.FullyExploredMap();
+            FullyRevealMap();
+        }
 
         miniMapTexture.Apply();
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);

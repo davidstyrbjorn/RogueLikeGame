@@ -9,6 +9,7 @@ public class PlayerMove : MonoBehaviour {
     private Vector2 currentWorldPosition;
     private Vector2 positionBeforeCombat;
 
+    private UIManager uiManager;
     private CellularAutomateMap mapGenerator;
     private FloorManager floorManager;
     private PlayerManager playerManager;
@@ -36,6 +37,7 @@ public class PlayerMove : MonoBehaviour {
         shopKeeper = FindObjectOfType<ShopKeeper>();
         spre = GetComponentInChildren<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
+        uiManager = FindObjectOfType<UIManager>();
     }
 
     void Update()
@@ -44,7 +46,7 @@ public class PlayerMove : MonoBehaviour {
         {
             transform.position = Vector2.MoveTowards(transform.position, currentWorldPosition, moveSpeed * Time.deltaTime);
         }
-        if (canMove)
+        if (canMove && !uiManager.characterInventory.gameObject.activeInHierarchy && !uiManager.confirmWeapon.gameObject.activeInHierarchy)
         {
             anim.SetBool("WalkVertical", false);
             anim.SetBool("WalkSide", false);
@@ -193,8 +195,6 @@ public class PlayerMove : MonoBehaviour {
 
             if (currentMap[curr_x, curr_y] == 7)
             {
-                shopKeeper.UpdatePlayerWeaponSlots();
-                shopKeeper.toggleShopHolder(true);
                 shopKeeper.StartTransaction();
             }
             else
@@ -229,6 +229,8 @@ public class PlayerMove : MonoBehaviour {
         curr_y = (int)pos_m.y;
         currentWorldPosition = SetPlayerPos(curr_x, curr_y);
     }
+
+    public Animator getAnim() { return anim; }
 
     void RevealNewPart(Vector2 pos)
     {

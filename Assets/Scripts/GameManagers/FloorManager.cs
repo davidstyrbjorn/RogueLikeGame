@@ -190,6 +190,7 @@ public class FloorManager : MonoBehaviour
 
     IEnumerator MakeNewFloor()
     {
+        miniMap.newMapFlag = false;
         bool validMap = false;
         if ((currentFloorNumber%5) != 0)
         {
@@ -204,7 +205,14 @@ public class FloorManager : MonoBehaviour
             Camera.main.orthographicSize = BaseValues.NormalCameraSize;
             uiManager.OnNewFloor(false);
             map = mapGenerator.getMap();
-            mapTranform.localPosition = mapOrgPos;
+
+            if(BaseValues.MAP_WIDTH == 32)
+                mapTranform.localPosition = mapOrgPos;
+            else if (BaseValues.MAP_WIDTH == 48)
+                mapTranform.localPosition = new Vector3(5.4f, 11,10);
+            else if (BaseValues.MAP_WIDTH == 16)
+                mapTranform.localPosition = new Vector3(16.3f, 1.24f,10);
+
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
         }
         else

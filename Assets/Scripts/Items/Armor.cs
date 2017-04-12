@@ -10,6 +10,8 @@ public class Armor : MonoBehaviour {
 
     public BaseValues.ArmorTypes type;
 
+    public int value;
+
     public float getArmor()
     {
         return armorPercentage / 100;
@@ -23,5 +25,10 @@ public class Armor : MonoBehaviour {
     public string getName()
     {
         return name_;
+    }
+
+    public int getValue()
+    {
+        return value;
     }
 }

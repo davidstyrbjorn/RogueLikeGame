@@ -26,6 +26,6 @@ public class StartSceneManager : MonoBehaviour {
     void Update()
     {
         if (Input.anyKeyDown)
-            SceneManager.LoadScene("Main");
+            SceneManager.LoadScene("Hub");
     }
 }
