@@ -139,9 +139,9 @@ public class CellularAutomateMap : MonoBehaviour
         System.Random randomNum = new System.Random(seed.GetHashCode());
         int placeChance = 10;
 
-        for (int x = 0; x < width; x++)
+        for (int x = 1; x < width-1; x++)
         {
-            for(int y = 0; y < height; y++)
+            for(int y = 1; y < height-1; y++)
             {
                 int num = randomNum.Next(0, 100);
                 if(randomNum.Next(0,100) > enemySpawnChance && map[x,y] == 0)

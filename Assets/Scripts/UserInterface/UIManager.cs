@@ -38,6 +38,8 @@ public class UIManager : MonoBehaviour {
     public Text inventoryHealthText;
     public Text inventoryHealthAddedText;
     public Text fullyExploredMap;
+    public Text numberOfRedPotions;
+    public Text numberOfBluePotions;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -56,7 +58,7 @@ public class UIManager : MonoBehaviour {
     [Header("Inventory Slots")]
     public Image[] weaponSlots;
     public Image[] armorSlots;
-    public Image[] potionSlots;
+    //public Image[] potionSlots;
 
     [Space(25)]
     [Header("Inventory/Currently Equiped Weapon")]
@@ -365,28 +367,47 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    public void ClickedOnPotion(int _index)
+    public void ClickedOnPotion_Red()
     {
-        if (playerInventory.GetPotionsList().Count > _index)
+        // Check if there is any red potions 
+
+        for (int i = 0; i < playerInventory.GetPotionsList().Count; i++)
         {
-            potionInfoContainer.gameObject.SetActive(true);
-            weaponInfoContainer.gameObject.SetActive(false);
-
-            StartCoroutine("DoubleClick_Potion");
-
-            if (playerInventory.GetPotionsList()[_index].getPotionType() == Potion.potionType.HEALING)
+            if (playerInventory.GetPotionsList()[i].getPotionType() == Potion.potionType.HEALING)
             {
+                potionInfoContainer.gameObject.SetActive(true);
+                weaponInfoContainer.gameObject.SetActive(false);
+                armorInfoHolder.gameObject.SetActive(false);
+
                 inventoryPotionImage.sprite = BaseValues.healthPotionSprite;
                 inventoryPotionStat.text = "Type: Healing";
-
                 inventoryHealthAddedText.text = "<color=green>(+" + playerManager.getMaxHealth() * BaseValues.healthPotionFactor + ")</color>";
+
+                StartCoroutine("DoubleClick_Potion");
+                currentlySelectedPotionIndex = i;
             }
-            else
+        }
+    }
+
+    public void ClickedOnPotion_Blue()
+    {
+        // Check if there is any blue potions
+        
+        for (int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+        {
+            if (playerInventory.GetPotionsList()[i].getPotionType() == Potion.potionType.STRENTGH)
             {
+                potionInfoContainer.gameObject.SetActive(true);
+                weaponInfoContainer.gameObject.SetActive(false);
+                armorInfoHolder.gameObject.SetActive(false);
+
                 inventoryPotionImage.sprite = BaseValues.strengthPotionSprite;
                 inventoryPotionStat.text = "Type: Strength";
+                inventoryHealthAddedText.text = string.Empty;
+
+                StartCoroutine("DoubleClick_Potion");
+                currentlySelectedPotionIndex = i;
             }
-            currentlySelectedPotionIndex = _index;
         }
     }
 
@@ -441,6 +462,28 @@ public class UIManager : MonoBehaviour {
         UpdatePotionSlots();
     }
 
+    public void UpdatePotionSlots()
+    {
+        // Update Text numberOfRedPotions and numberOfBluePotions
+        int redPotions = 0;
+        int bluePotions = 0;
+
+        for(int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+        {
+            if(playerInventory.GetPotionsList()[i].getPotionType() == Potion.potionType.HEALING)
+            {
+                redPotions++;
+            }
+            else if(playerInventory.GetPotionsList()[i].getPotionType() == Potion.potionType.STRENTGH)
+            {
+                bluePotions++;
+            }
+        }
+
+        numberOfRedPotions.text = "x"+redPotions.ToString();
+        numberOfBluePotions.text = "x" + bluePotions.ToString();
+    }
+
     public void RemoveSelectedWeapon()
     {
         if (playerInventory.GetWeaponsList()[currentlySelectedWeaponIndex] == playerManager.getEquipedWeapon())
@@ -481,23 +524,6 @@ public class UIManager : MonoBehaviour {
             {
                 weaponSlots[i].sprite = null;
                 weaponSlots[i].color = Color.clear;
-            }
-        }
-    }
-
-    public void UpdatePotionSlots()
-    {
-        for(int i = 0; i < potionSlots.Length; i++)
-        {
-            if (playerInventory.GetPotionsList().Count > i)
-            {
-                potionSlots[i].color = Color.white;
-                potionSlots[i].sprite = playerInventory.GetPotionsList()[i].getPotionSprite();
-            }
-            else
-            {
-                potionSlots[i].sprite = null;
-                potionSlots[i].color = Color.clear;
             }
         }
     }

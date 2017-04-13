@@ -10,6 +10,7 @@ public class ShopKeeper : MonoBehaviour {
     private PlayerInventory playerInventory;
     private PlayerManager playerManager;
     private EventBox eventBox;
+    private SoundManager soundManager;
 
     public bool shopActive;
 
@@ -55,6 +56,7 @@ public class ShopKeeper : MonoBehaviour {
         uiManager = FindObjectOfType<UIManager>();
         chestMaster = FindObjectOfType<ChestMaster>();
         eventBox = FindObjectOfType<EventBox>();
+        soundManager = FindObjectOfType<SoundManager>();
 
         weaponIndex = -1;
         playerWeaponIndex = -1;
@@ -184,6 +186,9 @@ public class ShopKeeper : MonoBehaviour {
                 // Add to log event that we bought a armor
                 eventBox.addEvent("Bought <color=#8d94a0> " + shopKeeperArmor[armorIndex].getName() + "</color>");
 
+                // Play Buy Sound
+                soundManager.Buy_Sell();
+
                 // Remove the armor from the shop
                 shopKeeperArmor[armorIndex] = null;
                 shopArmorSlots[armorIndex].sprite = null;
@@ -213,6 +218,9 @@ public class ShopKeeper : MonoBehaviour {
                 // Add to log event that we bought a weapon
                 eventBox.addEvent("Bought <color=green>" + shopKeeperWeapons[weaponIndex].getName() + "</color>");
 
+                // Play buy sound
+                soundManager.Buy_Sell();
+
                 // Remove the weapon from the shop
                 shopKeeperWeapons[weaponIndex] = null;
                 shopWeaponSlots[weaponIndex].sprite = null;
@@ -229,6 +237,8 @@ public class ShopKeeper : MonoBehaviour {
         if(playerArmorIndex != -1)
         {
             eventBox.addEvent("Sold " + playerInventory.GetArmorList()[playerArmorIndex].getName() + " for " + playerInventory.GetArmorList()[playerArmorIndex].getValue());
+            soundManager.Buy_Sell();
+
             playerManager.addMoney(playerInventory.GetArmorList()[playerArmorIndex].getValue());
 
             if(playerInventory.GetArmorList()[playerArmorIndex] == playerManager.getEquipedArmor())
@@ -251,6 +261,8 @@ public class ShopKeeper : MonoBehaviour {
         if(playerWeaponIndex != -1)
         {
             eventBox.addEvent("Sold <color=green>" + playerInventory.GetWeaponsList()[playerWeaponIndex].getName() + "</color> for " + playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
+            soundManager.Buy_Sell();
+
             playerManager.addMoney(playerInventory.GetWeaponsList()[playerWeaponIndex].getValue());
 
             if (playerInventory.GetWeaponsList()[playerWeaponIndex] == playerManager.getEquipedWeapon())

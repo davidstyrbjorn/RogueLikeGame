@@ -10,6 +10,7 @@ public class SoundManager : MonoBehaviour {
     [Header("User Interface Sound Effects")]
     public GameObject ClothInventory;
     public GameObject MetalClash;
+    public GameObject BuySell;
 
     private BackgroundMusic backgroundAudioSource;
 
@@ -47,6 +48,12 @@ public class SoundManager : MonoBehaviour {
     public void InventoryEquip()
     {
         GameObject temp = Instantiate(MetalClash, transform.position, Quaternion.identity) as GameObject;
+        Destroy(temp, 0.6f);
+    }
+
+    public void Buy_Sell()
+    {
+        GameObject temp = Instantiate(BuySell, transform.position, Quaternion.identity) as GameObject;
         Destroy(temp, 0.6f);
     }
 }

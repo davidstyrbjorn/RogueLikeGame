@@ -591,7 +591,7 @@ public class PlayerManager : MonoBehaviour {
         {
             transitionScript.maskValue += 0.01f;
             
-            yield return new WaitForSecondsRealtime(0.01f);
+            yield return new WaitForSeconds(0.01f);
         }                   
         uiManager.LoadScene("Hub");
     }
@@ -605,20 +605,20 @@ public class PlayerManager : MonoBehaviour {
         while(transform.position.y < ascendPos.y-0.5f)
         {
             transform.position = Vector3.Lerp(transform.position, ascendPos, 0.015f);
-            yield return new WaitForSecondsRealtime(0.01f);       
+            yield return new WaitForSeconds(0.01f);       
         }
 
         while(spre.color.a > 0.05f)
         {
             spre.color = Color.Lerp(spre.color, Color.clear, 0.05f);
-            yield return new WaitForSecondsRealtime(0.01f);
+            yield return new WaitForSeconds(0.01f);
         }
 
         // Fade in the panel
         while(uiManager.fadePanel.color.a <= 0.995f)
         {
             uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 0.05f);
-            yield return new WaitForSecondsRealtime(0.01f);
+            yield return new WaitForSeconds(0.01f);
         }
 
         floorManager.NewFloor();
@@ -630,7 +630,7 @@ public class PlayerManager : MonoBehaviour {
         while (uiManager.fadePanel.color.a > 0.05f)
         {
             uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 0.05f);
-            yield return new WaitForSecondsRealtime(0.01f);
+            yield return new WaitForSeconds(0.01f);
         }
 
         // Done
