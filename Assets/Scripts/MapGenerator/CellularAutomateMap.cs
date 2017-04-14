@@ -150,13 +150,13 @@ public class CellularAutomateMap : MonoBehaviour
                     {
                         int _num = randomNum.Next(0, 100);
                         if (_num >= 75 && _num <= 100)
-                            map[x + 1, y] = 5;
+                            map[x, y] = 5;
                         else if (_num >= 50 && _num <= 75)
-                            map[x - 1, y] = 5;
+                            map[x, y] = 5;
                         else if (_num >= 25 && _num <= 50)
-                            map[x, y + 1] = 5;
+                            map[x, y] = 5;
                         else if (_num <= 25 && _num >= 0)
-                            map[x, y - 1] = 5;
+                            map[x, y] = 5;
                     }
                 }
             }

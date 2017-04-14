@@ -168,6 +168,24 @@ public class UIManager : MonoBehaviour {
         }
 
         #region Hot Keys
+        // Event Log Escape
+        if (logEventScreen.gameObject.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                logEventScreen.gameObject.SetActive(false);
+            }
+        }
+
+        // Next floor prompt
+        if (nextFloorPrompt.gameObject.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+                NextFloor();
+            if (Input.GetKeyDown(KeyCode.E))
+                DisableNextFloorPrompt();
+        }
+
         // Player Inventory Hot Keys
 
         // Toggle Inventory on and off

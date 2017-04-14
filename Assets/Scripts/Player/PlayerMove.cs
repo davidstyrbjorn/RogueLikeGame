@@ -69,7 +69,6 @@ public class PlayerMove : MonoBehaviour {
         transform.position = currentWorldPosition;
         Camera.main.transform.position = transform.position;
 
-        RevealNewPart(new Vector2(curr_x, curr_y));
         miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
     }
 
@@ -201,8 +200,6 @@ public class PlayerMove : MonoBehaviour {
                 shopKeeper.toggleShopHolder(false);
 
             playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
-
-            RevealNewPart(new Vector2(curr_x, curr_y));
             miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
         }
     }
@@ -231,64 +228,4 @@ public class PlayerMove : MonoBehaviour {
     }
 
     public Animator getAnim() { return anim; }
-
-    void RevealNewPart(Vector2 pos)
-    {
-        int visionRadius = playerManager.getVisionRadius();
-        for (int x = (int)pos.x - visionRadius; x < (int)pos.x + visionRadius; x++)
-        {
-            for (int y = (int)pos.y - visionRadius; y < (int)pos.y + visionRadius; y++)
-            {
-                // These tiles should be fully lit
-                if(x >= (int)pos.x - 3 && x <= (int)pos.x + 3 && y >= (int)pos.y - 3 && y <= (int)pos.y + 3)
-                {
-                    Vector2 _indexPos = new Vector2(x, y);
-                    if (floorManager.enemyList.ContainsKey(_indexPos))
-                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
-                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
-                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
-                    if (floorManager.tileList.ContainsKey(_indexPos))
-                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
-                    if (floorManager.chestList.ContainsKey(_indexPos))
-                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = Color.white;
-                }
-                if(x == (int)pos.x + 4 || x == (int)pos.x - 4 || y == (int)pos.y + 4 || y == (int)pos.y - 4)
-                {
-                    Vector2 _indexPos = new Vector2(x, y);
-                    if (floorManager.enemyList.ContainsKey(_indexPos))
-                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
-                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
-                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
-                    if (floorManager.tileList.ContainsKey(_indexPos))
-                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
-                    if (floorManager.chestList.ContainsKey(_indexPos))
-                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile;
-                }
-                if(x == (int)pos.x + 5 || x == (int)pos.x - 5 || y == (int)pos.y + 5 || y == (int)pos.y - 5)
-                {
-                    Vector2 _indexPos = new Vector2(x, y);
-                    if (floorManager.enemyList.ContainsKey(_indexPos))
-                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
-                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
-                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
-                    if (floorManager.tileList.ContainsKey(_indexPos))
-                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
-                    if (floorManager.chestList.ContainsKey(_indexPos))
-                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = almostListTile_2;
-                }
-                if (x == (int)pos.x + 6 || x == (int)pos.x - 6 || y == (int)pos.y + 6 || y == (int)pos.y - 6)
-                {
-                    Vector2 _indexPos = new Vector2(x, y);
-                    if (floorManager.enemyList.ContainsKey(_indexPos))
-                        floorManager.enemyList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
-                    if (floorManager.statIncreaserList.ContainsKey(_indexPos))
-                        floorManager.statIncreaserList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
-                    if (floorManager.tileList.ContainsKey(_indexPos))
-                        floorManager.tileList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
-                    if (floorManager.chestList.ContainsKey(_indexPos))
-                        floorManager.chestList[_indexPos].GetComponent<SpriteRenderer>().color = oobTileColor;
-                }
-            }
-        }
-    }
 }

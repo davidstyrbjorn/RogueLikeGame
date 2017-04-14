@@ -100,8 +100,8 @@ public class FloorManager : MonoBehaviour
                 {
                     if (map[x, y] == 1)
                     {
-                        GameObject wallTile = Instantiate(WallTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
-                        wallTile.transform.parent = transform;
+                        //GameObject wallTile = Instantiate(WallTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        //wallTile.transform.parent = transform;
 
                         // Adding tile to tile list
                         //tileList.Add(new Vector2(x, y), wallTile);
@@ -110,6 +110,7 @@ public class FloorManager : MonoBehaviour
                     {
                         GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         groundTile.transform.parent = transform;
+                        groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT-y;
 
                         // Adding tile to tile list
                         tileList.Add(new Vector2(x, y), groundTile);
@@ -117,6 +118,7 @@ public class FloorManager : MonoBehaviour
                     else if (map[x, y] == 2)
                     {
                         GameObject entranceTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        entranceTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         entranceTile.transform.parent = transform;
 
                         tileList.Add(new Vector2(x, y), entranceTile);
@@ -133,6 +135,7 @@ public class FloorManager : MonoBehaviour
                         // Spawning the ground for the stat increaser
                         GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         groundTile.transform.parent = transform;
+                        groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
 
                         // Making the stat increase object at x and y location
                         GameObject statIncreaser = Instantiate(StatIncreaser, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
@@ -148,6 +151,7 @@ public class FloorManager : MonoBehaviour
                         // Spawning the ground for the enemy
                         GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         groundTile.transform.parent = transform;
+                        groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
 
                         // 0 and 1 when the game has more enemies should be something something then floor numbers to advance the enemies the higher the floor number is
                         GameObject enemyShell = Instantiate(enemyMaster.getNewEnemy(currentFloorNumber), new Vector3(x * tileWidth, (y * tileWidth), 0), Quaternion.identity) as GameObject;
@@ -166,6 +170,7 @@ public class FloorManager : MonoBehaviour
                         // Spawning the ground for the enemy
                         GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         groundTile.transform.parent = transform;
+                        groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         tileList.Add(new Vector2(x, y), groundTile);
 
                         // Spawning chest
@@ -178,6 +183,7 @@ public class FloorManager : MonoBehaviour
                         // Spawning the ground for the keeper
                         GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         groundTile.transform.parent = transform;
+                        groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         tileList.Add(new Vector2(x, y), groundTile);
 
                         GameObject shopKeeperObject = Instantiate(shopKeeperPrefab, new Vector3(x * tileWidth, y * tileWidth * 1.25f, -1), Quaternion.identity) as GameObject;
