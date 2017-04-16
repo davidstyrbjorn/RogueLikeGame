@@ -14,7 +14,7 @@ public class PlayerMove : MonoBehaviour {
     private FloorManager floorManager;
     private PlayerManager playerManager;
     private MiniMap miniMap;
-    private ShopKeeper shopKeeper;
+    private ShopKeeperV2 shopKeeper;
     private SpriteRenderer spre;
     private Animator anim;
 
@@ -34,7 +34,7 @@ public class PlayerMove : MonoBehaviour {
         floorManager = FindObjectOfType<FloorManager>();
         playerManager = FindObjectOfType<PlayerManager>();
         miniMap = FindObjectOfType<MiniMap>();
-        shopKeeper = FindObjectOfType<ShopKeeper>();
+        shopKeeper = FindObjectOfType<ShopKeeperV2>();
         spre = GetComponentInChildren<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
         uiManager = FindObjectOfType<UIManager>();
@@ -194,10 +194,10 @@ public class PlayerMove : MonoBehaviour {
 
             if (currentMap[curr_x, curr_y] == 7)
             {
-                shopKeeper.StartTransaction();
+                shopKeeper.ToggleShop(true);
             }
             else
-                shopKeeper.toggleShopHolder(false);
+                shopKeeper.ToggleShop(false);
 
             playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
             miniMap.RevealNewPart(new Vector2(curr_x, curr_y));

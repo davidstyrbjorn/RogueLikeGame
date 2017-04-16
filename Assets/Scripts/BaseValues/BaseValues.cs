@@ -40,9 +40,11 @@ public class BaseValues : MonoBehaviour{
     public Sprite AttackSymbolSprite;
     public Sprite CriticalSymbolSprite;
     public Sprite ArmorSymbolSprite;
+    public Sprite CoinSymbolSprite;
     public static Sprite attackSymbolSprite;
     public static Sprite criticalSymbolSprite;
     public static Sprite armorSymbolSprite;
+    public static Sprite coinSymbolSprite;
 
     // Potion stats
     // Health potion increase health instantly
@@ -97,5 +99,6 @@ public class BaseValues : MonoBehaviour{
         attackSymbolSprite = AttackSymbolSprite;
         criticalSymbolSprite = CriticalSymbolSprite;
         armorSymbolSprite = ArmorSymbolSprite;
+        coinSymbolSprite = CoinSymbolSprite;
     }
 }

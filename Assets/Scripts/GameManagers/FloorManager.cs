@@ -28,7 +28,7 @@ public class FloorManager : MonoBehaviour
     private PlayerMove playerMove;
     private MiniMap miniMap;
     private EventBox eventBox;
-    private ShopKeeper shopKeeper;
+    private ShopKeeperV2 shopKeeper;
     private UIManager uiManager;
     private EnemyMaster enemyMaster;
 
@@ -57,7 +57,7 @@ public class FloorManager : MonoBehaviour
         mapGenerator = FindObjectOfType<CellularAutomateMap>();
         miniMap = FindObjectOfType<MiniMap>();
         eventBox = FindObjectOfType<EventBox>();
-        shopKeeper = FindObjectOfType<ShopKeeper>();
+        shopKeeper = FindObjectOfType<ShopKeeperV2>();
 
         NewFloor();
         chestHeight = getChestHeight();
@@ -223,7 +223,7 @@ public class FloorManager : MonoBehaviour
         }
         else
         {
-            shopKeeper.shopActive = false;
+            shopKeeper.ResetFillSkFlag();
             eventBox.addEvent("Welcome to the shop!");
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();
