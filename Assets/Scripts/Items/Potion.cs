@@ -12,9 +12,9 @@ public class Potion {
     // Holds what type of potion it is and the length of it
     public potionType type;
     public int length;
-    private Sprite potionSprite;
+    public Sprite potionSprite;
 
-    public Potion(int _floor)
+    public Potion(int _random)
     {
         // For now just put a even chance for the potion type to be each
         int _randomNum = Random.Range(0, 2);

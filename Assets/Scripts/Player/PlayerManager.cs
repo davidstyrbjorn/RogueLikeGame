@@ -574,10 +574,10 @@ public class PlayerManager : MonoBehaviour {
 
     public void Escape()
     {
-        //saveLoad.ResetPlayerPrefs();
-        saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
-        saveLoad.SaveMaxMoney(maxMoney);
-        saveLoad.SavePlayerArmor(armor);
+        saveLoad.ResetPlayerPrefs();
+        //saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
+        //saveLoad.SaveMaxMoney(maxMoney);
+        //saveLoad.SavePlayerArmor(armor);
 
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());

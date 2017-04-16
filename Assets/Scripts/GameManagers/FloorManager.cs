@@ -223,7 +223,7 @@ public class FloorManager : MonoBehaviour
         }
         else
         {
-            shopKeeper.ResetFillSkFlag();
+            shopKeeper.fill_sk_weapons_armor();
             eventBox.addEvent("Welcome to the shop!");
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();
