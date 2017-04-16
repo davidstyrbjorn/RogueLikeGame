@@ -139,6 +139,7 @@ public class FloorManager : MonoBehaviour
 
                         // Making the stat increase object at x and y location
                         GameObject statIncreaser = Instantiate(StatIncreaser, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        statIncreaser.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         statIncreaser.transform.parent = transform;
 
                         // Adding to the localasation list
@@ -155,6 +156,7 @@ public class FloorManager : MonoBehaviour
 
                         // 0 and 1 when the game has more enemies should be something something then floor numbers to advance the enemies the higher the floor number is
                         GameObject enemyShell = Instantiate(enemyMaster.getNewEnemy(currentFloorNumber), new Vector3(x * tileWidth, (y * tileWidth), 0), Quaternion.identity) as GameObject;
+                        enemyShell.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         enemyShell.GetComponent<Enemy>().SetUpEnemy(currentFloorNumber);
                         enemyShell.transform.parent = transform;
                         enemyShell.transform.position = new Vector2(enemyShell.transform.position.x, enemyShell.transform.position.y) + Vector2.up * enemyShell.GetComponent<Enemy>().yOffset;
@@ -176,6 +178,7 @@ public class FloorManager : MonoBehaviour
                         // Spawning chest
                         GameObject chestClone = Instantiate(Chest, new Vector3(x * tileWidth, y * tileWidth + chestHeight/2.75f, -1), Quaternion.identity) as GameObject;
                         chestClone.transform.parent = transform;
+                        //chestClone.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         chestList.Add(new Vector2(x, y), chestClone);
                     }
                     else if (map[x,y] == 7)
@@ -187,6 +190,7 @@ public class FloorManager : MonoBehaviour
                         tileList.Add(new Vector2(x, y), groundTile);
 
                         GameObject shopKeeperObject = Instantiate(shopKeeperPrefab, new Vector3(x * tileWidth, y * tileWidth * 1.25f, -1), Quaternion.identity) as GameObject;
+                        shopKeeperObject.GetComponent<SpriteRenderer>().sortingOrder = 7;
                         shopKeeperObject.transform.parent = transform;
                     }
                 }

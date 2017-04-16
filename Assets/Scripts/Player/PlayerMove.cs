@@ -56,6 +56,11 @@ public class PlayerMove : MonoBehaviour {
         {
             CheckCanMove();
         }
+
+        if(spre.sortingOrder != BaseValues.MAP_HEIGHT-curr_y)
+        {
+            spre.sortingOrder = BaseValues.MAP_HEIGHT - curr_y;
+        }
     }
 
     public void NewFloor(int[,] newMap)

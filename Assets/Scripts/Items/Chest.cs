@@ -24,12 +24,12 @@ public class Chest : MonoBehaviour {
 
     void Start()
     {
-        int num = Random.Range(0, 3);
-        if (num == 0)
-            chestDrop = ChestDrops.WEAPON;
-        else if (num == 1)
+        int num = Random.Range(0, 100);
+        if (num >= 0 && num <= 50)
             chestDrop = ChestDrops.POTION;
-        else if (num == 2)
+        else if (num >= 51 && num <= 80)
+            chestDrop = ChestDrops.WEAPON;
+        else if (num >= 81 && num <= 100)
             chestDrop = ChestDrops.ARMOR;
 
         isOpen = false;
