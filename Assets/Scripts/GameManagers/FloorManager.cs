@@ -219,9 +219,9 @@ public class FloorManager : MonoBehaviour
             if(BaseValues.MAP_WIDTH == 32)
                 mapTranform.localPosition = mapOrgPos;
             else if (BaseValues.MAP_WIDTH == 48)
-                mapTranform.localPosition = new Vector3(5.4f, 11,10);
+                mapTranform.localPosition = new Vector3(6.35f, 12,01);
             else if (BaseValues.MAP_WIDTH == 16)
-                mapTranform.localPosition = new Vector3(16.3f, 1.24f,10);
+                mapTranform.localPosition = new Vector3(17.3f, 2.1f,10);
 
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
         }

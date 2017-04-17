@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviour {
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
     private string currentEnemyName;
-
+    
     private Weapon equipedWeapon;
     private Armor equipedArmor;
 
@@ -86,6 +86,24 @@ public class PlayerManager : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.X))
             {
                 disengageCombat();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (uiManager.confirmWeapon.gameObject.activeInHierarchy)
+            {
+                if (foundWeapon.weapon != null)
+                    ConfirmWeapon_PickUp();
+                if (foundArmor.armor != null)
+                    ConfirmArmor_PickUp();
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (uiManager.confirmWeapon.gameObject.activeInHierarchy)
+            {
+                ConfirmWeapon_Decline();
             }
         }
     }
@@ -182,6 +200,8 @@ public class PlayerManager : MonoBehaviour {
                 if (equipedWeapon != null)
                 {
                     weaponDamage = equipedWeapon.getAttack();
+                    if (weaponDamage > equipedWeapon.getNormalAttack())
+                        eventBox.addEvent("Critical Blow" + "  +<color=red>(" + (weaponDamage-equipedWeapon.getNormalAttack()) + ")</color>  Damage");
                 }
                 float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
@@ -191,9 +211,6 @@ public class PlayerManager : MonoBehaviour {
 
                 // Sound
                 soundManager.SwingSword();
-
-                // Write to the text box
-                eventBox.addEvent("You hit the " + currentEnemyName + " for <color=red>" + total_attack_power + " </color>  damage!");
 
                 Vector3 spawnPos = new Vector3(enemyCombatPos.x, enemyCombatPos.y, 0);
                 GameObject combatText = Instantiate(CombatTextPrefab);
@@ -240,7 +257,6 @@ public class PlayerManager : MonoBehaviour {
 
         PlayerPrefs.SetInt("STATS_DAMAGE_TAKEN", PlayerPrefs.GetInt("STATS_DAMAGE_TAKEN",0) + (int)_hp);
         healthPoints -= _hp;
-        eventBox.addEvent(currentEnemyName + " hit you for " + _hp + " damge!");
 
         // Spawning combat text
         Vector3 spawnPos = new Vector3(playerCombatPos.x, playerCombatPos.y, 0);
@@ -285,6 +301,9 @@ public class PlayerManager : MonoBehaviour {
             // Gain some money
             // money += moneyDrop;
             addMoney(moneyDrop);
+
+            StopCoroutine("AfterCombatEventLog");
+            StartCoroutine("AfterCombatEventLog");
 
             uiManager.NewPlayerValues();
             // Disable enemy UI
@@ -537,6 +556,8 @@ public class PlayerManager : MonoBehaviour {
             // Only equip the new weapon if the player is empty handed
             if (equipedWeapon == null)
                 EquipWeapon(foundWeapon.weapon);
+
+            foundWeapon.weapon = null;
         }
 
         uiManager.confirmWeapon.gameObject.SetActive(false);
@@ -556,6 +577,8 @@ public class PlayerManager : MonoBehaviour {
             {
                 EquipArmor(foundArmor.armor);
             }
+
+            foundArmor.armor = null;
         }
 
         uiManager.confirmWeapon.gameObject.SetActive(false);
@@ -672,4 +695,36 @@ public class PlayerManager : MonoBehaviour {
 
     public BaseValues.PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }
+
+    private IEnumerator AfterCombatEventLog()
+    {
+        yield return new WaitForSeconds(Random.Range(2,8));
+        float healthRatio = (healthPoints / maxHealthPoints) * 100;
+        /*
+         * 0 - 20% -> Dying
+         * 21 - 60% -> Drained
+         * 61 - 100% -> Ok
+         * 
+         */
+
+        // Dying
+        if(healthRatio > 0 && healthRatio <= 20)
+        {
+            eventBox.addEvent("<color=#990a00>You're close to death!</color>");
+        }
+        // Drained
+        if(healthRatio > 20 && healthRatio <= 60)
+        {
+            eventBox.addEvent("<color=#990a00>You should heal soon!</color>");
+        }
+        // Ok
+        if(healthRatio > 60 && healthRatio <= 100)
+        {
+            int rand = Random.Range(0, 100);
+            if(rand < 25)
+            {
+                eventBox.addEvent("<color=#990a00>You feel strong!</color>");
+            }
+        }
+    }
 }

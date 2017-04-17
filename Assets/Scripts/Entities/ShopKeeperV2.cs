@@ -12,6 +12,7 @@ public class ShopKeeperV2 : MonoBehaviour {
 
     /* Player variables */
     public Button[] p_items_buttons;
+    public Text p_money_text;
     private int p_item_index = -1;
     private PlayerInventory playerInventory;
     private PlayerManager playerManager;
@@ -242,6 +243,7 @@ public class ShopKeeperV2 : MonoBehaviour {
             itemName.text = "None Selected";
             itemImage.color = Color.clear;
 
+            p_update_money_text();
             p_item_index = -1;
             goto_weaponTab();
         }
@@ -273,6 +275,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 itemName.text = "None Selected";
                 itemImage.color = Color.clear;
 
+                p_update_money_text();
                 sk_item_index = -1;
                 goto_weaponTab();
             }
@@ -307,6 +310,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 itemName.text = "None Selected";
                 itemImage.color = Color.clear;
 
+                p_update_money_text();
                 sk_item_index = -1;
                 goto_armorTab();
             }
@@ -338,6 +342,7 @@ public class ShopKeeperV2 : MonoBehaviour {
             itemImage.color = Color.clear;
 
             p_item_index = -1;
+            p_update_money_text();
             goto_armorTab();
         }
     }
@@ -356,6 +361,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 redPotion.potionSprite = redPotion.type == Potion.potionType.HEALING ? BaseValues.healthPotionSprite : BaseValues.strengthPotionSprite;
                 playerInventory.addPotion(redPotion);
 
+                p_update_money_text();
                 uiManager.NewPlayerValues();
                 uiManager.UpdatePotionSlots();
             }
@@ -372,6 +378,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 bluePotion.potionSprite = bluePotion.type == Potion.potionType.HEALING ? BaseValues.healthPotionSprite : BaseValues.strengthPotionSprite;
                 playerInventory.addPotion(bluePotion);
 
+                p_update_money_text();
                 uiManager.NewPlayerValues();
                 uiManager.UpdatePotionSlots();
             }
@@ -431,6 +438,7 @@ public class ShopKeeperV2 : MonoBehaviour {
         sk_item_buttons[1].image.sprite = BaseValues.strengthPotionSprite;
         sk_item_buttons[1].onClick.AddListener(() => sk_ClickedOnPotion(1));
 
+        actionButton.GetComponentInChildren<Text>().text = "Buy";
         actionButton.onClick.RemoveAllListeners();
         actionButton.onClick.AddListener(() => BuySelectedPotion());
     }
@@ -448,9 +456,14 @@ public class ShopKeeperV2 : MonoBehaviour {
             sk_armor[i] = chestMaster.makeNewArmor();
         }
 
+        p_update_money_text();
         goto_weaponTab();
     }
 
+    void p_update_money_text()
+    {
+        p_money_text.text = playerManager.getMoney() + "/" + playerManager.getMaxMoney();
+    }
 
     /* Add Listener Functions */
     void sk_AddListenerArmor(Button b, int value)
@@ -477,7 +490,7 @@ public class ShopKeeperV2 : MonoBehaviour {
 
     
     public void ToggleShop(bool value)
-    {
+    { 
         ShopTransform.gameObject.SetActive(value);
     }
 }

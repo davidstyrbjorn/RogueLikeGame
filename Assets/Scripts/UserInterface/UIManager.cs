@@ -367,6 +367,7 @@ public class UIManager : MonoBehaviour {
 
             #endregion
 
+            StopCoroutine("DoubleClick");
             StartCoroutine("DoubleClick");
 
             if (playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
@@ -401,6 +402,7 @@ public class UIManager : MonoBehaviour {
                 inventoryPotionStat.text = "Type: Healing";
                 inventoryHealthAddedText.text = "<color=green>(+" + playerManager.getMaxHealth() * BaseValues.healthPotionFactor + ")</color>";
 
+                StopCoroutine("DoubleClick_Potion");
                 StartCoroutine("DoubleClick_Potion");
                 currentlySelectedPotionIndex = i;
             }
@@ -437,6 +439,7 @@ public class UIManager : MonoBehaviour {
             potionInfoContainer.gameObject.SetActive(false);
             weaponInfoContainer.gameObject.SetActive(false);
 
+            StopCoroutine("DoubleClick_Armor");
             StartCoroutine("DoubleClick_Armor");
 
             armorImage.sprite = playerInventory.GetArmorList()[_index].getArmorSprite();
