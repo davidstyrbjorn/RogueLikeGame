@@ -39,6 +39,7 @@ public class PlayerManager : MonoBehaviour {
     private ScreenTransitionImageEffect transitionScript;
     private Canvas canvas;
     private SpriteRenderer spre;
+    private ShopKeeperV2 shopKeeper;
 
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
@@ -123,6 +124,7 @@ public class PlayerManager : MonoBehaviour {
         canvas = FindObjectOfType<Canvas>();
         spre = GetComponentInChildren<SpriteRenderer>();
         soundManager = FindObjectOfType<SoundManager>();
+        shopKeeper = FindObjectOfType<ShopKeeperV2>();
 
         GameStart();
     }
@@ -345,7 +347,6 @@ public class PlayerManager : MonoBehaviour {
             addHealth(Mathf.CeilToInt(BaseValues.HealthStatIncrease));
 
             eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + BaseValues.HealthStatIncrease + " points " + "</color>");
-
         }
         else if (randomNum == 1)
         {
@@ -683,6 +684,7 @@ public class PlayerManager : MonoBehaviour {
             if (money > maxMoney)
                 money -= money - maxMoney;
             uiManager.NewPlayerValues();
+            shopKeeper.p_update_money_text();
         }
         int moneyAfter = money;
         uiManager.AddedNewMoney(moneyAfter - moneyBefore);
@@ -707,6 +709,7 @@ public class PlayerManager : MonoBehaviour {
          * 
          */
 
+        /*
         // Dying
         if(healthRatio > 0 && healthRatio <= 20)
         {
@@ -726,5 +729,6 @@ public class PlayerManager : MonoBehaviour {
                 eventBox.addEvent("<color=#990a00>You feel strong!</color>");
             }
         }
+        */
     }
 }

@@ -4,7 +4,11 @@ using UnityEngine.UI;
 
 public class ShopKeeperV2 : MonoBehaviour {
 
+    /* Max Money variables */
+    public Text m_infoText;
+
     /* Shop keeper variables */
+    public RectTransform LeftSideTransform, RightSideTransform, IncreaseMaxMoneyTransform;
     public Button[] sk_item_buttons;
     private int sk_item_index = -1;
     private Weapon[] sk_weapons;
@@ -96,7 +100,6 @@ public class ShopKeeperV2 : MonoBehaviour {
     void p_ClickedOnArmor(int index)
     {
         p_item_index = index;
-        print("Clicked on player armor");
 
         // Set text and stuff
         icon1.sprite = null;
@@ -445,8 +448,6 @@ public class ShopKeeperV2 : MonoBehaviour {
 
     public void fill_sk_weapons_armor()
     {
-        print("Filled sk_weapons and sk_armor");
-
         sk_weapons = new Weapon[3];
         sk_armor = new Armor[3];
 
@@ -460,9 +461,76 @@ public class ShopKeeperV2 : MonoBehaviour {
         goto_weaponTab();
     }
 
-    void p_update_money_text()
+    public void p_update_money_text()
     {
         p_money_text.text = playerManager.getMoney() + "/" + playerManager.getMaxMoney();
+    }
+
+    public void m_update_info_text()
+    {
+        if(playerManager.getMaxMoney() == 50)
+        {
+            m_infoText.text = "Size:  Hefty \nNew  Capacity:  100 \nCost:  50";
+        }
+        if(playerManager.getMaxMoney() == 100)
+        {
+            m_infoText.text = "Size:  Big\nNew  Capacity:  250\nCost:  100";
+        }
+        if(playerManager.getMaxMoney() == 250)
+        {
+            m_infoText.text = "Size:  Huge\nNew  Capacity:  500\nCost:  250";
+        }
+        if(playerManager.getMaxMoney() == 500)
+        {
+            m_infoText.text = "You have the biggest money pouch I presently offer!";
+        }
+    }
+
+    public void m_buy_new()
+    {
+        if (playerManager.getMaxMoney() == 50)
+        {
+            if (playerManager.getMoney() >= 50)
+            {
+                playerManager.removeMoney(50);
+                playerManager.SetMaxMoney(100);
+            }
+        }
+        else if (playerManager.getMaxMoney() == 100)
+        {
+            if (playerManager.getMoney() >= 100)
+            {
+                playerManager.removeMoney(100);
+                playerManager.SetMaxMoney(250);
+            }
+        }
+        else if (playerManager.getMaxMoney() == 250)
+        {
+            if (playerManager.getMoney() >= 250)
+            {
+                playerManager.removeMoney(250);
+                playerManager.SetMaxMoney(500);
+            }
+        }
+
+        m_update_info_text();
+        p_update_money_text();
+    }
+
+    public void ActivateNormalShop()
+    {
+        LeftSideTransform.gameObject.SetActive(true);
+        RightSideTransform.gameObject.SetActive(true);
+        IncreaseMaxMoneyTransform.gameObject.SetActive(false);
+    }
+
+    public void ActivateIncreaseMaxMoneyShop()
+    {
+        LeftSideTransform.gameObject.SetActive(false);
+        RightSideTransform.gameObject.SetActive(false);
+        IncreaseMaxMoneyTransform.gameObject.SetActive(true);
+
+        m_update_info_text();
     }
 
     /* Add Listener Functions */
