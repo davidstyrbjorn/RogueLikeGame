@@ -360,7 +360,7 @@ public class PlayerManager : MonoBehaviour {
             float newArmor = armor + BaseValues.ArmorStatIncrease;
             armor = newArmor;
 
-            eventBox.addEvent("<color=#8d94a0>Armor</color>  increased by  <color=#8d94a0>" + BaseValues.ArmorStatIncrease*100 + "</color>  points");
+            eventBox.addEvent("<color=#8d94a0>Armor</color>  increased by  <color=#8d94a0>" + BaseValues.ArmorStatIncrease*100 + " points " + "</color>");
         }
 
         // Removing the stat increaser after we have used it
