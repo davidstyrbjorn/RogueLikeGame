@@ -142,7 +142,6 @@ public class MiniMap : MonoBehaviour {
         {
             newMapFlag = true;
             uiManager.FullyExploredMap();
-            FullyRevealMap();
         }
 
         miniMapTexture.Apply();

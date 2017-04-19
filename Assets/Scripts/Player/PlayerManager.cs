@@ -62,6 +62,8 @@ public class PlayerManager : MonoBehaviour {
     private Vector2 playerCombatPos, enemyCombatPos;
     private Vector2 combatTilePos;
 
+    private Potion recentlyPickedUpPotion;
+
     public float getHealth() { return healthPoints; }
     public float getMaxHealth() { return maxHealthPoints; }
     public float getAttack() { return attack; }
@@ -106,6 +108,15 @@ public class PlayerManager : MonoBehaviour {
             {
                 ConfirmWeapon_Decline();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.E) && recentlyPickedUpPotion != null)
+        {
+            ConsumePotion(recentlyPickedUpPotion.type);
+            playerInventory.RemovePotionAt(playerInventory.GetPotionsList().Count-1);
+            uiManager.UpdatePotionSlots();
+
+            recentlyPickedUpPotion = null;
         }
     }
 
@@ -203,7 +214,7 @@ public class PlayerManager : MonoBehaviour {
                 {
                     weaponDamage = equipedWeapon.getAttack();
                     if (weaponDamage > equipedWeapon.getNormalAttack())
-                        eventBox.addEvent("Critical Blow" + "  +<color=red>(" + (weaponDamage-equipedWeapon.getNormalAttack()) + ")</color>  Damage");
+                        eventBox.addEvent("Critical blow" + "  +<color=red>(" + (weaponDamage-equipedWeapon.getNormalAttack()) + ")</color>  damage");
                 }
                 float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
@@ -428,6 +439,16 @@ public class PlayerManager : MonoBehaviour {
                 // Create and try to add the potion to players inventory
                 Potion foundPotion = chestMaster.makeNewPotion();
                 playerInventory.addPotion(foundPotion);
+                recentlyPickedUpPotion = foundPotion;
+
+                if(foundPotion.type == Potion.potionType.HEALING)
+                {
+                    eventBox.addEvent("Found  <color=green>Healing</color>  potion");
+                }
+                if(foundPotion.type == Potion.potionType.STRENTGH)
+                {
+                    eventBox.addEvent("Found  <color=#0099cc>Strength</color>  potion");
+                }
 
                 GameObject spriteHover = Instantiate(SpriteHoverEffectObject, new Vector3(pos.x * floorManager.GetTileWidth(), pos.y * floorManager.GetTileWidth(), 0), Quaternion.identity) as GameObject;
                 spriteHover.GetComponent<SpriteRenderer>().sprite = foundPotion.getPotionSprite();
@@ -556,9 +577,19 @@ public class PlayerManager : MonoBehaviour {
 
             // Only equip the new weapon if the player is empty handed
             if (equipedWeapon == null)
+            {
                 EquipWeapon(foundWeapon.weapon);
+            }
+            else
+            {
+                eventBox.addEvent("Picked up  " + foundWeapon.weapon.getName());
+            }
 
             foundWeapon.weapon = null;
+        }
+        else
+        {
+            eventBox.addEvent("Your inventory is overflowing");
         }
 
         uiManager.confirmWeapon.gameObject.SetActive(false);
@@ -577,6 +608,10 @@ public class PlayerManager : MonoBehaviour {
             if (equipedArmor == null)
             {
                 EquipArmor(foundArmor.armor);
+            }
+            else
+            {
+                eventBox.addEvent("Picked up  " + foundArmor.armor.getName());
             }
 
             foundArmor.armor = null;
