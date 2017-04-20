@@ -75,11 +75,6 @@ public class PlayerManager : MonoBehaviour {
             CheckForEnemyClick();
         }
 
-        if (currentEnemy != null)
-        {
-            uiManager.enemyStatScreen.position = (currentEnemy.transform.position + Vector3.up * 7 + Vector3.left * 1.1f);
-        }
-
         if (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             transform.position = Vector2.MoveTowards(transform.position, playerCombatPos, 14 * Time.deltaTime);
@@ -214,7 +209,9 @@ public class PlayerManager : MonoBehaviour {
                 {
                     weaponDamage = equipedWeapon.getAttack();
                     if (weaponDamage > equipedWeapon.getNormalAttack())
-                        eventBox.addEvent("Critical blow" + "  +<color=red>(" + (weaponDamage-equipedWeapon.getNormalAttack()) + ")</color>  damage");
+                    {
+                        eventBox.addEvent("Critical blow" + "  +<color=red>(" + (weaponDamage - equipedWeapon.getNormalAttack()) + ")</color>  damage");
+                    }
                 }
                 float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack

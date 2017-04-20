@@ -26,7 +26,8 @@ public class UIManager : MonoBehaviour {
     public Text weaponNameText;
     public Text inventoryWeaponStats;
     public Text playerDamageText;
-    public Text enemyStatsText;
+    public Text enemyNameText;
+    public Text enemyHealthText;
     public Text enemyDamageText;
     public Text playerMoneyText;
     public Text playerMaxMoneyText;
@@ -583,7 +584,8 @@ public class UIManager : MonoBehaviour {
             enemyHealthSlider.value = enemy.getHP();
 
             // The text at the top ie the name and health text
-            enemyStatsText.text = enemy.getName() + "\n" + Mathf.CeilToInt(enemy.getHP())  + "/" + enemy.getMaxHP();
+            enemyNameText.text = enemy.getName();
+            enemyHealthText.text = (Mathf.RoundToInt(enemy.getHP()) + "/" + Mathf.RoundToInt(enemy.getMaxHP()));
         }
     }
 
