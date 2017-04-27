@@ -40,6 +40,7 @@ public class PlayerManager : MonoBehaviour {
     private Canvas canvas;
     private SpriteRenderer spre;
     private ShopKeeperV2 shopKeeper;
+    private CombatTextManager combatTextManager;
 
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
@@ -80,6 +81,14 @@ public class PlayerManager : MonoBehaviour {
             transform.position = Vector2.MoveTowards(transform.position, playerCombatPos, 14 * Time.deltaTime);
 
             currentEnemy.transform.position = Vector2.MoveTowards(currentEnemy.transform.position, enemyCombatPos, 14 * Time.deltaTime);
+
+            uiManager.inGame_PlayerHealthSlider.transform.position = transform.position +
+                (Vector3.left * 1.45f) + 
+                (Vector3.up*1.1f);
+
+            uiManager.inGame_EnemyHealthSlider.transform.position = currentEnemy.transform.position +
+                (Vector3.right * 1.45f);
+            uiManager.inGame_EnemyHealthSlider.transform.position = new Vector2(uiManager.inGame_EnemyHealthSlider.transform.position.x, uiManager.inGame_PlayerHealthSlider.transform.position.y);
 
             if (Input.GetKeyDown(KeyCode.X))
             {
@@ -131,6 +140,7 @@ public class PlayerManager : MonoBehaviour {
         spre = GetComponentInChildren<SpriteRenderer>();
         soundManager = FindObjectOfType<SoundManager>();
         shopKeeper = FindObjectOfType<ShopKeeperV2>();
+        combatTextManager = FindObjectOfType<CombatTextManager>();
 
         GameStart();
     }
@@ -180,6 +190,15 @@ public class PlayerManager : MonoBehaviour {
         playerCombatPos = combatTilePos + Vector2.left * floorManager.GetTileWidth() * 0.35f;
         enemyCombatPos = combatTilePos + (Vector2.right * floorManager.GetTileWidth() * 0.35f) + (Vector2.up * currentEnemy.yOffset);
 
+        uiManager.inGame_EnemyHealthSlider.gameObject.SetActive(true);
+        uiManager.inGame_PlayerHealthSlider.gameObject.SetActive(true);
+
+        uiManager.inGame_PlayerHealthSlider.maxValue = maxHealthPoints;
+        uiManager.inGame_PlayerHealthSlider.value = healthPoints;
+
+        uiManager.inGame_EnemyHealthSlider.maxValue = currentEnemy.getMaxHP();
+        uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
+
         playerMove.setCurrentPosition(currentEnemyPos);
 
         StartCombat();
@@ -217,21 +236,18 @@ public class PlayerManager : MonoBehaviour {
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
 
+                if(currentEnemy != null)
+                    uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
+
                 PlayerPrefs.SetInt("STATS_DAMAGE_DEALT", PlayerPrefs.GetInt("STATS_DAMAGE_DEALT",0) + (int)total_attack_power);
 
                 // Sound
                 soundManager.SwingSword();
 
-                Vector3 spawnPos = new Vector3(enemyCombatPos.x, enemyCombatPos.y, 0);
-                GameObject combatText = Instantiate(CombatTextPrefab);
-
-                combatText.GetComponent<RectTransform>().anchoredPosition = spawnPos;
-                combatText.GetComponent<RectTransform>().localPosition = Vector3.zero +
-                    (Vector3.right * floorManager.GetTileWidth() * 12.5f) +
-                    (Vector3.up * floorManager.GetTileWidth() * 16);
-
-                combatText.GetComponent<CombatText>().SetText(total_attack_power);
-                combatText.transform.SetParent(canvas.transform, false);
+                if (currentEnemy != null)
+                {
+                    combatTextManager.SpawnCombatText(currentEnemy.transform.position+(Vector3.left*0.65f)+(Vector3.up*3.5f),total_attack_power.ToString());
+                }
 
                 nextAttackBonus = 1f;
 
@@ -269,23 +285,15 @@ public class PlayerManager : MonoBehaviour {
         healthPoints -= _hp;
 
         // Spawning combat text
-        Vector3 spawnPos = new Vector3(playerCombatPos.x, playerCombatPos.y, 0);
-        GameObject combatText = Instantiate(CombatTextPrefab);
+        combatTextManager.SpawnCombatText(transform.position+(Vector3.up*3.5f)+(Vector3.left*0.3f),_hp.ToString());
 
-        combatText.GetComponent<RectTransform>().anchoredPosition = spawnPos;
-        combatText.GetComponent<RectTransform>().localPosition = Vector3.zero + 
-            (Vector3.right * floorManager.GetTileWidth() * 1.233f) +
-            (Vector3.up * floorManager.GetTileWidth() * 16);
-
-        combatText.GetComponent<CombatText>().SetText(_hp);
-        combatText.transform.SetParent(canvas.transform, false);
-
-        // Player dies herek
+        // Player dies here
         if (healthPoints <= 0)
         {
             died();
         }
         uiManager.NewPlayerValues();
+        uiManager.inGame_PlayerHealthSlider.value = healthPoints;
     }
 
     public void enemyDied(int moneyDrop)
@@ -390,6 +398,9 @@ public class PlayerManager : MonoBehaviour {
         StopCoroutine("Player_CombatLoop");
         // StopCoroutine(Enemy_CombatLoop());
         StopCoroutine("Enemy_CombatLoop");
+
+        uiManager.inGame_PlayerHealthSlider.gameObject.SetActive(false);
+        uiManager.inGame_EnemyHealthSlider.gameObject.SetActive(false);
     }
 
     public void hitChest(Vector2 pos)

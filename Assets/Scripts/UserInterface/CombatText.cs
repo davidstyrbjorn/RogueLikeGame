@@ -1,29 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
 
 public class CombatText : MonoBehaviour {
 
-    public Text text;
+    public TextMesh text;
 
-    private float timeSinceStart;
+    private float timeSinceSpawn = 0;
+    private const float scrollSpeed = 5f;
 
     void Start()
     {
-        Destroy(gameObject, 4);
+        Destroy(gameObject, 2.5f);
     }
 
     void Update()
     {
-        timeSinceStart += Time.deltaTime;
-        if(timeSinceStart > 1)
-            text.color = Color.Lerp(text.color, Color.clear, 1.2f * Time.deltaTime);
-        else
-            transform.position = new Vector3(transform.position.x, transform.position.y + 45 * Time.deltaTime, 0);
+        timeSinceSpawn += Time.deltaTime;
+
+        if(timeSinceSpawn >= 1)
+        {
+            text.color = Color.Lerp(text.color, Color.clear, 1.5f * Time.deltaTime);
+        }else
+        {
+            transform.Translate(Vector2.up * scrollSpeed * Time.deltaTime);
+        }
     }
 
-    public void SetText(float damage)
+    public void SetText(string m_text)
     {
-        text.text = damage.ToString();
+        text.text = m_text;
     }
 }

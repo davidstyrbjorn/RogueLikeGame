@@ -47,6 +47,8 @@ public class UIManager : MonoBehaviour {
     public Slider enemyHealthSlider;
     public Slider healthSlider;
     public Slider healthRemovedSlider;
+    public Slider inGame_PlayerHealthSlider;
+    public Slider inGame_EnemyHealthSlider;
 
     [Space(20)]
     [Header("Image Objects")]
