@@ -75,7 +75,6 @@ public class ShopKeeperV2 : MonoBehaviour {
     void sk_ClickedOnWeapon(int index)
     {
         sk_item_index = index;
-        print("Clicked on sk weapon");
 
         // Set text and stuff
         icon1.color = Color.white;

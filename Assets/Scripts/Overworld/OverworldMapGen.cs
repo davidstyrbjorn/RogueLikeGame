@@ -39,9 +39,10 @@ public class OverworldMapGen : MonoBehaviour {
                 }
                 else if(map[x,y] == 1)
                 {
-                    GameObject wall = Instantiate(wallPrefab, new Vector2(x * _tileSize, y * _tileSize), Quaternion.identity) as GameObject;
+                    // NO WALLS 
+                    //GameObject wall = Instantiate(wallPrefab, new Vector2(x * _tileSize, y * _tileSize), Quaternion.identity) as GameObject;
                     //wall.transform.SetParent(transform);
-                    wall.GetComponent<SpriteRenderer>().color = tileColor;
+                    //wall.GetComponent<SpriteRenderer>().color = tileColor;
                 }
                 else if(map[x,y] == 2)
                 {

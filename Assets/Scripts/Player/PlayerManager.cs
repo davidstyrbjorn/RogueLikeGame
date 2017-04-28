@@ -217,6 +217,9 @@ public class PlayerManager : MonoBehaviour {
         yield return new WaitForSeconds(attackSpeed);
         while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
+
+            bool didCrit = false;
+
             if(currentEnemy != null)
             {
                 // Show player attack effect
@@ -229,10 +232,18 @@ public class PlayerManager : MonoBehaviour {
                     weaponDamage = equipedWeapon.getAttack();
                     if (weaponDamage > equipedWeapon.getNormalAttack())
                     {
+                        didCrit = true;
                         eventBox.addEvent("Critical blow" + "  +<color=red>(" + (weaponDamage - equipedWeapon.getNormalAttack()) + ")</color>  damage");
                     }
                 }
                 float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
+
+                // Combat text
+                if(didCrit)
+                    combatTextManager.SpawnCombatText(currentEnemy.transform.position + (Vector3.left * 1.1f) + (Vector3.up * 3.5f), total_attack_power.ToString(), new Color(0.54f,0.168f,0.886f),250);
+                else
+                    combatTextManager.SpawnCombatText(currentEnemy.transform.position + (Vector3.left * 0.65f) + (Vector3.up * 3.5f), total_attack_power.ToString(), Color.red);
+
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
 
@@ -243,11 +254,6 @@ public class PlayerManager : MonoBehaviour {
 
                 // Sound
                 soundManager.SwingSword();
-
-                if (currentEnemy != null)
-                {
-                    combatTextManager.SpawnCombatText(currentEnemy.transform.position+(Vector3.left*0.65f)+(Vector3.up*3.5f),total_attack_power.ToString());
-                }
 
                 nextAttackBonus = 1f;
 
@@ -285,7 +291,7 @@ public class PlayerManager : MonoBehaviour {
         healthPoints -= _hp;
 
         // Spawning combat text
-        combatTextManager.SpawnCombatText(transform.position+(Vector3.up*3.5f)+(Vector3.left*0.3f),_hp.ToString());
+        combatTextManager.SpawnCombatText(transform.position+(Vector3.up*3.5f)+(Vector3.left*0.3f),_hp.ToString(),Color.red);
 
         // Player dies here
         if (healthPoints <= 0)
