@@ -160,10 +160,10 @@ public class PlayerMove_Hub : MonoBehaviour {
     {
         fadePanel.color = Color.black;
 
-        while(fadePanel.color != Color.clear)
+        while(fadePanel.color.a != 0)
         {
-            fadePanel.color = Color.Lerp(fadePanel.color, Color.clear, fadeSpeed * Time.deltaTime);
-            yield return new WaitForSeconds(0.1f);
+            fadePanel.color = new Color(0, 0, 0, fadePanel.color.a - 0.01f);
+            yield return new WaitForSeconds(0.01f);
         }
 
         fadePanel.color = Color.clear;

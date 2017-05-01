@@ -85,8 +85,8 @@ public class MiniMap : MonoBehaviour {
         {
             for(int z = 0; z < BaseValues.MAP_HEIGHT; z++)
             {
-                if (floorManager.map[i, z] == 0)
-                    miniMapTexture.SetPixel(i, z, groundTileColor);
+                //if (floorManager.map[i, z] == 0)
+                    //miniMapTexture.SetPixel(i, z, groundTileColor);
                 if (floorManager.map[i, z] == 1)
                     miniMapTexture.SetPixel(i, z, wallTileColor);
                 if (floorManager.map[i, z] == 3)

@@ -29,6 +29,8 @@ public class Enemy : MonoBehaviour {
     private BaseValues.EnemyStates enemyState;
     private Vector3 idlePosition;
 
+    private SpriteRenderer spre;
+
     void Update()
     {
         if(transform.position != idlePosition && enemyState == BaseValues.EnemyStates.NOT_IN_COMBAT)
@@ -40,9 +42,8 @@ public class Enemy : MonoBehaviour {
     void Start()
     {
         enemyState = BaseValues.EnemyStates.NOT_IN_COMBAT;
-        critChance = Random.Range(75, 99);
-        critMultiplier = 1f + Random.Range(0f, 10f) / 10;
-        critMultiplier = Mathf.Round(critMultiplier * 100f) / 100f;
+
+        spre = GetComponent<SpriteRenderer>();
         playerManager = FindObjectOfType<PlayerManager>(); // Getting the player manager
     }
 
@@ -61,13 +62,17 @@ public class Enemy : MonoBehaviour {
     public float getMaxHP() { return maxHealth; }
     public float getHP() { return healthPoints; }
                     
-    public float getAttack() { return (int)Random.Range(attack1,attack2); }
+    public float getAttack() { return (int)Random.Range(attack1,attack2+1); }
 
     public void looseHealth(float _hp)
     {
+        StopCoroutine("FlashSprite");
+        StartCoroutine("FlashSprite");
         healthPoints -= _hp;
         if (healthPoints <= 0)
         {
+            StopCoroutine("FlashSprite");
+            StartCoroutine(fadeOut());
             playerManager.enemyDied(moneyDrop);
         }
     }
@@ -94,5 +99,33 @@ public class Enemy : MonoBehaviour {
     public void setIdlePosition()
     {
         idlePosition = transform.position;
+    }
+
+    private IEnumerator FlashSprite()
+    {
+        spre.color = Color.white;
+        while (spre.color != Color.red)
+        {
+            spre.color = new Color(1, spre.color.g - 0.025f, spre.color.b - 0.025f, 1);
+            yield return new WaitForSeconds(0.0002f);
+        }
+        while (spre.color != Color.white)
+        {
+            spre.color = new Color(1, spre.color.g + 0.025f, spre.color.b + 0.025f, 1);
+            yield return new WaitForSeconds(0.0002f);
+        }
+    }
+
+    private IEnumerator fadeOut()
+    {
+        spre.color = Color.white;
+
+        while(spre.color.a > 0)
+        {
+            spre.color = new Color(spre.color.r - 0.01f, spre.color.g - 0.01f, spre.color.b - 0.01f, spre.color.a - 0.01f);
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        Destroy(gameObject);
     }
 }

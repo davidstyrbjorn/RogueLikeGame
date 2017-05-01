@@ -34,8 +34,9 @@ public class OverworldMapGen : MonoBehaviour {
                 if(map[x,y] == 0)
                 {
                     GameObject ground = Instantiate(groundPrefab, new Vector2(x * _tileSize, y * _tileSize), Quaternion.identity) as GameObject;
-                    //ground.transform.SetParent(transform);
-                    ground.GetComponent<SpriteRenderer>().color = tileColor;
+                    ground.transform.parent = transform;
+                    ground.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
+                    ground.GetComponent<SpriteRenderer>().color = Color.white;
                 }
                 else if(map[x,y] == 1)
                 {
@@ -47,6 +48,8 @@ public class OverworldMapGen : MonoBehaviour {
                 else if(map[x,y] == 2)
                 {
                     GameObject start = Instantiate(startPrefab, new Vector2(x * _tileSize, y * _tileSize), Quaternion.identity) as GameObject;
+                    start.transform.parent = transform;
+
                     //start.transform.SetParent(transform);
                     start.GetComponent<SpriteRenderer>().color = tileColor;
                 }

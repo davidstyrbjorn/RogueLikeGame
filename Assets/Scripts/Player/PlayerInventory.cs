@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public class PlayerInventory : MonoBehaviour {
 
+    void Start()
+    {
+        AddBrandedWeapon();
+    }
+
     public List<Weapon> weaponsList = new List<Weapon>();
     private int maxWeaponCount = 8;
 
@@ -71,4 +76,14 @@ public class PlayerInventory : MonoBehaviour {
         return armorList;
     }
 
+    void AddBrandedWeapon()
+    {
+        for(int i = 0; i < BaseValues.allWeapons.Length; i++)
+        {
+            if(PlayerPrefs.GetString("brandedWeapon") == BaseValues.allWeapons[i].GetComponent<Weapon>().name)
+            {
+                addWeapon(BaseValues.allWeapons[i].GetComponent<Weapon>());
+            }
+        }
+    }
 }

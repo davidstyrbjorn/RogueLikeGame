@@ -57,7 +57,16 @@ public class EventBox : MonoBehaviour {
         eventText.text = string.Empty;
         for(int i = 0; i < events.Count; i++)
         {
-            eventText.text += events[i] + "\n";
+            if(i == 0)
+                eventText.text += "<size=24><color=#ffffffff>" + events[i] + "\n </color></size>";
+            if(i == 1)
+                eventText.text += "<size=24><color=#ffffffff>" + events[i] + "\n </color></size>";
+            if (i == 2)
+                eventText.text += "<size=24><color=#ffffff99>" + events[i] + "\n </color></size>";
+            if (i == 3)
+                eventText.text += "<size=24><color=#ffffff60>" + events[i] + "\n </color></size>";
+            if (i == 4)
+                eventText.text += "<size=24><color=#ffffff30>" + events[i] + "\n </color></size>";
         }
 
         logText.text = string.Empty;

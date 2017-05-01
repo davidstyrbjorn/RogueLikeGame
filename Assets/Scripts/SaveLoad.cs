@@ -67,5 +67,6 @@ public class SaveLoad : MonoBehaviour{
         PlayerPrefs.SetFloat("playerAttack", BaseValues.PlayerBaseAttack);
         PlayerPrefs.SetInt("playerMaxMoney", 50);
         PlayerPrefs.SetFloat("playerArmor", 0);
+        PlayerPrefs.SetString("brandedWeapon", "none");
     }
 }   

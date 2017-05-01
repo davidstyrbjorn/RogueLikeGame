@@ -11,11 +11,14 @@ public class CombatText : MonoBehaviour {
     void Start()
     {
         Destroy(gameObject, 2.5f);
+        //GetComponent<Renderer>().sortingOrder = 10;
     }
 
     void Update()
     {
         timeSinceSpawn += Time.deltaTime;
+
+        text.fontSize = text.fontSize - (int)timeSinceSpawn*2;
 
         if(timeSinceSpawn >= 1)
         {

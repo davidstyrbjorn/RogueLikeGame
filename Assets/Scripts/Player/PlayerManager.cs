@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
+    enum HEALTH_STATES
+    {
+        NORMAL,
+        LOW,
+    }
+
     struct FoundWeapon
     {
         public Weapon weapon;
@@ -27,6 +33,7 @@ public class PlayerManager : MonoBehaviour {
     private int money;
     private int maxMoney;
     private BaseValues.PlayerStates currentState;
+    private HEALTH_STATES healthState;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -53,7 +60,6 @@ public class PlayerManager : MonoBehaviour {
     private FoundArmor foundArmor;
 
     public GameObject SpriteHoverEffectObject;
-    public GameObject CombatTextPrefab;
 
     private SoundManager soundManager;
 
@@ -240,9 +246,9 @@ public class PlayerManager : MonoBehaviour {
 
                 // Combat text
                 if(didCrit)
-                    combatTextManager.SpawnCombatText(currentEnemy.transform.position + (Vector3.left * 1.1f) + (Vector3.up * 3.5f), total_attack_power.ToString(), new Color(0.54f,0.168f,0.886f),250);
+                    combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), new Color(0.54f,0.168f,0.886f),250);
                 else
-                    combatTextManager.SpawnCombatText(currentEnemy.transform.position + (Vector3.left * 0.65f) + (Vector3.up * 3.5f), total_attack_power.ToString(), Color.red);
+                    combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), Color.red);
 
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
@@ -289,6 +295,8 @@ public class PlayerManager : MonoBehaviour {
 
         PlayerPrefs.SetInt("STATS_DAMAGE_TAKEN", PlayerPrefs.GetInt("STATS_DAMAGE_TAKEN",0) + (int)_hp);
         healthPoints -= _hp;
+        StopCoroutine("FlashSprite");
+        StartCoroutine("FlashSprite");
 
         // Spawning combat text
         combatTextManager.SpawnCombatText(transform.position+(Vector3.up*3.5f)+(Vector3.left*0.3f),_hp.ToString(),Color.red);
@@ -300,6 +308,12 @@ public class PlayerManager : MonoBehaviour {
         }
         uiManager.NewPlayerValues();
         uiManager.inGame_PlayerHealthSlider.value = healthPoints;
+
+        float healthLeft = (healthPoints / maxHealthPoints);
+        if(healthLeft < 0.5f)
+        {
+            healthState = HEALTH_STATES.LOW;
+        }
     }
 
     public void enemyDied(int moneyDrop)
@@ -317,7 +331,7 @@ public class PlayerManager : MonoBehaviour {
             PlayerPrefs.SetInt("STATS_ENEMIES_KILLED", PlayerPrefs.GetInt("STATS_ENEMIES_KILLED",0) + 1);
 
             // Destroy our currentEnemy since it died
-            Destroy(currentEnemy.gameObject);
+            //Destroy(currentEnemy.gameObject);
             currentEnemy = null;
             //inCombat = false;
             currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
@@ -454,6 +468,7 @@ public class PlayerManager : MonoBehaviour {
                 Potion foundPotion = chestMaster.makeNewPotion();
                 playerInventory.addPotion(foundPotion);
                 recentlyPickedUpPotion = foundPotion;
+                Invoke("setRecentPotionToNull", 3);
 
                 if(foundPotion.type == Potion.potionType.HEALING)
                 {
@@ -523,6 +538,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void ConsumePotion(Potion.potionType _type)
     {
+        recentlyPickedUpPotion = null;
         if(_type == Potion.potionType.HEALING)
         {
             addHealth(maxHealthPoints * BaseValues.healthPotionFactor);
@@ -647,10 +663,10 @@ public class PlayerManager : MonoBehaviour {
 
     public void Escape()
     {
-        saveLoad.ResetPlayerPrefs();
-        //saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
-        //saveLoad.SaveMaxMoney(maxMoney);
-        //saveLoad.SavePlayerArmor(armor);
+        //saveLoad.ResetPlayerPrefs();
+        saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
+        saveLoad.SaveMaxMoney(maxMoney);
+        saveLoad.SavePlayerArmor(armor);
 
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());
@@ -744,8 +760,46 @@ public class PlayerManager : MonoBehaviour {
         money -= money_;
     }
 
+    void setRecentPotionToNull()
+    {
+        recentlyPickedUpPotion = null;
+    }
+
     public BaseValues.PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }
+
+    private IEnumerator FlashSprite()
+    {
+        spre.color = Color.white;
+        while(spre.color != Color.red)
+        {
+            spre.color = new Color(1, spre.color.g - 0.025f, spre.color.b-0.025f, 1);
+            yield return new WaitForSeconds(0.00025f);
+        }
+        while(spre.color != Color.white)
+        {
+            spre.color = new Color(1, spre.color.g + 0.025f, spre.color.b + 0.025f, 1);
+            yield return new WaitForSeconds(0.00025f);
+        }
+    }
+
+    private IEnumerator LowHealth()
+    {
+        while (healthState == HEALTH_STATES.LOW)
+        {
+            spre.color = Color.white;
+            while (spre.color != Color.red)
+            {
+                spre.color = new Color(1, spre.color.g - 0.025f, spre.color.b - 0.025f, 1);
+                yield return new WaitForSeconds(0.00025f);
+            }
+            while (spre.color != Color.white)
+            {
+                spre.color = new Color(1, spre.color.g + 0.025f, spre.color.b + 0.025f, 1);
+                yield return new WaitForSeconds(0.00025f);
+            }
+        }
+    }
 
     private IEnumerator AfterCombatEventLog()
     {

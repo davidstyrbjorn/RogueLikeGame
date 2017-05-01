@@ -60,6 +60,9 @@ public class BaseValues : MonoBehaviour{
     public static int HealingPotionCost = 50;
     public static int StrengthPotionCost = 50;
 
+    // Shop stuff
+    public static float ShopSellRatio = 0.75f; // Sell weapon for 25% less than it's actual value
+
     public enum PlayerStates
     {
         IN_COMBAT,
@@ -95,7 +98,7 @@ public class BaseValues : MonoBehaviour{
         HEAVY   = 25,
     }
 
-    private void Start()
+    private void Awake()
     {
         healthPotionSprite = HealthPotionSprite;
         strengthPotionSprite = StrengthPotionSprite;
@@ -104,5 +107,10 @@ public class BaseValues : MonoBehaviour{
         criticalSymbolSprite = CriticalSymbolSprite;
         armorSymbolSprite = ArmorSymbolSprite;
         coinSymbolSprite = CoinSymbolSprite;
+
+        allWeapons = AllWeapons;
     }
+
+    public GameObject[] AllWeapons;
+    public static GameObject[] allWeapons;
 }

@@ -15,13 +15,13 @@ public class EnemyMaster : MonoBehaviour {
             return tier1[index];
         }
 
-        if (floorNumber >= 10 && floorNumber < 20)
+        if (floorNumber >= 10 && floorNumber < 15)
         {
             int index = Random.Range(0, tier2.Count);
             return tier2[index];
         }
 
-        if (floorNumber >= 20 && floorNumber < 30)
+        if (floorNumber >= 15 && floorNumber < 20)
         {
             int index = Random.Range(0, tier3.Count);
             return tier3[index];

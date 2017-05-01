@@ -37,9 +37,11 @@ public class ShopKeeperV2 : MonoBehaviour {
     private FloorManager floorManager;
     private ChestMaster chestMaster;
     private UIManager uiManager;
+    private EventBox eventBox;
 
     void Start()
     {
+        eventBox = FindObjectOfType<EventBox>();
         playerManager = FindObjectOfType<PlayerManager>();
         playerInventory = FindObjectOfType<PlayerInventory>();
         chestMaster = FindObjectOfType<ChestMaster>();
@@ -226,8 +228,9 @@ public class ShopKeeperV2 : MonoBehaviour {
         if(p_item_index != -1)
         {
             // Sound and event box right here
-
-            playerManager.addMoney(playerInventory.GetWeaponsList()[p_item_index].getValue());
+            eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetWeaponsList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " coins</color>");
+            
+            playerManager.addMoney((int)(playerInventory.GetWeaponsList()[p_item_index].getValue()*BaseValues.ShopSellRatio));
 
             if(playerInventory.GetWeaponsList()[p_item_index] == playerManager.getEquipedWeapon())
             {
@@ -265,7 +268,13 @@ public class ShopKeeperV2 : MonoBehaviour {
                 uiManager.UpdateWeaponSlots();
                 uiManager.NewPlayerValues();
 
+                if(playerManager.getEquipedWeapon() == null)
+                {
+                    playerManager.EquipWeapon(sk_weapons[sk_item_index]);
+                }
+
                 // Event box and sound here
+                eventBox.addEvent("Bought  " + sk_weapons[sk_item_index].name + " for  <color=#daa520>" + sk_weapons[sk_item_index].value + "  coins</color>");
 
                 // Remove the weapon from the shop
                 sk_weapons[sk_item_index] = null;
@@ -299,8 +308,13 @@ public class ShopKeeperV2 : MonoBehaviour {
                 uiManager.UpdateArmorSlots();
                 uiManager.NewPlayerValues();
 
-                // Event box and sound here
+                if(playerManager.getEquipedArmor() == null)
+                {
+                    playerManager.EquipArmor(sk_armor[sk_item_index]);
+                }
 
+                // Event box and sound here
+                eventBox.addEvent("Bought " + sk_armor[sk_item_index].name + " for <color=#daa520>" + sk_armor[sk_item_index].value + " coins</color>");
 
                 // Remove the armor from the shop
                 sk_armor[sk_item_index] = null;
@@ -324,8 +338,9 @@ public class ShopKeeperV2 : MonoBehaviour {
         if (p_item_index != -1)
         {
             // Sound and event box right here
+            eventBox.addEvent("Sold " + playerInventory.GetArmorList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetArmorList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " coins</color>");
 
-            playerManager.addMoney(playerInventory.GetArmorList()[p_item_index].getValue());
+            playerManager.addMoney((int)(playerInventory.GetArmorList()[p_item_index].getValue()*BaseValues.ShopSellRatio));
 
             if (playerInventory.GetArmorList()[p_item_index] == playerManager.getEquipedArmor())
             {

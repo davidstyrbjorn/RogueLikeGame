@@ -235,11 +235,11 @@ public class UIManager : MonoBehaviour {
         // Update player armor text
         if (playerManager.getEquipedArmor() == null)
         {
-            playerArmorText.text = ((playerManager.getArmor()) * 100).ToString(); // Add actual armor piece to this when implemented
+            playerArmorText.text = ((playerManager.getArmor()) * 100).ToString("0.#"); // Add actual armor piece to this when implemented
         }
         else
         {
-            playerArmorText.text = ((playerManager.getArmor() * 100) + playerManager.getEquipedArmor().getArmor() * 100).ToString();
+            playerArmorText.text = ((playerManager.getArmor() * 100) + playerManager.getEquipedArmor().getArmor() * 100).ToString("0.#");
         }
 
         // Money text
@@ -284,10 +284,10 @@ public class UIManager : MonoBehaviour {
         // Armor
         if (playerManager.getEquipedArmor() == null)
         {
-            inventoryArmorText.text = ((playerManager.getArmor()) * 100).ToString(); // Add actual armor piece to this when implemented
+            inventoryArmorText.text = ((playerManager.getArmor()) * 100).ToString("0.#"); // Add actual armor piece to this when implemented
         }else
         {
-            inventoryArmorText.text = ((playerManager.getArmor() * 100) + playerManager.getEquipedArmor().getArmor() * 100).ToString();
+            inventoryArmorText.text = ((playerManager.getArmor() * 100) + playerManager.getEquipedArmor().getArmor() * 100).ToString("0.#");
         }
 
         // Health
@@ -786,10 +786,10 @@ public class UIManager : MonoBehaviour {
     {
         fadePanel.color = Color.black;
 
-        while (fadePanel.color != Color.clear)
+        while (fadePanel.color.a > 0)
         {
-            fadePanel.color = Color.Lerp(fadePanel.color, Color.clear, fadeSpeed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
+            fadePanel.color = new Color(0, 0, 0, fadePanel.color.a - 0.01f);
+            yield return new WaitForSeconds(0.01f);
         }
 
         fadePanel.color = Color.clear;
