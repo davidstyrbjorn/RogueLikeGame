@@ -291,7 +291,6 @@ public class CellularAutomateMap : MonoBehaviour
                     distanceToSpawn = (int)Vector2.Distance(new Vector2(EntranceX, EntranceY), new Vector2(x, y));
 
                     /*
-                     * DON'T REMOVE WILL CAUSE STACK OVERFLOW(probably)
                      * Guarantee a chest if its the second time through
                      * It's to stop recursion call causing Stack Overflow!
                     */
@@ -357,16 +356,6 @@ public class CellularAutomateMap : MonoBehaviour
 
     void SpawnEnemies()
     {
-        // 1 = wall
-        // 0 = ground
-        // 2 = Entrance
-        // 3 = Exit
-        // 4 = Enemy
-        // 5 = Stat Increase
-        // 6 = Chest
-        // 7 = Shop Keeper
-        // 8 = Exit Escape
-
         System.Random randomNum = new System.Random(seed.GetHashCode());
 
         // Sprinkles enemies randomly throughout the map
@@ -432,7 +421,7 @@ public class CellularAutomateMap : MonoBehaviour
             }
             catch
             {
-                // *Stack Overflow probably
+                // *Stack Overflow 
             }
         }
     }

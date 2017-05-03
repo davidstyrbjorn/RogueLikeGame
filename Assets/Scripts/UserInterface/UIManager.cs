@@ -4,9 +4,6 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-// dab skrt
-// IRON FIST PÅ DEN
-
 public class UIManager : MonoBehaviour {
 
     // UI Game Objects
@@ -116,6 +113,7 @@ public class UIManager : MonoBehaviour {
     private Vector2 weaponInfoBoxOffset;
 
     private SoundManager soundManager;
+    public Inventory inventory;
 
     private float fullyExploredMapTimer = 0;
 
@@ -125,6 +123,7 @@ public class UIManager : MonoBehaviour {
         playerInventory = FindObjectOfType<PlayerInventory>();
         playerManager = FindObjectOfType<PlayerManager>();
         eventBox = FindObjectOfType<EventBox>();
+        inventory = FindObjectOfType<Inventory>();
     }
 
     private void Start()
@@ -621,7 +620,7 @@ public class UIManager : MonoBehaviour {
         {
             soundManager.OpenedInventory();
         }
-            
+        inventory.Toggled();
         characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf);
     }
     public void GoTo_WeaponsTab()

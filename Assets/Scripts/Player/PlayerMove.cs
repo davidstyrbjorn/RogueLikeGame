@@ -104,7 +104,7 @@ public class PlayerMove : MonoBehaviour {
                     curr_x--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
-                    spre.flipX = false;
+                    spre.flipX = true;
 
                     positionBeforeCombat = new Vector2(curr_x, curr_y);
                 }
@@ -120,7 +120,7 @@ public class PlayerMove : MonoBehaviour {
             else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             {
                 anim.SetBool("WalkSide", true);
-                spre.flipX = true;
+                spre.flipX = false;
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x + 1, curr_y] != 4)
                 {
@@ -132,6 +132,7 @@ public class PlayerMove : MonoBehaviour {
                 }
                 else if (currentMap[curr_x + 1, curr_y] == 4)
                 {
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                     playerManager.onEngage(curr_x + 1, curr_y);
                     spre.flipX = false;
                 }
@@ -152,8 +153,8 @@ public class PlayerMove : MonoBehaviour {
                 }
                 else if (currentMap[curr_x, curr_y + 1] == 4)
                 {
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                     spre.flipX = false;
+                    positionBeforeCombat = new Vector2(curr_x, curr_y);
                     playerManager.onEngage(curr_x, curr_y + 1);
                 }
             }
@@ -174,8 +175,8 @@ public class PlayerMove : MonoBehaviour {
                 else if (currentMap[curr_x, curr_y - 1] == 4)
                 {
                     positionBeforeCombat = new Vector2(curr_x, curr_y);
-                    spre.flipX = false;
                     playerManager.onEngage(curr_x, curr_y - 1);
+                    spre.flipX = false;
                 }
             }
 

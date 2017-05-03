@@ -41,6 +41,7 @@ public class PlayerManager : MonoBehaviour {
     private SpriteRenderer spre;
     private ShopKeeperV2 shopKeeper;
     private CombatTextManager combatTextManager;
+    private Animator anim;
 
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
@@ -140,6 +141,7 @@ public class PlayerManager : MonoBehaviour {
         soundManager = FindObjectOfType<SoundManager>();
         shopKeeper = FindObjectOfType<ShopKeeperV2>();
         combatTextManager = FindObjectOfType<CombatTextManager>();
+        anim = GetComponentInChildren<Animator>();
 
         GameStart();
     }
@@ -200,6 +202,8 @@ public class PlayerManager : MonoBehaviour {
 
         playerMove.setCurrentPosition(currentEnemyPos);
 
+        uiManager.UpdateEnemyUI(currentEnemy);
+
         StartCombat();
     }
 
@@ -223,6 +227,7 @@ public class PlayerManager : MonoBehaviour {
             {
                 // Show player attack effect
                 playerAnimation.DoCombatAnimation();
+                yield return new WaitForSeconds(0.3f);
 
                 // Starts off instantly with the player hitting the enemy 
                 float weaponDamage = 0;
@@ -675,6 +680,7 @@ public class PlayerManager : MonoBehaviour {
 
     public IEnumerator AscendNextFloor()
     {
+        anim.enabled = false;
         currentState = BaseValues.PlayerStates.ASCENDING;
 
         // Ascend upwards and fade sprite out
@@ -685,12 +691,15 @@ public class PlayerManager : MonoBehaviour {
             yield return new WaitForSeconds(0.01f);       
         }
 
-        while(spre.color.a > 0.05f)
+        while(spre.color.a > 0.05f && transform.localScale.x < 25)
         {
-            spre.color = Color.Lerp(spre.color, Color.clear, 0.05f);
+            if(spre.color.a > 0.05f)
+                spre.color = Color.Lerp(spre.color, Color.clear, 0.035f);
+            if (transform.localScale.x < 25)
+                transform.localScale = new Vector3(transform.localScale.x + 0.05f, transform.localScale.y + 0.05f, 1);
             yield return new WaitForSeconds(0.01f);
         }
-
+        
         // Fade in the panel
         while(uiManager.fadePanel.color.a <= 0.995f)
         {
@@ -701,7 +710,9 @@ public class PlayerManager : MonoBehaviour {
         floorManager.NewFloor();
 
         spre.color = Color.white;
+        transform.localScale = new Vector3(1.75f, 1.75f, 1);
         currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
+        anim.enabled = true;
 
         // After we have gotten a new floor fade out into the game again
         while (uiManager.fadePanel.color.a > 0.05f)
