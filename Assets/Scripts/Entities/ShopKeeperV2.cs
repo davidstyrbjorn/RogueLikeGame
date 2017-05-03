@@ -85,7 +85,10 @@ public class ShopKeeperV2 : MonoBehaviour {
         icon3.sprite = BaseValues.coinSymbolSprite;
 
         stat1.text = sk_weapons[index].getNormalAttack().ToString();
-        stat2.text = sk_weapons[index].getCritChance().ToString() + "%";
+        if (sk_weapons[index].getCritChance() != -1)
+            stat2.text = sk_weapons[index].getCritChance().ToString() + "%";
+        else
+            stat2.text = "0%";
         stat3.text = sk_weapons[index].getValue().ToString();
 
         itemName.text = sk_weapons[index].getName();
@@ -137,7 +140,12 @@ public class ShopKeeperV2 : MonoBehaviour {
         icon3.sprite = BaseValues.coinSymbolSprite;
 
         stat1.text = playerInventory.GetWeaponsList()[index].getNormalAttack().ToString();
-        stat2.text = playerInventory.GetWeaponsList()[index].getCritChance().ToString() + "%";
+
+        if (playerInventory.GetWeaponsList()[index].getCritChance() != -1)
+            stat2.text = playerInventory.GetWeaponsList()[index].getCritChance().ToString() + "%";
+        else
+            stat2.text = "0%";
+
         stat3.text = playerInventory.GetWeaponsList()[index].getValue().ToString();
 
         itemName.text = playerInventory.GetWeaponsList()[index].getName();

@@ -4,6 +4,9 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// dab skrt
+// IRON FIST PÅ DEN
+
 public class UIManager : MonoBehaviour {
 
     // UI Game Objects
@@ -341,9 +344,7 @@ public class UIManager : MonoBehaviour {
                 inventoryPhysicalDamageText.text += " <color=green>   (+" + excessDamage + ")</color>";
             if (excessDamage < 0)
                 inventoryPhysicalDamageText.text += " <color=red>   (" + excessDamage + ")</color>";
-            //if (excessDamage == 0)
-                //inventoryPhysicalDamageText.text += " +0";
-
+            
             float excessCritChance = 0;
             // Check if theres a weapon equiped
             if(playerManager.getEquipedWeapon() != null)
@@ -364,10 +365,9 @@ public class UIManager : MonoBehaviour {
             }
 
             if (excessCritChance > 0)
-                inventoryCriticalChanceText.text += " <color=green>  (+" + (excessCritChance) + ")</color>";
+                inventoryCriticalChanceText.text += " <color=green>  (+" + (excessCritChance-1) + ")</color>";
             if (excessCritChance < 0)
-                inventoryCriticalChanceText.text += " <color=red>  (" + (excessCritChance) + ")</color>";
-
+                inventoryCriticalChanceText.text += " <color=red>  (" + (excessCritChance+1) + ")</color>";
             #endregion
 
             StopCoroutine("DoubleClick");
@@ -375,12 +375,12 @@ public class UIManager : MonoBehaviour {
 
             if (playerInventory.GetWeaponsList()[_index].getCritChance() == -1)
             {
-                inventoryWeaponStats.text = ""+ playerInventory.GetWeaponsList()[_index].getNormalAttack();
+                inventoryWeaponStats.text = ""+ playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" + "0%";
             }
             else
             {
                 inventoryWeaponStats.text = "" + playerInventory.GetWeaponsList()[_index].getNormalAttack() + "\n" +
-                    playerInventory.GetWeaponsList()[_index].getCritChance() + "\n" +
+                    playerInventory.GetWeaponsList()[_index].getCritChance() + "%\n" +
                     playerInventory.GetWeaponsList()[_index].getCriticalMultiplier();
             }
             currentlySelectedInventoryWeapon = playerInventory.GetWeaponsList()[_index];
@@ -795,3 +795,6 @@ public class UIManager : MonoBehaviour {
         fadePanel.color = Color.clear;
     }
 }
+
+
+// yeet

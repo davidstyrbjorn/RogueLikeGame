@@ -4,12 +4,6 @@ using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {
 
-    enum HEALTH_STATES
-    {
-        NORMAL,
-        LOW,
-    }
-
     struct FoundWeapon
     {
         public Weapon weapon;
@@ -33,7 +27,6 @@ public class PlayerManager : MonoBehaviour {
     private int money;
     private int maxMoney;
     private BaseValues.PlayerStates currentState;
-    private HEALTH_STATES healthState;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -308,12 +301,6 @@ public class PlayerManager : MonoBehaviour {
         }
         uiManager.NewPlayerValues();
         uiManager.inGame_PlayerHealthSlider.value = healthPoints;
-
-        float healthLeft = (healthPoints / maxHealthPoints);
-        if(healthLeft < 0.5f)
-        {
-            healthState = HEALTH_STATES.LOW;
-        }
     }
 
     public void enemyDied(int moneyDrop)
@@ -468,7 +455,7 @@ public class PlayerManager : MonoBehaviour {
                 Potion foundPotion = chestMaster.makeNewPotion();
                 playerInventory.addPotion(foundPotion);
                 recentlyPickedUpPotion = foundPotion;
-                Invoke("setRecentPotionToNull", 3);
+                Invoke("setRecentPotionToNull", 4.5f);
 
                 if(foundPotion.type == Potion.potionType.HEALING)
                 {
@@ -568,6 +555,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void died()
     {
+        healthPoints = 0;
         uiManager.GameOver();
         Destroy(gameObject);
     }
@@ -785,7 +773,7 @@ public class PlayerManager : MonoBehaviour {
 
     private IEnumerator LowHealth()
     {
-        while (healthState == HEALTH_STATES.LOW)
+        while (1 == 1)
         {
             spre.color = Color.white;
             while (spre.color != Color.red)

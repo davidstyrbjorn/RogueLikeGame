@@ -61,7 +61,7 @@ public class BaseValues : MonoBehaviour{
     public static int StrengthPotionCost = 50;
 
     // Shop stuff
-    public static float ShopSellRatio = 0.75f; // Sell weapon for 25% less than it's actual value
+    public static float ShopSellRatio = 0.6f; // Sell weapon for 25% less than it's actual value
 
     public enum PlayerStates
     {
