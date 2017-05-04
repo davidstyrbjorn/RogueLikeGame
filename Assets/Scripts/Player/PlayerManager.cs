@@ -684,7 +684,6 @@ public class PlayerManager : MonoBehaviour {
         currentState = BaseValues.PlayerStates.ASCENDING;
         spre.color = Color.white;
 
-
         // Ascend upwards and fade sprite out
         Vector3 ascendPos = new Vector3(transform.position.x, transform.position.y + 4.5f, transform.position.z);
         while(transform.position.y < ascendPos.y)
@@ -705,7 +704,7 @@ public class PlayerManager : MonoBehaviour {
         // Fade in the panel
         while(uiManager.fadePanel.color.a <= 1)
         {
-            uiManager.fadePanel.color = new Color(0, 0, 0, uiManager.fadePanel.color.a + 0.01f);
+            uiManager.fadePanel.color = new Color(0, 0, 0, uiManager.fadePanel.color.a + 0.025f);
             yield return new WaitForSeconds(0.01f);
         }
 
@@ -719,7 +718,7 @@ public class PlayerManager : MonoBehaviour {
         // After we have gotten a new floor fade out into the game again
         while (uiManager.fadePanel.color.a >= 0)
         {
-            uiManager.fadePanel.color = new Color(0, 0, 0, uiManager.fadePanel.color.a - 0.01f);
+            uiManager.fadePanel.color = new Color(0, 0, 0, uiManager.fadePanel.color.a - 0.025f);
             yield return new WaitForSeconds(0.01f);
         }
 

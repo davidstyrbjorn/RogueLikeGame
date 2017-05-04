@@ -80,6 +80,7 @@ public class PlayerMove : MonoBehaviour {
     {
         // @
         // Foor loop removal and floorManager.GetTielWidth is redundant as fuck
+        /*
         for (int x = 0; x < mapGenerator.width; x++)
         {
             for (int y = 0; y < mapGenerator.height; y++)
@@ -88,7 +89,9 @@ public class PlayerMove : MonoBehaviour {
                     return new Vector2(x * floorManager.GetTileWidth(), y * floorManager.GetTileWidth());
             }
         }
-        return new Vector2(0, 0);
+        */
+        return new Vector2(_x * floorManager.GetTileWidth(), _y * floorManager.GetTileWidth());
+        //return new Vector2(0, 0);
     }
 
     void MovePlayer()
@@ -139,7 +142,7 @@ public class PlayerMove : MonoBehaviour {
                 }
             }
 
-            // Move upwards
+            // Move upwards     
             else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             {
                 anim.SetBool("WalkVertical", true);
@@ -200,7 +203,7 @@ public class PlayerMove : MonoBehaviour {
                 playerManager.hitChest(new Vector2(curr_x, curr_y));
 
             if (currentMap[curr_x, curr_y] == 7)
-            {
+            {   
                 shopKeeper.ToggleShop(true);
             }
             else
@@ -223,7 +226,7 @@ public class PlayerMove : MonoBehaviour {
         if ((Vector2)transform.position == currentWorldPosition)
             canMove = true;
         //if (Mathf.Approximately(transform.position.x, currentWorldPosition.x) && Mathf.Approximately(transform.position.y, currentWorldPosition.y))
-           //canMove = true;                              
+          // canMove = true;                              
     }
 
     public Vector2 getCurrentPosition() { return new Vector2(curr_x, curr_y); }
