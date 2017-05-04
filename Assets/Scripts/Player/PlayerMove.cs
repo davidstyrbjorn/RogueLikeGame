@@ -71,14 +71,15 @@ public class PlayerMove : MonoBehaviour {
         curr_y = mapGenerator.EntranceY;
 
         currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-        transform.position = currentWorldPosition;
-        Camera.main.transform.position = transform.position;
+        Camera.main.transform.position = currentWorldPosition;
 
         miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
     }
 
     Vector2 SetPlayerPos(int _x, int _y)
     {
+        // @
+        // Foor loop removal and floorManager.GetTielWidth is redundant as fuck
         for (int x = 0; x < mapGenerator.width; x++)
         {
             for (int y = 0; y < mapGenerator.height; y++)
@@ -226,12 +227,19 @@ public class PlayerMove : MonoBehaviour {
     }
 
     public Vector2 getCurrentPosition() { return new Vector2(curr_x, curr_y); }
+    public Vector2 getWorldPosition() { return currentWorldPosition; }
+
     public void setCurrentPosition(Vector2 pos_m)
     {
         curr_x = (int)pos_m.x;
         curr_y = (int)pos_m.y;
         currentWorldPosition = SetPlayerPos(curr_x, curr_y);
     }
+
+    public void MoveToWorldPos()
+    {
+        transform.position = currentWorldPosition;
+    }    
 
     public Animator getAnim() { return anim; }
 }

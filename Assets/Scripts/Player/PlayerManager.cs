@@ -682,47 +682,63 @@ public class PlayerManager : MonoBehaviour {
     {
         anim.enabled = false;
         currentState = BaseValues.PlayerStates.ASCENDING;
+        spre.color = Color.white;
+
 
         // Ascend upwards and fade sprite out
         Vector3 ascendPos = new Vector3(transform.position.x, transform.position.y + 4.5f, transform.position.z);
-        while(transform.position.y < ascendPos.y-0.5f)
+        while(transform.position.y < ascendPos.y)
         {
-            transform.position = Vector3.Lerp(transform.position, ascendPos, 0.015f);
+            transform.position = transform.position + Vector3.up * 0.05f;
             yield return new WaitForSeconds(0.01f);       
         }
 
-        while(spre.color.a > 0.05f && transform.localScale.x < 25)
+        while(spre.color.a >= 0 && transform.localScale.x < 25)
         {
-            if(spre.color.a > 0.05f)
-                spre.color = Color.Lerp(spre.color, Color.clear, 0.035f);
+            if (spre.color.a >= 0)
+                spre.color = new Color(1, 1, 1, spre.color.a - 0.01f);
             if (transform.localScale.x < 25)
                 transform.localScale = new Vector3(transform.localScale.x + 0.05f, transform.localScale.y + 0.05f, 1);
             yield return new WaitForSeconds(0.01f);
         }
         
         // Fade in the panel
-        while(uiManager.fadePanel.color.a <= 0.995f)
+        while(uiManager.fadePanel.color.a <= 1)
         {
-            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.black, 0.05f);
+            uiManager.fadePanel.color = new Color(0, 0, 0, uiManager.fadePanel.color.a + 0.01f);
             yield return new WaitForSeconds(0.01f);
         }
 
         floorManager.NewFloor();
 
-        spre.color = Color.white;
-        transform.localScale = new Vector3(1.75f, 1.75f, 1);
-        currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
-        anim.enabled = true;
+        yield return new WaitForSeconds(0.5f);
+
+        spre.color = Color.clear;
+        transform.localScale = new Vector3(6, 6, 1);
 
         // After we have gotten a new floor fade out into the game again
-        while (uiManager.fadePanel.color.a > 0.05f)
+        while (uiManager.fadePanel.color.a >= 0)
         {
-            uiManager.fadePanel.color = Color.Lerp(uiManager.fadePanel.color, Color.clear, 0.05f);
+            uiManager.fadePanel.color = new Color(0, 0, 0, uiManager.fadePanel.color.a - 0.01f);
             yield return new WaitForSeconds(0.01f);
         }
 
+        while(transform.localScale.x > 1.75f && spre.color.a <= 1)
+        {
+            if(transform.localScale.x > 1.75f)
+                transform.localScale = new Vector3(transform.localScale.x - 0.04f, transform.localScale.y - 0.04f, 1);
+            if (spre.color != Color.white)
+                spre.color = new Color(1, 1, 1, spre.color.a + 0.01f);
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        /* Interpolate to playerMove.getWorldPosition */
+        transform.position = playerMove.getWorldPosition(); 
+
         // Done
         uiManager.fadePanel.color = Color.clear;
+        currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
+        anim.enabled = true;
     }
 
     public float getArmor()
