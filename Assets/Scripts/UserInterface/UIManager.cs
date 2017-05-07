@@ -226,9 +226,9 @@ public class UIManager : MonoBehaviour {
         }
 
         // Update the player health text
-        playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
-        //float healthPercentage = (playerManager.getHealth() / playerManager.getMaxHealth());
-        //playerHealthText.text = healthPercentage.ToString() + "%";
+        //playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
+        float healthPercentage = Convert.ToInt16((playerManager.getHealth() / playerManager.getMaxHealth()) * 100);
+        playerHealthText.text = healthPercentage.ToString() + "%";
 
         // Update player physical damage 
         playerDamageText.text = ""+(playerManager.getAttack() + 
@@ -295,6 +295,8 @@ public class UIManager : MonoBehaviour {
         // Health
         inventoryHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
         inventoryHealthAddedText.text = string.Empty;
+
+        inventory.Toggled();
     }
 
     // Hovered over a weapon in the inventory

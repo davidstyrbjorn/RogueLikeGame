@@ -37,15 +37,14 @@ public class PlayerManager : MonoBehaviour {
     private ChestMaster chestMaster;
     private SaveLoad saveLoad;
     private ScreenTransitionImageEffect transitionScript;
-    private Canvas canvas;
     private SpriteRenderer spre;
     private ShopKeeperV2 shopKeeper;
     private CombatTextManager combatTextManager;
     private Animator anim;
+    private CameraShake_Simple camShake;
 
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
-    private string currentEnemyName;
     
     private Weapon equipedWeapon;
     private Armor equipedArmor;
@@ -136,12 +135,12 @@ public class PlayerManager : MonoBehaviour {
         eventBox = FindObjectOfType<EventBox>();
         saveLoad = FindObjectOfType<SaveLoad>();
         transitionScript = FindObjectOfType<ScreenTransitionImageEffect>();
-        canvas = FindObjectOfType<Canvas>();
         spre = GetComponentInChildren<SpriteRenderer>();
         soundManager = FindObjectOfType<SoundManager>();
         shopKeeper = FindObjectOfType<ShopKeeperV2>();
         combatTextManager = FindObjectOfType<CombatTextManager>();
         anim = GetComponentInChildren<Animator>();
+        camShake = FindObjectOfType<CameraShake_Simple>();
 
         GameStart();
     }
@@ -184,7 +183,6 @@ public class PlayerManager : MonoBehaviour {
         currentEnemy = _enemy.GetComponent<Enemy>();
 
         currentEnemyPos = new Vector2(enemy_x, enemy_y);
-        currentEnemyName = currentEnemy.getName();
         currentEnemy.setState(BaseValues.EnemyStates.IN_COMBAT);
 
         combatTilePos = currentEnemyPos * floorManager.GetTileWidth();
@@ -334,6 +332,8 @@ public class PlayerManager : MonoBehaviour {
 
             StopCoroutine("AfterCombatEventLog");
             StartCoroutine("AfterCombatEventLog");
+
+            camShake.DoShake();
 
             uiManager.NewPlayerValues();
             // Disable enemy UI
@@ -818,7 +818,7 @@ public class PlayerManager : MonoBehaviour {
     private IEnumerator AfterCombatEventLog()
     {
         yield return new WaitForSeconds(Random.Range(2,8));
-        float healthRatio = (healthPoints / maxHealthPoints) * 100;
+        //float healthRatio = (healthPoints / maxHealthPoints) * 100;
         /*
          * 0 - 20% -> Dying
          * 21 - 60% -> Drained

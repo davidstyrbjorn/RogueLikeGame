@@ -34,7 +34,6 @@ public class ShopKeeperV2 : MonoBehaviour {
     public RectTransform ShopTransform;
 
     /* Misc classes we need reference to */
-    private FloorManager floorManager;
     private ChestMaster chestMaster;
     private UIManager uiManager;
     private EventBox eventBox;
@@ -45,7 +44,6 @@ public class ShopKeeperV2 : MonoBehaviour {
         playerManager = FindObjectOfType<PlayerManager>();
         playerInventory = FindObjectOfType<PlayerInventory>();
         chestMaster = FindObjectOfType<ChestMaster>();
-        floorManager = FindObjectOfType<FloorManager>();
         uiManager = FindObjectOfType<UIManager>();
     }
 
@@ -89,7 +87,7 @@ public class ShopKeeperV2 : MonoBehaviour {
             stat2.text = sk_weapons[index].getCritChance().ToString() + "%";
         else
             stat2.text = "0%";
-        stat3.text = sk_weapons[index].getValue().ToString();
+        stat3.text = (sk_weapons[index].getValue().ToString());
 
         itemName.text = sk_weapons[index].getName();
         itemImage.sprite = sk_weapons[index].getWeaponSprite();
@@ -115,7 +113,7 @@ public class ShopKeeperV2 : MonoBehaviour {
 
         stat1.text = "";
         stat2.text = (playerInventory.GetArmorList()[index].getArmor()*100).ToString();
-        stat3.text = playerInventory.GetArmorList()[index].getValue().ToString();
+        stat3.text = (playerInventory.GetArmorList()[index].getValue()*BaseValues.ShopSellRatio).ToString();
 
         itemName.text = playerInventory.GetArmorList()[index].getName();
         itemImage.sprite = playerInventory.GetArmorList()[index].getArmorSprite();
@@ -146,7 +144,7 @@ public class ShopKeeperV2 : MonoBehaviour {
         else
             stat2.text = "0%";
 
-        stat3.text = playerInventory.GetWeaponsList()[index].getValue().ToString();
+        stat3.text = (playerInventory.GetWeaponsList()[index].getValue()*BaseValues.ShopSellRatio).ToString();
 
         itemName.text = playerInventory.GetWeaponsList()[index].getName();
         itemImage.sprite = playerInventory.GetWeaponsList()[index].getWeaponSprite();

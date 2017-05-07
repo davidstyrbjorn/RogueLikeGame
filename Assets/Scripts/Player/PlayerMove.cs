@@ -57,7 +57,7 @@ public class PlayerMove : MonoBehaviour {
             CheckCanMove();
         }
 
-        if(spre.sortingOrder != BaseValues.MAP_HEIGHT-curr_y)
+        if (spre.sortingOrder != BaseValues.MAP_HEIGHT-curr_y)
         {
             spre.sortingOrder = BaseValues.MAP_HEIGHT - curr_y;
         }
@@ -78,26 +78,13 @@ public class PlayerMove : MonoBehaviour {
 
     Vector2 SetPlayerPos(int _x, int _y)
     {
-        // @
-        // Foor loop removal and floorManager.GetTielWidth is redundant as fuck
-        /*
-        for (int x = 0; x < mapGenerator.width; x++)
-        {
-            for (int y = 0; y < mapGenerator.height; y++)
-            {
-                if (x == _x && y == _y)
-                    return new Vector2(x * floorManager.GetTileWidth(), y * floorManager.GetTileWidth());
-            }
-        }
-        */
         return new Vector2(_x * floorManager.GetTileWidth(), _y * floorManager.GetTileWidth());
-        //return new Vector2(0, 0);
     }
 
     void MovePlayer()
     {
         if (Input.anyKey && playerManager.getCurrentState() == BaseValues.PlayerStates.NOT_IN_COMBAT)
-        { 
+        {
             // Move left
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
