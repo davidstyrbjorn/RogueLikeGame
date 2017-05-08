@@ -60,6 +60,7 @@ public class PlayerManager : MonoBehaviour {
     private SoundManager soundManager;
 
     public Texture2D[] maskTextures;
+    public Sprite playerSprite;
 
     // Combat position variables
     private Vector2 playerCombatPos, enemyCombatPos;
@@ -162,7 +163,7 @@ public class PlayerManager : MonoBehaviour {
         armor = saveLoad.GetPlayerArmor();
 
         // Setting up attack speed
-        attackSpeed = saveLoad.GetPlayerAttackSpeed();
+        attackSpeed = BaseValues.PlayerBaseAttackSpeed;
 
         // Setting up player money
         money = 0;
@@ -239,16 +240,21 @@ public class PlayerManager : MonoBehaviour {
                     if (weaponDamage > equipedWeapon.getNormalAttack())
                     {
                         didCrit = true;
-                        eventBox.addEvent("Critical blow" + "  +<color=red>(" + (weaponDamage - equipedWeapon.getNormalAttack()) + ")</color>  damage");
+                        eventBox.addEvent("Critical blow" + "  +<color=#8a2be2>(" + (weaponDamage - equipedWeapon.getNormalAttack()) + ")</color>  damage");
                     }
                 }
                 float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
 
                 // Combat text
-                if(didCrit)
-                    combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), new Color(0.54f,0.168f,0.886f),250);
+                if (didCrit || nextAttackBonus != 1)
+                {
+                    camShake.DoShake();
+                    combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), new Color(0.54f, 0.168f, 0.886f), 250);
+                }
                 else
+                {
                     combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), Color.red);
+                }
 
                 currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
                 uiManager.UpdateEnemyUI(currentEnemy);
@@ -565,7 +571,21 @@ public class PlayerManager : MonoBehaviour {
     public void died()
     {
         healthPoints = 0;
+
+        GameObject deadObject = new GameObject("deadObject");
+        deadObject.AddComponent<SpriteRenderer>();
+        deadObject.GetComponent<SpriteRenderer>().sprite = playerSprite;
+        deadObject.GetComponent<SpriteRenderer>().sortingOrder = spre.sortingOrder;
+        deadObject.GetComponent<SpriteRenderer>().material = spre.material;
+        deadObject.transform.localScale = new Vector3(1.25f, 1.25f, 1);
+        deadObject.transform.eulerAngles = new Vector3(0, 0, 90);
+        deadObject.transform.position = transform.position;
+
+        uiManager.inGame_EnemyHealthSlider.gameObject.SetActive(false);
+        uiManager.inGame_PlayerHealthSlider.gameObject.SetActive(false);
+
         uiManager.GameOver();
+        Destroy(currentEnemy.gameObject);
         Destroy(gameObject);
     }
 
@@ -661,9 +681,11 @@ public class PlayerManager : MonoBehaviour {
     public void Escape()
     {
         //saveLoad.ResetPlayerPrefs();
+        
         saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
         saveLoad.SaveMaxMoney(maxMoney);
         saveLoad.SavePlayerArmor(armor);
+      
 
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());

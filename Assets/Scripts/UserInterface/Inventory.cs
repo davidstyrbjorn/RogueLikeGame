@@ -17,7 +17,7 @@ public class Inventory : MonoBehaviour {
         playerManger = FindObjectOfType<PlayerManager>();
 
         weaponInHandOrgPos = WeaponInHandTransform.position;
-        weaponInHandShowPos = WeaponInHandTransform.position + Vector3.up * 60;
+        weaponInHandShowPos = WeaponInHandTransform.position + Vector3.up * 55;
         weaponInHandState = WeaponInHandTransformStates.Hide;
     }
 

@@ -81,6 +81,7 @@ public class MiniMap : MonoBehaviour {
 
     public void FullyRevealMap()
     {
+        
         for(int i = 0; i < BaseValues.MAP_WIDTH; i++)
         {
             for(int z = 0; z < BaseValues.MAP_HEIGHT; z++)
@@ -108,18 +109,29 @@ public class MiniMap : MonoBehaviour {
     public void RevealNewPart(Vector2 newPos)
     {
         //FullyRevealMap();
-        for(int x = (int)newPos.x - 4; x < (int)newPos.x + 4; x++)
+        for (int x = (int)newPos.x - 4; x < (int)newPos.x + 4; x++)
         {
-            for(int y = (int)newPos.y - 4; y < (int)newPos.y + 4; y++)
+            for (int y = (int)newPos.y - 4; y < (int)newPos.y + 4; y++)
             {
                 if (x >= 0 && x < BaseValues.MAP_WIDTH && y >= 0 && y < BaseValues.MAP_HEIGHT)
                 {
                     if (x != (int)newPos.x || y != (int)newPos.y)
                     {
-                        if (floorManager.map[x, y] == 0 || floorManager.map[x,y] == 2)
+                        if (floorManager.map[x, y] == 0 || floorManager.map[x, y] == 2)
+                        {
                             miniMapTexture.SetPixel(x, y, groundTileColor);
+                        }
                         if (floorManager.map[x, y] == 1)
-                            miniMapTexture.SetPixel(x, y, wallTileColor);
+                        {
+                            if (y + 1 >= 0 && y + 1 < BaseValues.MAP_HEIGHT && y - 1 >= 0 && y + 1 <= BaseValues.MAP_HEIGHT)
+                            {
+                                if(x + 1 >= 0 && x + 1 < BaseValues.MAP_WIDTH && x - 1 >= 0 && x + 1 <= BaseValues.MAP_WIDTH)
+                                if (floorManager.map[x, y + 1] == 0 || floorManager.map[x, y - 1] == 0 || floorManager.map[x + 1, y] == 0 || floorManager.map[x - 1, y] == 0)
+                                {
+                                    miniMapTexture.SetPixel(x, y, wallTileColor);
+                                }
+                            }
+                        }
                         if (floorManager.map[x, y] == 3)
                             miniMapTexture.SetPixel(x, y, exitTileColor);
                         if (floorManager.map[x, y] == 4)

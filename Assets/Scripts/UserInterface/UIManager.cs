@@ -56,6 +56,7 @@ public class UIManager : MonoBehaviour {
     public Image inventoryWeaponImage;
     public Image inventoryPotionImage;
     public Image healthRemovedSliderImage;
+    public Image fadePanelGameOver;
 
     [Space(25)]
     [Header("Inventory Slots")]
@@ -665,7 +666,8 @@ public class UIManager : MonoBehaviour {
     }
     public void GameOver()
     {
-        gameOverScreen.gameObject.SetActive(true);
+        StartCoroutine("gameOver");
+
     }
     public void LoadScene(string _name)
     {
@@ -795,7 +797,29 @@ public class UIManager : MonoBehaviour {
 
         fadePanel.color = Color.clear;
     }
+
+    IEnumerator gameOver()
+    {
+
+        fadePanel.color = Color.clear;
+
+        while (fadePanel.color.a < 1)
+        {
+            fadePanel.color = new Color(0, 0, 0, fadePanel.color.a + 0.01f);
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        fadePanel.color = Color.black;
+
+        fadePanelGameOver.color = Color.black;
+        fadePanel.color = new Color(0, 0, 0, 0.8f);
+        gameOverScreen.gameObject.SetActive(true);
+        while (fadePanelGameOver.color.a > 0)
+        {
+            fadePanelGameOver.color = new Color(0, 0, 0, fadePanelGameOver.color.a - 0.01f);
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        fadePanelGameOver.color = Color.clear;
+    }
 }
-
-
-// yeet

@@ -81,7 +81,7 @@ public class Enemy : MonoBehaviour {
         healthPoints = _hp;
     }
 
-    public int getMoneyDrop() { return moneyDrop; }
+    public int getMoneyDrop() { return moneyDrop + Random.Range(-2,2); }
     public string getName() { return name_; }
 
     public void setState(BaseValues.EnemyStates newState)

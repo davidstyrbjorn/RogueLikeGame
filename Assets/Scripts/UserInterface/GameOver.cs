@@ -15,6 +15,7 @@ public class GameOver : MonoBehaviour {
     public Text healthIncreaseText;
     public Text brandedWeaponName;
     public Text miscStatsText;
+    public Text maxMoneyText;
 
     [Header("Image Attributes")]
     public Image brandedWeaponImage;
@@ -27,6 +28,8 @@ public class GameOver : MonoBehaviour {
     private float healthAtStartOfRun;
     private int enemiesKilledBeforeRun;
     private int damageDealthBeforeRun;
+    private int maxMoneyBeforeRun;
+    private int floorsClearedBeforeRun;
 
     /* References to other classes */
     private PlayerManager playerManager;
@@ -42,6 +45,8 @@ public class GameOver : MonoBehaviour {
         healthAtStartOfRun = PlayerPrefs.GetFloat("playerMaxHealth");
         enemiesKilledBeforeRun = PlayerPrefs.GetInt("STATS_ENEMIES_KILLED");
         damageDealthBeforeRun = PlayerPrefs.GetInt("STATS_DAMAGE_DEALT");
+        maxMoneyBeforeRun = PlayerPrefs.GetInt("playerMaxMoney");
+        floorsClearedBeforeRun = PlayerPrefs.GetInt("STATS_FLOORS_ASCENDED");
     }
 
     public void RunEnded()
@@ -51,15 +56,21 @@ public class GameOver : MonoBehaviour {
 
         /* Sets all stats accordingly for displaying them */
         attackIncreaseText.text = "<color=green>+" + (playerManager.getAttack() - attackAtStartOfRun).ToString()+"</color>";
-        armorIncreaseText.text = "<color=green>+" + ((playerManager.getArmor() - armorAtStartOfRun)*100).ToString() + "</color>"; // *100 convert to percentage points
+        armorIncreaseText.text = "<color=green>+" + (Mathf.CeilToInt((playerManager.getArmor() - armorAtStartOfRun)*100)).ToString() + "</color>"; // *100 convert to percentage points
         healthIncreaseText.text = "<color=green>+" + (playerManager.getMaxHealth() - healthAtStartOfRun) + "</color>";
 
         /* Misc stats text */
         miscStatsText.text =
-            "Money Spent:  " + playerManager.moneySpent + "\n" +
-            "Damage Dealt:  " + (PlayerPrefs.GetInt("STATS_DAMAGE_DEALT") - damageDealthBeforeRun) + "\n" +
-            "Enemies Slaughtered:  " + (PlayerPrefs.GetInt("STATS_ENEMIES_KILLED") - enemiesKilledBeforeRun) + "\n" +
-            "Floors Cleared:  " + PlayerPrefs.GetInt("STATS_FLOORS_ASCENDED");
+            "Money Spent:  <color=#daa520>" + playerManager.moneySpent + "</color>\n" +
+            "Damage Dealt:  <color=red>" + (PlayerPrefs.GetInt("STATS_DAMAGE_DEALT") - damageDealthBeforeRun) + "</color>\n" +
+            "Enemies Slaughtered:  <color=red>" + (PlayerPrefs.GetInt("STATS_ENEMIES_KILLED") - enemiesKilledBeforeRun) + "</color>\n" +
+            "Floors Cleared:  <color=#693266>" + (PlayerPrefs.GetInt("STATS_FLOORS_ASCENDED") - floorsClearedBeforeRun) + "</color>";
+
+        /* Max Money text */
+        if(PlayerPrefs.GetInt("playerMaxMoney") != maxMoneyBeforeRun)
+        {
+            maxMoneyText.text = "New Pouch Size (" + PlayerPrefs.GetInt("playerMaxMoney") + ")";
+        }
 
         /* Branded Weapon */
         if(PlayerPrefs.GetString("brandedWeapon") != "none")

@@ -18,6 +18,7 @@ using System;
 // 6 = Chest
 // 7 = Shop Keeper
 // 8 = Exit Escape
+// 9 = Branding Station
 
 
 // Flagged map
@@ -514,6 +515,7 @@ public class CellularAutomateMap : MonoBehaviour
 
         // Placing the shop keeper
         map[4, shop_h - 8] = 7;
+        
 
         // Placing the entrance 
         map[4, 1] = 2;
@@ -527,6 +529,9 @@ public class CellularAutomateMap : MonoBehaviour
 
         // Placing escape exit
         map[3, shop_h - 3] = 8;
+
+        // Placing branding station
+        map[6, shop_h - 9] = 9;
     }
 
     public int[,] getMap() { return map; }

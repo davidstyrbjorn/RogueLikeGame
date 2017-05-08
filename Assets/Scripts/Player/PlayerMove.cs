@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour {
     private ShopKeeperV2 shopKeeper;
     private SpriteRenderer spre;
     private Animator anim;
+    private BrandStation brandStation;
 
     private bool canExitFloor;
 
@@ -38,6 +39,7 @@ public class PlayerMove : MonoBehaviour {
         spre = GetComponentInChildren<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
         uiManager = FindObjectOfType<UIManager>();
+        brandStation = FindObjectOfType<BrandStation>();
     }
 
     void Update()
@@ -195,6 +197,15 @@ public class PlayerMove : MonoBehaviour {
             }
             else
                 shopKeeper.ToggleShop(false);
+
+            if(currentMap[curr_x,curr_y] == 9)
+            {
+                brandStation.ToggleBrandStation(true);
+            }
+            else
+            {
+                brandStation.ToggleBrandStation(false);
+            }
 
             playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
             miniMap.RevealNewPart(new Vector2(curr_x, curr_y));

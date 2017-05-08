@@ -50,13 +50,14 @@ public class ShopKeeperV2 : MonoBehaviour {
     void sk_ClickedOnArmor(int index)
     {
         sk_item_index = index;
-        print("Clicked on sk armor");
 
         // Set text and stuff
         icon1.color = Color.clear;
         icon1.sprite = null;
         icon2.sprite = BaseValues.armorSymbolSprite;
         icon3.sprite = BaseValues.coinSymbolSprite;
+        icon2.color = Color.white;
+        icon3.color = Color.white;
 
         stat1.text = "";
         stat2.text = (sk_armor[index].getArmor()*100).ToString();
@@ -301,7 +302,6 @@ public class ShopKeeperV2 : MonoBehaviour {
 
     void BuySelectedArmor()
     {
-        print("buy armor");
         if (sk_item_index != -1)
         {
             if (playerManager.getMoney() >= sk_armor[sk_item_index].getValue() && playerInventory.GetArmorList().Count <= 8)
@@ -374,7 +374,6 @@ public class ShopKeeperV2 : MonoBehaviour {
     {
         if(sk_item_index == 0)
         {
-            print("Trying to buy a healing potion");
             if(playerManager.getMoney() >= BaseValues.HealingPotionCost)
             {
                 playerManager.removeMoney(BaseValues.HealingPotionCost);
@@ -391,7 +390,6 @@ public class ShopKeeperV2 : MonoBehaviour {
         }
         else if(sk_item_index == 1)
         {
-            print("Trying to buy a strength potion");
             if(playerManager.getMoney() >= BaseValues.StrengthPotionCost)
             {
                 playerManager.removeMoney(BaseValues.StrengthPotionCost);

@@ -16,6 +16,6 @@ public class SinusFloat : MonoBehaviour
     void Update()
     {
         Vector3 floatVector = transform.up * (Mathf.Sin(Time.time * Mathf.Abs(frequency)) * amplitude);
-        transform.position = startPos + floatVector;
+        transform.position = new Vector3(transform.position.x,startPos.y + floatVector.y,transform.position.z);
     }
 }
