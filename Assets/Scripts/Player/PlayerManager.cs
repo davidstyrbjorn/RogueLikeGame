@@ -27,6 +27,8 @@ public class PlayerManager : MonoBehaviour {
     private int money;
     private int maxMoney;
     private BaseValues.PlayerStates currentState;
+    [System.NonSerialized]
+    public int moneySpent = 0;
 
     private FloorManager floorManager;
     private PlayerAnimation playerAnimation;
@@ -42,6 +44,7 @@ public class PlayerManager : MonoBehaviour {
     private CombatTextManager combatTextManager;
     private Animator anim;
     private CameraShake_Simple camShake;
+    private GameOver gameOver;
 
     private Enemy currentEnemy;
     private Vector2 currentEnemyPos;
@@ -141,6 +144,7 @@ public class PlayerManager : MonoBehaviour {
         combatTextManager = FindObjectOfType<CombatTextManager>();
         anim = GetComponentInChildren<Animator>();
         camShake = FindObjectOfType<CameraShake_Simple>();
+        gameOver = FindObjectOfType<GameOver>();
 
         GameStart();
     }
@@ -667,15 +671,15 @@ public class PlayerManager : MonoBehaviour {
 
     IEnumerator ExitCorountine()
     {
-        int _index = Random.Range(0, maskTextures.Length);
-        Camera.main.GetComponent<ScreenTransitionImageEffect>().maskTexture = maskTextures[_index];
-        while(transitionScript.maskValue <= 1f)
+        uiManager.fadePanel.color = new Color(0, 0, 0, 0);
+        while (uiManager.fadePanel.color.a < 1)
         {
-            transitionScript.maskValue += 0.01f;
-            
+            uiManager.fadePanel.color = new Color(uiManager.fadePanel.color.r, uiManager.fadePanel.color.g, uiManager.fadePanel.color.b, uiManager.fadePanel.color.a + 0.01f);
             yield return new WaitForSeconds(0.01f);
-        }                   
-        uiManager.LoadScene("Hub");
+        }
+
+        gameOver.RunEnded();                  
+        //uiManager.LoadScene("Hub");
     }
 
     public IEnumerator AscendNextFloor()
@@ -772,6 +776,7 @@ public class PlayerManager : MonoBehaviour {
     public void removeMoney(int money_)
     {
         money -= money_;
+        moneySpent += money_;
     }
 
     void setRecentPotionToNull()

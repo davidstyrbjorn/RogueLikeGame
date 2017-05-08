@@ -80,7 +80,7 @@ public class ScreenTransitionImageEffect : MonoBehaviour
             else
                 material.DisableKeyword("INVERT_MASK");
         }
-
+        
         Graphics.Blit(source, destination, material);
     }
 }

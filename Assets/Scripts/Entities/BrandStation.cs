@@ -103,7 +103,7 @@ public class BrandStation : MonoBehaviour {
                 if (PlayerPrefs.GetString("brandedWeapon") != playerInventory.GetWeaponsList()[currentIndex].name)
                 {
                     playerManager.removeMoney(brandCost);
-                    PlayerPrefs.SetString("brandedWeapon", playerInventory.GetWeaponsList()[currentIndex].name);
+                    PlayerPrefs.SetString("brandedWeapon", playerInventory.GetWeaponsList()[currentIndex].GetComponent<Weapon>().getName());
 
                     brandedWeaponImage.color = Color.white;
                     brandedWeaponImage.sprite = playerInventory.GetWeaponsList()[currentIndex].getWeaponSprite();
