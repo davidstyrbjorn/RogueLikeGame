@@ -31,8 +31,9 @@ public class FloorManager : MonoBehaviour
     private ShopKeeperV2 shopKeeper;
     private UIManager uiManager;
     private EnemyMaster enemyMaster;
+    private Background bg;
 
-    public GameObject GroundTile, GroundTile_up;
+    public GameObject GroundTile;
     public GameObject WallTile;
     public GameObject Entrance, Exit;
     public GameObject StatIncreaser;
@@ -49,8 +50,11 @@ public class FloorManager : MonoBehaviour
     private Vector3 mapOrgPos;
     public Vector3 mapShopPos;
 
+    float tileWidth;
+
     void Start()
     {
+        bg = FindObjectOfType<Background>();
         enemyMaster = FindObjectOfType<EnemyMaster>();
         uiManager = FindObjectOfType<UIManager>();
         playerMove = FindObjectOfType<PlayerMove>();
@@ -61,6 +65,8 @@ public class FloorManager : MonoBehaviour
 
         NewFloor();
         chestHeight = getChestHeight();
+
+        tileWidth = GroundTile.GetComponent<SpriteRenderer>().bounds.size.x;
 
         /* Setting map positions for later use */
         mapOrgPos = mapTranform.localPosition;
@@ -93,8 +99,8 @@ public class FloorManager : MonoBehaviour
     {
         if (map[_x, _y+1] == 1)
         {
-            GameObject groundTile_up = Instantiate(GroundTile_up, new Vector3(_x * GetTileWidth(), _y * GetTileWidth(), -1), Quaternion.identity) as GameObject;
-            groundTile_up.transform.parent = transform;
+            //GameObject groundTile_up = Instantiate(GroundTile_up, new Vector3(_x * GetTileWidth(), _y * GetTileWidth(), -1), Quaternion.identity) as GameObject;
+            //groundTile_up.transform.parent = transform;
         }
     }
 
@@ -121,7 +127,7 @@ public class FloorManager : MonoBehaviour
                         groundTile.transform.parent = transform;
                         groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT-y;
 
-                        PlaceGroundTile_Up(x, y);
+                        //PlaceGroundTile_Up(x, y);
 
 
                         // Adding tile to tile list
@@ -133,7 +139,7 @@ public class FloorManager : MonoBehaviour
                         entranceTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         entranceTile.transform.parent = transform;
 
-                        PlaceGroundTile_Up(x, y);
+                        //PlaceGroundTile_Up(x, y);
 
 
                         tileList.Add(new Vector2(x, y), entranceTile);
@@ -152,7 +158,7 @@ public class FloorManager : MonoBehaviour
                         groundTile.transform.parent = transform;
                         groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                                     
-                        PlaceGroundTile_Up(x, y);
+                        //PlaceGroundTile_Up(x, y);
 
 
                         // Making the stat increase object at x and y location
@@ -172,7 +178,7 @@ public class FloorManager : MonoBehaviour
                         groundTile.transform.parent = transform;
                         groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
 
-                        PlaceGroundTile_Up(x, y);
+                        //PlaceGroundTile_Up(x, y);
 
 
                         GameObject enemyShell = Instantiate(enemyMaster.getNewEnemy(currentFloorNumber), new Vector3(x * tileWidth, (y * tileWidth), 0), Quaternion.identity) as GameObject;
@@ -195,7 +201,7 @@ public class FloorManager : MonoBehaviour
                         groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         tileList.Add(new Vector2(x, y), groundTile);
 
-                        PlaceGroundTile_Up(x, y);
+                        //PlaceGroundTile_Up(x, y);
 
 
                         // Spawning chest
@@ -212,7 +218,7 @@ public class FloorManager : MonoBehaviour
                         groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         tileList.Add(new Vector2(x, y), groundTile);
 
-                        PlaceGroundTile_Up(x, y);
+                        //PlaceGroundTile_Up(x, y);
 
 
                         GameObject shopKeeperObject = Instantiate(shopKeeperPrefab, new Vector3(x * tileWidth, y * tileWidth * 1.25f, -1), Quaternion.identity) as GameObject;
@@ -250,6 +256,7 @@ public class FloorManager : MonoBehaviour
                 mapTranform.localPosition = new Vector3(17.3f, 2.1f,10);
 
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
+            bg.SpawnIslands();
         }
         else
         {
@@ -273,7 +280,7 @@ public class FloorManager : MonoBehaviour
 
     public float GetTileWidth()
     {
-        return GroundTile.GetComponent<SpriteRenderer>().bounds.size.x;
+        return tileWidth;
     }
 
     public float getChestHeight()

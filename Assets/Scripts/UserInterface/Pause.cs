@@ -80,7 +80,7 @@ public class Pause : MonoBehaviour {
         StartCoroutine("pausedCoruntine");
     }
 
-    void PauseOff()
+    public void PauseOff()
     {
         pauseTransform.gameObject.SetActive(false);
         Time.timeScale = 1;

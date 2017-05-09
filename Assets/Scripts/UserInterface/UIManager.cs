@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform enemyStatScreen;
     public RectTransform logEventScreen;
     public RectTransform weaponInfoBox;
+    public RectTransform IntroScreen;
 
     [Space(20)]
     [Header("Text Objects")]
@@ -140,6 +141,14 @@ public class UIManager : MonoBehaviour {
         weaponInfoBoxOffset = new Vector2(width*0.75f, 60);
 
         soundManager = FindObjectOfType<SoundManager>();
+
+        // Display intro?
+        if (!PlayerPrefs.HasKey("showIntro"))
+        {
+            IntroScreen.gameObject.SetActive(true);
+            PlayerPrefs.SetInt("showIntro", 0);
+        }
+
     }
 
     private void Update()
@@ -821,5 +830,10 @@ public class UIManager : MonoBehaviour {
         }
 
         fadePanelGameOver.color = Color.clear;
+    }
+
+    public void ActivateIntro()
+    {
+        IntroScreen.gameObject.SetActive(true);
     }
 }

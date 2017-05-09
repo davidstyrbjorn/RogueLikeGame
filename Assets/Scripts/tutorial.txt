@@ -1,0 +1,25 @@
+1.Welcome to ____, if you want a quick rundown of how things work click next, otherwise click skip.
+
+2.Find these to ascend to the next level
+
+3.Picking up these will increase your stats(upper left corner)
+
+4.Chests grant you a chance to find weapons and armor
+
+5.Press the bag to open your inventory
+
+6.Every fifth floor there will be a shop
+the shop lets you sell and buy equipment
+
+7.If you escape from the shop,
+your base stats will be saved
+
+8.If you die, everything you achieved that round will be lost
+
+
+
+
+
+
+
+

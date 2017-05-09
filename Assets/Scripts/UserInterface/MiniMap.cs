@@ -14,12 +14,13 @@ public class MiniMap : MonoBehaviour {
 
     public Color groundTileColor, wallTileColor, enemyTileColor, exitTileColor, chestTileColor, statTileColor, shopKeeperTileColor;
 
-    private SpriteRenderer spre;
+    public SpriteRenderer spre,spreForeground;
     private FloorManager floorManager;
     private CellularAutomateMap mapGenerator;
     private UIManager uiManager;
 
     Texture2D miniMapTexture;
+    Texture2D foregroundTexture;
 
     int playerX, playerY;
     float timer;
@@ -123,16 +124,7 @@ public class MiniMap : MonoBehaviour {
                         }
                         if (floorManager.map[x, y] == 1)
                         {
-                            if (y + 1 >= 0 && y + 1 < BaseValues.MAP_HEIGHT && y - 1 >= 0 && y + 1 <= BaseValues.MAP_HEIGHT)
-                            {
-                                if (x + 1 >= 0 && x + 1 < BaseValues.MAP_WIDTH && x - 1 >= 0 && x + 1 <= BaseValues.MAP_WIDTH)
-                                {
-                                    if (floorManager.map[x, y + 1] == 0 || floorManager.map[x, y - 1] == 0 || floorManager.map[x + 1, y] == 0 || floorManager.map[x - 1, y] == 0)
-                                    {
-                                        miniMapTexture.SetPixel(x, y, wallTileColor);
-                                    }
-                                }
-                            }
+                            miniMapTexture.SetPixel(x, y, wallTileColor);
                         }
                         if (floorManager.map[x, y] == 3)
                             miniMapTexture.SetPixel(x, y, exitTileColor);
@@ -168,15 +160,23 @@ public class MiniMap : MonoBehaviour {
         // Which then gets rendered on screen 
         miniMapTexture = new Texture2D(BaseValues.MAP_WIDTH, BaseValues.MAP_HEIGHT);
         miniMapTexture.filterMode = FilterMode.Point;
+
+        foregroundTexture = new Texture2D(BaseValues.MAP_WIDTH, BaseValues.MAP_HEIGHT);
+        foregroundTexture.filterMode = FilterMode.Point;
+
         for (int x = 0; x < BaseValues.MAP_WIDTH; x++)
         {
             for(int y = 0; y < BaseValues.MAP_HEIGHT; y++)
             {
                 miniMapTexture.SetPixel(x, y, Color.clear);
+                foregroundTexture.SetPixel(x, y, new Color(0, 0, 0, 0.5f));
             }
         }
+        foregroundTexture.Apply();
         miniMapTexture.Apply();
+
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
+        spreForeground.sprite = Sprite.Create(foregroundTexture, new Rect(0, 0, foregroundTexture.width, foregroundTexture.height), new Vector2(0, 0), 5f);
 
         DoBorderEdges();
     }
@@ -191,12 +191,12 @@ public class MiniMap : MonoBehaviour {
         // Upper
         for(int i = 0; i < BaseValues.MAP_WIDTH; i++)
         {
-            miniMapTexture.SetPixel(i, 0, wallTileColor);
+            miniMapTexture.SetPixel(i, -1, wallTileColor);
         }
         // Right 
         for(int i = 0; i < BaseValues.MAP_HEIGHT; i++)
         {
-            miniMapTexture.SetPixel(BaseValues.MAP_WIDTH, i, wallTileColor);
+            miniMapTexture.SetPixel(BaseValues.MAP_WIDTH-1, i, wallTileColor);
         }
         // Left
         for(int i = 0; i < BaseValues.MAP_HEIGHT; i++)
