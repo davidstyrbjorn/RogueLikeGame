@@ -125,10 +125,12 @@ public class MiniMap : MonoBehaviour {
                         {
                             if (y + 1 >= 0 && y + 1 < BaseValues.MAP_HEIGHT && y - 1 >= 0 && y + 1 <= BaseValues.MAP_HEIGHT)
                             {
-                                if(x + 1 >= 0 && x + 1 < BaseValues.MAP_WIDTH && x - 1 >= 0 && x + 1 <= BaseValues.MAP_WIDTH)
-                                if (floorManager.map[x, y + 1] == 0 || floorManager.map[x, y - 1] == 0 || floorManager.map[x + 1, y] == 0 || floorManager.map[x - 1, y] == 0)
+                                if (x + 1 >= 0 && x + 1 < BaseValues.MAP_WIDTH && x - 1 >= 0 && x + 1 <= BaseValues.MAP_WIDTH)
                                 {
-                                    miniMapTexture.SetPixel(x, y, wallTileColor);
+                                    if (floorManager.map[x, y + 1] == 0 || floorManager.map[x, y - 1] == 0 || floorManager.map[x + 1, y] == 0 || floorManager.map[x - 1, y] == 0)
+                                    {
+                                        miniMapTexture.SetPixel(x, y, wallTileColor);
+                                    }
                                 }
                             }
                         }
@@ -175,5 +177,33 @@ public class MiniMap : MonoBehaviour {
         }
         miniMapTexture.Apply();
         spre.sprite = Sprite.Create(miniMapTexture, new Rect(0, 0, miniMapTexture.width, miniMapTexture.height), new Vector2(0, 0), 5f);
+
+        DoBorderEdges();
+    }
+
+    void DoBorderEdges()
+    {
+        // Bottom
+        for(int i = 0; i < BaseValues.MAP_WIDTH; i++)
+        {
+            miniMapTexture.SetPixel(i, BaseValues.MAP_HEIGHT, wallTileColor);
+        }
+        // Upper
+        for(int i = 0; i < BaseValues.MAP_WIDTH; i++)
+        {
+            miniMapTexture.SetPixel(i, 0, wallTileColor);
+        }
+        // Right 
+        for(int i = 0; i < BaseValues.MAP_HEIGHT; i++)
+        {
+            miniMapTexture.SetPixel(BaseValues.MAP_WIDTH, i, wallTileColor);
+        }
+        // Left
+        for(int i = 0; i < BaseValues.MAP_HEIGHT; i++)
+        {
+            miniMapTexture.SetPixel(0, i, wallTileColor);
+        }
+
+        miniMapTexture.Apply();   
     }
 }   

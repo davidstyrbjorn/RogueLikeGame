@@ -250,6 +250,8 @@ public class PlayerManager : MonoBehaviour {
                 {
                     camShake.DoShake();
                     combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), new Color(0.54f, 0.168f, 0.886f), 250);
+                    
+                    
                 }
                 else
                 {
@@ -680,12 +682,11 @@ public class PlayerManager : MonoBehaviour {
 
     public void Escape()
     {
-        //saveLoad.ResetPlayerPrefs();
         
         saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
         saveLoad.SaveMaxMoney(maxMoney);
         saveLoad.SavePlayerArmor(armor);
-      
+        //saveLoad.ResetPlayerPrefs();
 
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());

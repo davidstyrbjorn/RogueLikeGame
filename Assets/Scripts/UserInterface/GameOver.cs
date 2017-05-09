@@ -89,6 +89,8 @@ public class GameOver : MonoBehaviour {
             brandedWeaponImage.color = Color.clear;
             brandedWeaponName.text = "None";
         }
+
+        Destroy(FindObjectOfType<PlayerManager>().gameObject);
     }
 
     IEnumerator FadeIn()

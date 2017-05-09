@@ -4,8 +4,13 @@ using System.Collections.Generic;
 
 public class PlayerInventory : MonoBehaviour {
 
+    private PlayerManager playerManager;
+    private EventBox eventBox;
+
     void Start()
     {
+        eventBox = FindObjectOfType<EventBox>();
+        playerManager = FindObjectOfType<PlayerManager>();
         AddBrandedWeapon();
     }
 
@@ -83,6 +88,8 @@ public class PlayerInventory : MonoBehaviour {
             if(PlayerPrefs.GetString("brandedWeapon") == BaseValues.allWeapons[i].GetComponent<Weapon>().name)
             {
                 addWeapon(BaseValues.allWeapons[i].GetComponent<Weapon>());
+                playerManager.EquipWeapon(BaseValues.allWeapons[i].GetComponent<Weapon>());
+                eventBox.addEvent("Equiped branded weapon");
             }
         }
     }

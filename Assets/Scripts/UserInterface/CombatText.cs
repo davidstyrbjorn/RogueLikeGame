@@ -18,7 +18,7 @@ public class CombatText : MonoBehaviour {
     {
         timeSinceSpawn += Time.deltaTime;
 
-        text.fontSize = text.fontSize - (int)timeSinceSpawn*2;
+        text.fontSize = text.fontSize - (int)timeSinceSpawn*3;
 
         if(timeSinceSpawn >= 1)
         {
