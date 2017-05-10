@@ -32,7 +32,7 @@ public class Background : MonoBehaviour {
             {
                 {
                     if (Random.Range(0, 100) > 35)
-                    {
+                    {   
                         int randIndex = Random.Range(0, islandPrefabs.Count);
                         Instantiate(islandPrefabs[randIndex], new Vector2(x * floorManager.GetTileWidth(), y * floorManager.GetTileWidth()), Quaternion.identity, transform);
                     }
