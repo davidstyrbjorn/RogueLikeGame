@@ -821,7 +821,7 @@ public class UIManager : MonoBehaviour {
         fadePanel.color = Color.black;
 
         fadePanelGameOver.color = Color.black;
-        fadePanel.color = new Color(0, 0, 0, 0.8f);
+        fadePanel.color = new Color(0, 0, 0, 0.55f);
         gameOverScreen.gameObject.SetActive(true);
         while (fadePanelGameOver.color.a > 0)
         {

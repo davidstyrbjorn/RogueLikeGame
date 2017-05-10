@@ -392,9 +392,9 @@ public class PlayerManager : MonoBehaviour {
 
     public void hitStatIncreaser(Vector2 pos)
     {
+        //int randomNum = 1;
         int randomNum = Random.Range(0, 3);
-        //print(randomNum);
-        
+              
         // Increasing the actual stat HERE
         if (randomNum == 0)
         {
@@ -402,8 +402,8 @@ public class PlayerManager : MonoBehaviour {
             maxHealthPoints = newMaxHealth;
             addHealth(Mathf.CeilToInt(BaseValues.HealthStatIncrease));
 
-            GameObject temp = Instantiate(spriteFadeAndScaleObject, transform.position, Quaternion.identity) as GameObject;
-            temp.GetComponent<SpriteRenderer>().sprite = BaseValues.healthPotionSprite;
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth() + (Vector2.up * 1.1f), Quaternion.identity) as GameObject;
+            temp.GetComponent<SpriteRenderer>().sprite = BaseValues.healthSymbolSprite;
 
             eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + BaseValues.HealthStatIncrease + " points " + "</color>");
         }
@@ -412,8 +412,10 @@ public class PlayerManager : MonoBehaviour {
             float newAttack = Mathf.CeilToInt(attack + BaseValues.AttackStatIncrease);
             attack = newAttack;
 
-            GameObject temp = Instantiate(spriteFadeAndScaleObject, transform.position, Quaternion.identity) as GameObject;
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth() + (Vector2.up * 1.1f), Quaternion.identity) as GameObject;
             temp.GetComponent<SpriteRenderer>().sprite = BaseValues.attackSymbolSprite;
+            temp.GetComponent<SpriteFadeAndScale>().desiredScale = 1.5f;
+            temp.GetComponent<SpriteFadeAndScale>().scaleSpeed = 0.025f;
 
             eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + BaseValues.AttackStatIncrease + " point " + "</color>");
         }
@@ -422,7 +424,7 @@ public class PlayerManager : MonoBehaviour {
             float newArmor = armor + BaseValues.ArmorStatIncrease;
             armor = newArmor;
 
-            GameObject temp = Instantiate(spriteFadeAndScaleObject, transform.position, Quaternion.identity) as GameObject;
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth()+(Vector2.up*1.1f), Quaternion.identity) as GameObject;
             temp.GetComponent<SpriteRenderer>().sprite = BaseValues.armorSymbolSprite;
 
             eventBox.addEvent("<color=#8d94a0>Armor</color>  increased by  <color=#8d94a0>" + BaseValues.ArmorStatIncrease*100 + " points " + "</color>");
@@ -438,7 +440,7 @@ public class PlayerManager : MonoBehaviour {
 
         // Updating Player UI
         uiManager.NewPlayerValues();
-    }
+    }                               
 
     void StopCombatLoops()
     {

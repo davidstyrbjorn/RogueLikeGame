@@ -9,15 +9,6 @@ using System.Collections.Generic;
 /// When spawning enemies this class will also balance them and decide what kind of enemy it will be
 /// </summary>
 
-// 1 = wall
-// 0 = ground
-// 2 = Entrance
-// 3 = Exit
-// 4 = Enemy
-// 5 = Stat Increase
-// 6 = Chest
-
-
 public class FloorManager : MonoBehaviour
 {
     public int[,] map;
@@ -39,6 +30,8 @@ public class FloorManager : MonoBehaviour
     public GameObject StatIncreaser;
     public GameObject Chest;
     public GameObject shopKeeperPrefab;
+    public GameObject soulFurnace;
+    public GameObject escapeTile;
     public Transform mapTranform;
 
     public Dictionary<Vector2, GameObject> enemyList = new Dictionary<Vector2, GameObject>();
@@ -225,6 +218,23 @@ public class FloorManager : MonoBehaviour
                         shopKeeperObject.GetComponent<SpriteRenderer>().sortingOrder = 7;
                         shopKeeperObject.transform.parent = transform;
                     }
+                    else if(map[x,y] == 8)
+                    {
+                        GameObject _escapeTile = Instantiate(escapeTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        _escapeTile.transform.parent = transform;
+                    }
+                    else if (map[x,y] == 9)
+                    {
+                        // 9 = Branding Station
+                        GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        groundTile.transform.parent = transform;
+                        groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
+                        tileList.Add(new Vector2(x, y), groundTile);
+
+                        GameObject soulFurnceObject = Instantiate(soulFurnace, new Vector3(x * tileWidth, y * tileWidth * 1.1f, -1), Quaternion.identity) as GameObject;
+                        soulFurnceObject.GetComponent<SpriteRenderer>().sortingOrder = 8;
+                        soulFurnceObject.transform.parent = transform;
+                    }
                 }
             }
         }
@@ -248,12 +258,14 @@ public class FloorManager : MonoBehaviour
             uiManager.OnNewFloor(false);
             map = mapGenerator.getMap();
 
+            /*
             if(BaseValues.MAP_WIDTH == 32)
                 mapTranform.localPosition = mapOrgPos;
             else if (BaseValues.MAP_WIDTH == 48)
                 mapTranform.localPosition = new Vector3(6.35f, 12,01);
             else if (BaseValues.MAP_WIDTH == 16)
                 mapTranform.localPosition = new Vector3(17.3f, 2.1f,10);
+                */
 
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
             bg.SpawnIslands();

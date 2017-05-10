@@ -179,6 +179,11 @@ public class MiniMap : MonoBehaviour {
         spreForeground.sprite = Sprite.Create(foregroundTexture, new Rect(0, 0, foregroundTexture.width, foregroundTexture.height), new Vector2(0, 0), 5f);
 
         DoBorderEdges();
+
+        // Placement
+        //spre.sprite.pivot = new Vector2(spre)
+        spre.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0))+Vector3.left*spre.bounds.size.x+Vector3.down*spre.bounds.size.y;
+        spre.transform.position = new Vector3(spre.transform.position.x, spre.transform.position.y, 0);
     }
 
     void DoBorderEdges()

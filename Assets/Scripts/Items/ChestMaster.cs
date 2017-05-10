@@ -18,17 +18,17 @@ public class ChestMaster : MonoBehaviour {
 
     public Weapon makeNewWeapon()
     {
-        if (floorManager.getCurrentFloor() >= 0 && floorManager.getCurrentFloor() < 5)
+        if (floorManager.getCurrentFloor() >= 0 && floorManager.getCurrentFloor() <= 5)
         {
             int randomIndex = Random.Range(0, tier1Weapons.Length);
             return tier1Weapons[randomIndex].GetComponent<Weapon>();
         }
-        if(floorManager.getCurrentFloor() > 5 && floorManager.getCurrentFloor() < 10)
+        if(floorManager.getCurrentFloor() > 5 && floorManager.getCurrentFloor() <= 10)
         {
             int randomIndex = Random.Range(0, tier2Weapons.Length);
             return tier2Weapons[randomIndex].GetComponent<Weapon>();
         }
-        if(floorManager.getCurrentFloor() > 10 && floorManager.getCurrentFloor() < 100)
+        if(floorManager.getCurrentFloor() > 10 && floorManager.getCurrentFloor() <= 100)
         {
             int randomIndex = Random.Range(0, tier3Weapons.Length);
             return tier3Weapons[randomIndex].GetComponent<Weapon>();
