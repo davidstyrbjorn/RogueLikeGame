@@ -56,6 +56,7 @@ public class PlayerManager : MonoBehaviour {
     private FoundArmor foundArmor;
 
     public GameObject SpriteHoverEffectObject;
+    public GameObject spriteFadeAndScaleObject;
 
     private SoundManager soundManager;
 
@@ -124,6 +125,21 @@ public class PlayerManager : MonoBehaviour {
             uiManager.UpdatePotionSlots();
 
             recentlyPickedUpPotion = null;
+        }
+
+        // Quick consume health potion
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            for(int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+            {
+                if(playerInventory.GetPotionsList()[i].type == Potion.potionType.HEALING)
+                {
+                    ConsumePotion(playerInventory.GetPotionsList()[i].type);
+                    playerInventory.GetPotionsList().RemoveAt(i);
+                    uiManager.UpdatePotionSlots();
+                    uiManager.NewPlayerValues();
+                }
+            }
         }
     }
 
@@ -386,6 +402,9 @@ public class PlayerManager : MonoBehaviour {
             maxHealthPoints = newMaxHealth;
             addHealth(Mathf.CeilToInt(BaseValues.HealthStatIncrease));
 
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, transform.position, Quaternion.identity) as GameObject;
+            temp.GetComponent<SpriteRenderer>().sprite = BaseValues.healthPotionSprite;
+
             eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + BaseValues.HealthStatIncrease + " points " + "</color>");
         }
         else if (randomNum == 1)
@@ -393,12 +412,18 @@ public class PlayerManager : MonoBehaviour {
             float newAttack = Mathf.CeilToInt(attack + BaseValues.AttackStatIncrease);
             attack = newAttack;
 
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, transform.position, Quaternion.identity) as GameObject;
+            temp.GetComponent<SpriteRenderer>().sprite = BaseValues.attackSymbolSprite;
+
             eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + BaseValues.AttackStatIncrease + " point " + "</color>");
         }
         else if(randomNum == 2)
         {
             float newArmor = armor + BaseValues.ArmorStatIncrease;
             armor = newArmor;
+
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, transform.position, Quaternion.identity) as GameObject;
+            temp.GetComponent<SpriteRenderer>().sprite = BaseValues.armorSymbolSprite;
 
             eventBox.addEvent("<color=#8d94a0>Armor</color>  increased by  <color=#8d94a0>" + BaseValues.ArmorStatIncrease*100 + " points " + "</color>");
         }

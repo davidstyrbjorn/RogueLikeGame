@@ -11,11 +11,15 @@ public class Background : MonoBehaviour {
     public GameObject mainCamera;
     public List<GameObject> clouds = new List<GameObject>();
 
+    private float widestCloud;
+
     void Start()
     {
         floorManager = FindObjectOfType<FloorManager>();
 
         StartCoroutine(spawnClouds());
+
+        widestCloud = getWidestCloud(); // Not used at the moment, converting, can't convert widestCloud to world space
     }
 
     public void SpawnIslands()
@@ -50,7 +54,7 @@ public class Background : MonoBehaviour {
             // Spawn cloud
             int randIndex = Random.Range(0, clouds.Count);
 
-            Vector3 spawnPos = Camera.main.ScreenToWorldPoint(new Vector3(-100, Random.Range(0, Screen.height), 0));
+            Vector3 spawnPos = Camera.main.ScreenToWorldPoint(new Vector3(-200, Random.Range(0, Screen.height), 0));
 
             GameObject temp = Instantiate(clouds[randIndex], new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity) as GameObject;
             float randomScale = Random.Range(1, 5 + 1) + Random.value;
@@ -58,4 +62,14 @@ public class Background : MonoBehaviour {
         }
     }
 
+    private float getWidestCloud()
+    {
+        float currentContendor = clouds[0].GetComponent<SpriteRenderer>().bounds.size.x;
+        for(int i = 1; i < clouds.Count; i++)
+        {
+            if (clouds[i].GetComponent<SpriteRenderer>().bounds.size.x > currentContendor)
+                currentContendor = clouds[i].GetComponent<SpriteRenderer>().bounds.size.x;
+        }
+        return currentContendor; // Winnder winner chicken dinner for the widest cloud in the list
+    }
 }
