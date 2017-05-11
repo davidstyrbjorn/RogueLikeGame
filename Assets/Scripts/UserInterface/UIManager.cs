@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour {
     public RectTransform logEventScreen;
     public RectTransform weaponInfoBox;
     public RectTransform IntroScreen;
+    public RectTransform escapePrompt;
+    public RectTransform brandingTutorial;
 
     [Space(20)]
     [Header("Text Objects")]
@@ -236,9 +238,9 @@ public class UIManager : MonoBehaviour {
         }
 
         // Update the player health text
-        //playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
-        float healthPercentage = Convert.ToInt16((playerManager.getHealth() / playerManager.getMaxHealth()) * 100);
-        playerHealthText.text = healthPercentage.ToString() + "%";
+        playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
+        //float healthPercentage = Convert.ToInt16((playerManager.getHealth() / playerManager.getMaxHealth()) * 100);
+        //playerHealthText.text = healthPercentage.ToString() + "%";
 
         // Update player physical damage 
         playerDamageText.text = ""+(playerManager.getAttack() + 
@@ -439,6 +441,7 @@ public class UIManager : MonoBehaviour {
                 inventoryPotionStat.text = "Type: Strength";
                 inventoryHealthAddedText.text = string.Empty;
 
+                StopCoroutine("DoubleClick_Potion");
                 StartCoroutine("DoubleClick_Potion");
                 currentlySelectedPotionIndex = i;
             }
@@ -835,5 +838,20 @@ public class UIManager : MonoBehaviour {
     public void ActivateIntro()
     {
         IntroScreen.gameObject.SetActive(true);
+    }
+
+    public void ActivateBrandingTutorial()
+    {
+        brandingTutorial.gameObject.SetActive(true);
+    }
+
+    public void enableEscapePrompt()
+    {
+        escapePrompt.gameObject.SetActive(true);
+    }
+
+    public void disableEscapePrompt()
+    {
+        escapePrompt.gameObject.SetActive(false);
     }
 }

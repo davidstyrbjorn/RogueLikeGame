@@ -18,7 +18,7 @@ public class StatIncreaser : MonoBehaviour {
 
     void Update() 
     {
-        if (activated)
+        if (activated && 1 == 2)
         {
             transform.position = Vector2.Lerp(transform.position, yOffset, 1.1f * Time.deltaTime);
         }
@@ -36,7 +36,7 @@ public class StatIncreaser : MonoBehaviour {
 
     IEnumerator ActivatedCountdown()
     {
-        yield return new WaitForSeconds(1f);
+        //yield return new WaitForSeconds(1f);
         fade = true;
         yield return new WaitForSeconds(1f);
         Destroy(gameObject);

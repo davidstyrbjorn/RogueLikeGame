@@ -18,6 +18,11 @@ public class SpriteFadeAndScale : MonoBehaviour {
         StartCoroutine("_start");
     }
 
+    void Update()
+    {
+        transform.Translate(Vector2.up * 2 * Time.deltaTime);
+    }
+
     IEnumerator _start()
     {
 

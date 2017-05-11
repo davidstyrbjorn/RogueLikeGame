@@ -109,6 +109,10 @@ public class PlayerManager : MonoBehaviour {
                 if (foundArmor.armor != null)
                     ConfirmArmor_PickUp();
             }
+            if (uiManager.escapePrompt.gameObject.activeInHierarchy)
+            {
+                Escape();
+            }
         }
         else if (Input.GetKeyDown(KeyCode.E))
         {
@@ -402,7 +406,7 @@ public class PlayerManager : MonoBehaviour {
             maxHealthPoints = newMaxHealth;
             addHealth(Mathf.CeilToInt(BaseValues.HealthStatIncrease));
 
-            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth() + (Vector2.up * 1.1f), Quaternion.identity) as GameObject;
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth() + (Vector2.up * 4.75f), Quaternion.identity) as GameObject;
             temp.GetComponent<SpriteRenderer>().sprite = BaseValues.healthSymbolSprite;
 
             eventBox.addEvent("<color=green>Health</color>  increased by  <color=green>" + BaseValues.HealthStatIncrease + " points " + "</color>");
@@ -412,7 +416,7 @@ public class PlayerManager : MonoBehaviour {
             float newAttack = Mathf.CeilToInt(attack + BaseValues.AttackStatIncrease);
             attack = newAttack;
 
-            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth() + (Vector2.up * 1.1f), Quaternion.identity) as GameObject;
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth() + (Vector2.up * 4.75f), Quaternion.identity) as GameObject;
             temp.GetComponent<SpriteRenderer>().sprite = BaseValues.attackSymbolSprite;
             temp.GetComponent<SpriteFadeAndScale>().desiredScale = 1.5f;
             temp.GetComponent<SpriteFadeAndScale>().scaleSpeed = 0.025f;
@@ -424,7 +428,7 @@ public class PlayerManager : MonoBehaviour {
             float newArmor = armor + BaseValues.ArmorStatIncrease;
             armor = newArmor;
 
-            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth()+(Vector2.up*1.1f), Quaternion.identity) as GameObject;
+            GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth()+(Vector2.up*4.75f), Quaternion.identity) as GameObject;
             temp.GetComponent<SpriteRenderer>().sprite = BaseValues.armorSymbolSprite;
 
             eventBox.addEvent("<color=#8d94a0>Armor</color>  increased by  <color=#8d94a0>" + BaseValues.ArmorStatIncrease*100 + " points " + "</color>");
@@ -709,7 +713,10 @@ public class PlayerManager : MonoBehaviour {
 
     public void Escape()
     {
-        
+        currentState = BaseValues.PlayerStates.ASCENDING;
+
+        uiManager.disableEscapePrompt();
+
         saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
         saveLoad.SaveMaxMoney(maxMoney);
         saveLoad.SavePlayerArmor(armor);

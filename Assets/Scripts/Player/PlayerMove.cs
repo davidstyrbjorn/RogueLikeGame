@@ -87,6 +87,10 @@ public class PlayerMove : MonoBehaviour {
     {
         if (Input.anyKey && playerManager.getCurrentState() == BaseValues.PlayerStates.NOT_IN_COMBAT)
         {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                return;
+            }
             // Move left
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
@@ -181,7 +185,9 @@ public class PlayerMove : MonoBehaviour {
 
             // Escape condition
             if (currentMap[curr_x, curr_y] == 8)
-                playerManager.Escape();
+                uiManager.enableEscapePrompt();
+            else
+                uiManager.disableEscapePrompt();
 
             // Check if we walked onto any stat increaser
             if (currentMap[curr_x, curr_y] == 5)

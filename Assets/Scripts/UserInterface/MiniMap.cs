@@ -12,7 +12,7 @@ using System.Collections;
 
 public class MiniMap : MonoBehaviour {
 
-    public Color groundTileColor, wallTileColor, enemyTileColor, exitTileColor, chestTileColor, statTileColor, shopKeeperTileColor;
+    public Color groundTileColor, wallTileColor, enemyTileColor, exitTileColor, chestTileColor, statTileColor, shopKeeperTileColor,mapBorderColor;
 
     public SpriteRenderer spre,spreForeground;
     private FloorManager floorManager;
@@ -114,7 +114,7 @@ public class MiniMap : MonoBehaviour {
         {
             for (int y = (int)newPos.y - 4; y < (int)newPos.y + 4; y++)
             {
-                if (x >= 0 && x < BaseValues.MAP_WIDTH && y >= 0 && y < BaseValues.MAP_HEIGHT)
+                if (x >= 1 && x < BaseValues.MAP_WIDTH-1 && y >= 1 && y < BaseValues.MAP_HEIGHT-1) // We don't need to color the edges they're a special color
                 {
                     if (x != (int)newPos.x || y != (int)newPos.y)
                     {
@@ -191,22 +191,22 @@ public class MiniMap : MonoBehaviour {
         // Bottom
         for(int i = 0; i < BaseValues.MAP_WIDTH; i++)
         {
-            miniMapTexture.SetPixel(i, BaseValues.MAP_HEIGHT, wallTileColor);
+            miniMapTexture.SetPixel(i, BaseValues.MAP_HEIGHT, mapBorderColor);
         }
         // Upper
         for(int i = 0; i < BaseValues.MAP_WIDTH; i++)
         {
-            miniMapTexture.SetPixel(i, -1, wallTileColor);
+            miniMapTexture.SetPixel(i, -1, mapBorderColor);
         }
         // Right 
         for(int i = 0; i < BaseValues.MAP_HEIGHT; i++)
         {
-            miniMapTexture.SetPixel(BaseValues.MAP_WIDTH-1, i, wallTileColor);
+            miniMapTexture.SetPixel(BaseValues.MAP_WIDTH-1, i, mapBorderColor);
         }
         // Left
         for(int i = 0; i < BaseValues.MAP_HEIGHT; i++)
         {
-            miniMapTexture.SetPixel(0, i, wallTileColor);
+            miniMapTexture.SetPixel(0, i, mapBorderColor);
         }
 
         miniMapTexture.Apply();   
