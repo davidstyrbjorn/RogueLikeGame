@@ -10,7 +10,7 @@ public class OverworldMapGen : MonoBehaviour {
     int[,] map;
 
     public Color tileColor;
-    public GameObject groundPrefab, wallPrefab, startPrefab;
+    public GameObject groundPrefab, wallPrefab, startPrefab, optionsPrefab;
 
     public float tileSize;
 
@@ -53,7 +53,16 @@ public class OverworldMapGen : MonoBehaviour {
                     //start.transform.SetParent(transform);
                     start.GetComponent<SpriteRenderer>().color = tileColor;
                 }
+                else if(map[x,y] == 3)
+                {
+                    GameObject ground = Instantiate(groundPrefab, new Vector2(x * _tileSize, y * _tileSize), Quaternion.identity) as GameObject;
+                    ground.transform.parent = transform;
+                    ground.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
+                    ground.GetComponent<SpriteRenderer>().color = Color.white;
 
+                    GameObject options = Instantiate(optionsPrefab, new Vector2(x * _tileSize, y * _tileSize * 1.1f), Quaternion.identity) as GameObject;
+                    options.transform.parent = transform;
+                }
             }
         }
     }
@@ -66,8 +75,11 @@ public class OverworldMapGen : MonoBehaviour {
         {
             for(int j = 0; j < BaseValues.HUB_HEIGHT; j++)
             {
-
-                if(i == 4 && j == 6)
+                if(i == 2 && j == 6)
+                {
+                    map[i, j] = 3;
+                }
+                else if(i == 4 && j == 6)
                 {
                     map[i, j] = 2;
                 }

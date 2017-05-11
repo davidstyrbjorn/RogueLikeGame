@@ -26,6 +26,7 @@ public class PlayerMove_Hub : MonoBehaviour {
     private PLAYER_STATES state;
 
     public Image fadePanel;
+    public RectTransform options;
 
     void Awake()
     {
@@ -56,13 +57,20 @@ public class PlayerMove_Hub : MonoBehaviour {
         }
 
         if (canMove && state == PLAYER_STATES.NORMAL)
-        {
-            anim.SetBool("WalkVertical", false);
+        { 
             anim.SetBool("WalkSide", false);
             MovePlayer();
         }else
         {
             CheckCanMove();
+        }
+
+        if (options.gameObject.activeInHierarchy)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.I))
+            {
+                options.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -83,7 +91,7 @@ public class PlayerMove_Hub : MonoBehaviour {
 
     void MovePlayer()
     {
-        if (Input.anyKey)
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
         {
             // Move left
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
@@ -95,7 +103,7 @@ public class PlayerMove_Hub : MonoBehaviour {
                     curr_x--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
-                    spre.flipX = false;
+                    spre.flipX = true;
 
                 }
             }
@@ -111,14 +119,14 @@ public class PlayerMove_Hub : MonoBehaviour {
                     curr_x++;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
                     canMove = false;
-
+                    spre.flipX = false;
                 }
             }
 
             // Move upwards
             else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             {
-                anim.SetBool("WalkVertical", true);
+                anim.SetBool("WalkSide", true);
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y + 1] != 4)
                 {
@@ -131,7 +139,7 @@ public class PlayerMove_Hub : MonoBehaviour {
             // Move downwards
             else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
             {
-                anim.SetBool("WalkVertical", true);
+                anim.SetBool("WalkSide", true);
                 // Move as long as we arent hitting any wall or an enemy
                 if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y - 1] != 4)
                 {
@@ -146,6 +154,15 @@ public class PlayerMove_Hub : MonoBehaviour {
             {
                 StopAllCoroutines();
                 StartCoroutine("StartGame");
+            }
+
+            if(currentMap[curr_x,curr_y] == 3)
+            {
+                options.gameObject.SetActive(true);
+            }
+            else
+            {
+                options.gameObject.SetActive(false);
             }
         }
     }
@@ -172,7 +189,6 @@ public class PlayerMove_Hub : MonoBehaviour {
     IEnumerator StartGame()
     {
         state = PLAYER_STATES.STARTING;
-        anim.SetBool("WalkVertical", false);
         anim.SetBool("WalkSide", false);
 
         fadePanel.color = Color.clear;

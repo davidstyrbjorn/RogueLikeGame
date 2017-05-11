@@ -47,6 +47,8 @@ public class FloorManager : MonoBehaviour
 
     void Start()
     {
+        AudioListener.pause = false;
+        AudioListener.volume = 1;
         bg = FindObjectOfType<Background>();
         enemyMaster = FindObjectOfType<EnemyMaster>();
         uiManager = FindObjectOfType<UIManager>();
@@ -155,7 +157,7 @@ public class FloorManager : MonoBehaviour
 
 
                         // Making the stat increase object at x and y location
-                        GameObject statIncreaser = Instantiate(StatIncreaser, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        GameObject statIncreaser = Instantiate(StatIncreaser, new Vector3(x * tileWidth, y * tileWidth*1.025f, -1), Quaternion.identity) as GameObject;
                         statIncreaser.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         statIncreaser.transform.parent = transform;
 

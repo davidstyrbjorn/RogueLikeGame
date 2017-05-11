@@ -70,8 +70,7 @@ public class UIManager : MonoBehaviour {
     [Space(25)]
     [Header("Inventory/Currently Equiped Weapon")]
     public Image inventoryCurrentWeaponImage;
-    public Text inventoryCurrentWeaponStats;
-    public Text inventoryCurrentWeaponName;
+    public Image inventoryCurrentArmorImage;
 
     [Space(25)]
     [Header("Inventory/Bottom Right")]
@@ -238,9 +237,15 @@ public class UIManager : MonoBehaviour {
         }
 
         // Update the player health text
-        playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
-        //float healthPercentage = Convert.ToInt16((playerManager.getHealth() / playerManager.getMaxHealth()) * 100);
-        //playerHealthText.text = healthPercentage.ToString() + "%";
+        if (PlayerPrefs.GetInt("DISPLAY_HEALTH_IN_NUMBERS") == 1)
+        {
+            playerHealthText.text = playerManager.getHealth() + "/" + playerManager.getMaxHealth();
+        }
+        else
+        {
+            float healthPercentage = Convert.ToInt16((playerManager.getHealth() / playerManager.getMaxHealth()) * 100);
+            playerHealthText.text = healthPercentage.ToString() + "%";
+        }
 
         // Update player physical damage 
         playerDamageText.text = ""+(playerManager.getAttack() + 
@@ -268,17 +273,13 @@ public class UIManager : MonoBehaviour {
 
             inventoryCurrentWeaponImage.color = Color.white;
             inventoryCurrentWeaponImage.sprite = playerManager.getEquipedWeapon().getWeaponSprite();
-            inventoryCurrentWeaponName.text = playerManager.getEquipedWeapon().getName();
             if (playerManager.getEquipedWeapon().getCritChance() == -1)
             {
                 inventoryCriticalChanceText.text = "0%";
-                inventoryCurrentWeaponStats.text = playerManager.getEquipedWeapon().getNormalAttack().ToString() + "\n0%";
             }
             else
             {
                 inventoryCriticalChanceText.text = playerManager.getEquipedWeapon().getCritChance().ToString() + "%";
-                inventoryCurrentWeaponStats.text = "" + playerManager.getEquipedWeapon().getNormalAttack() + "\n"
-                    + playerManager.getEquipedWeapon().getCritChance() + "%";
             }
         }
         // If the player has no weapon equipeds
@@ -287,8 +288,6 @@ public class UIManager : MonoBehaviour {
             // Currently equiped weapon
             inventoryCurrentWeaponImage.color = Color.clear;
             inventoryCurrentWeaponImage.sprite = null;
-            inventoryCurrentWeaponName.text = "None Equiped";
-            inventoryCurrentWeaponStats.text = "0\n0%";
 
             // Inventory bottom right
             inventoryPhysicalDamageText.text = playerManager.getAttack().ToString();
@@ -298,9 +297,12 @@ public class UIManager : MonoBehaviour {
         // Armor
         if (playerManager.getEquipedArmor() == null)
         {
-            inventoryArmorText.text = ((playerManager.getArmor()) * 100).ToString("0.#"); // Add actual armor piece to this when implemented
+            inventoryCurrentArmorImage.color = Color.clear;
+            inventoryArmorText.text = (((playerManager.getArmor()) * 100).ToString("0.#"));
         }else
         {
+            inventoryCurrentArmorImage.color = Color.white;
+            inventoryCurrentArmorImage.sprite = playerManager.getEquipedArmor().getArmorSprite();
             inventoryArmorText.text = ((playerManager.getArmor() * 100) + playerManager.getEquipedArmor().getArmor() * 100).ToString("0.#");
         }
 
@@ -488,6 +490,36 @@ public class UIManager : MonoBehaviour {
             playerManager.EquipArmor(currentlySelectedInventoryArmor);
 
             currentlySelectedInventoryArmor = null;
+        }
+    }
+
+    public void ClickedEquipedWeapon()
+    {
+        if(playerManager.getEquipedWeapon() != null)
+        {
+            for(int i = 0; i < playerInventory.GetWeaponsList().Count; i++)
+            {
+                if(playerInventory.GetWeaponsList()[i].name_ == playerManager.getEquipedWeapon().name_)
+                {
+                    GoTo_WeaponsTab();
+                    ClickedOnWeapon(i);
+                }
+            }
+        }
+    }
+
+    public void ClickedOnEquipedArmor()
+    {
+        if(playerManager.getEquipedArmor() != null)
+        {
+            for (int i = 0; i < playerInventory.GetArmorList().Count; i++)
+            {
+                if (playerInventory.GetArmorList()[i].name_ == playerManager.getEquipedArmor().name_)
+                {
+                    GoTo_ArmorTab();
+                    ClickedOnArmor(i);
+                }
+            }
         }
     }
 

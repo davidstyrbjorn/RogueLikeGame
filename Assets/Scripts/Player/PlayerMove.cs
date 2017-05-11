@@ -50,7 +50,6 @@ public class PlayerMove : MonoBehaviour {
         }
         if (canMove && !uiManager.characterInventory.gameObject.activeInHierarchy && !uiManager.confirmWeapon.gameObject.activeInHierarchy)
         {
-            anim.SetBool("WalkVertical", false);
             anim.SetBool("WalkSide", false);
             MovePlayer();
         }
@@ -87,134 +86,133 @@ public class PlayerMove : MonoBehaviour {
     {
         if (Input.anyKey && playerManager.getCurrentState() == BaseValues.PlayerStates.NOT_IN_COMBAT)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
             {
-                return;
-            }
-            // Move left
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            {
-                anim.SetBool("WalkSide", true);
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x - 1, curr_y] != 1 && currentMap[curr_x - 1, curr_y] != 4)
+                // Move left
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
                 {
-                    curr_x--;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
-                    spre.flipX = true;
+                    anim.SetBool("WalkSide", true);
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x - 1, curr_y] != 1 && currentMap[curr_x - 1, curr_y] != 4)
+                    {
+                        curr_x--;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
+                        spre.flipX = true;
 
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                    }
+                    else if (currentMap[curr_x - 1, curr_y] == 4)
+                    {
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                        spre.flipX = false;
+                        playerManager.onEngage(curr_x - 1, curr_y);
+                    }
                 }
-                else if (currentMap[curr_x - 1, curr_y] == 4)
+
+                // Move to the left 
+                else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
                 {
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
+                    anim.SetBool("WalkSide", true);
                     spre.flipX = false;
-                    playerManager.onEngage(curr_x - 1, curr_y);
-                }
-            }
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x + 1, curr_y] != 4)
+                    {
+                        curr_x++;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
 
-            // Move to the left 
-            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            {
-                anim.SetBool("WalkSide", true);
-                spre.flipX = false;
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x + 1, curr_y] != 4)
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                    }
+                    else if (currentMap[curr_x + 1, curr_y] == 4)
+                    {
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                        playerManager.onEngage(curr_x + 1, curr_y);
+                        spre.flipX = false;
+                    }
+                }
+
+                // Move upwards     
+                else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
                 {
-                    curr_x++;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
+                    anim.SetBool("WalkSide", true);
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y + 1] != 4)
+                    {
+                        curr_y++;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
 
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                    }
+                    else if (currentMap[curr_x, curr_y + 1] == 4)
+                    {
+                        spre.flipX = false;
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                        playerManager.onEngage(curr_x, curr_y + 1);
+                    }
                 }
-                else if (currentMap[curr_x + 1, curr_y] == 4)
+
+                // Move downwards
+                else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
                 {
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
-                    playerManager.onEngage(curr_x + 1, curr_y);
-                    spre.flipX = false;
-                }
-            }
+                    anim.SetBool("WalkSide", true);
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y - 1] != 4)
+                    {
+                        curr_y--;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
 
-            // Move upwards     
-            else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-            {
-                anim.SetBool("WalkVertical", true);
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y + 1] != 4)
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                    }
+                    else if (currentMap[curr_x, curr_y - 1] == 4)
+                    {
+                        positionBeforeCombat = new Vector2(curr_x, curr_y);
+                        playerManager.onEngage(curr_x, curr_y - 1);
+                        spre.flipX = false;
+                    }
+                }
+
+                // Floor exit condition
+                if (currentMap[curr_x, curr_y] == 3)
+                    playerManager.walkedOnExit();
+                else
+                    playerManager.walkedOffExit();
+
+                // Escape condition
+                if (currentMap[curr_x, curr_y] == 8)
+                    uiManager.enableEscapePrompt();
+                else
+                    uiManager.disableEscapePrompt();
+
+                // Check if we walked onto any stat increaser
+                if (currentMap[curr_x, curr_y] == 5)
+                    playerManager.hitStatIncreaser(new Vector2(curr_x, curr_y));
+
+                // We hit an items chest
+                if (currentMap[curr_x, curr_y] == 6)
+                    playerManager.hitChest(new Vector2(curr_x, curr_y));
+
+                if (currentMap[curr_x, curr_y] == 7)
                 {
-                    curr_y++;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
-
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
+                    shopKeeper.ToggleShop(true);
                 }
-                else if (currentMap[curr_x, curr_y + 1] == 4)
+                else
+                    shopKeeper.ToggleShop(false);
+
+                if (currentMap[curr_x, curr_y] == 9)
                 {
-                    spre.flipX = false;
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
-                    playerManager.onEngage(curr_x, curr_y + 1);
+                    brandStation.ToggleBrandStation(true);
                 }
-            }
-
-            // Move downwards
-            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-            {
-                anim.SetBool("WalkVertical", true);
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y - 1] != 4)
+                else
                 {
-                    curr_y--;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
-
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
+                    brandStation.ToggleBrandStation(false);
                 }
-                else if (currentMap[curr_x, curr_y - 1] == 4)
-                {
-                    positionBeforeCombat = new Vector2(curr_x, curr_y);
-                    playerManager.onEngage(curr_x, curr_y - 1);
-                    spre.flipX = false;
-                }
+
+                playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
+                miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
             }
-
-            // Floor exit condition
-            if (currentMap[curr_x, curr_y] == 3)
-                playerManager.walkedOnExit();
-            else
-                playerManager.walkedOffExit();
-
-            // Escape condition
-            if (currentMap[curr_x, curr_y] == 8)
-                uiManager.enableEscapePrompt();
-            else
-                uiManager.disableEscapePrompt();
-
-            // Check if we walked onto any stat increaser
-            if (currentMap[curr_x, curr_y] == 5)
-                playerManager.hitStatIncreaser(new Vector2(curr_x, curr_y));
-
-            // We hit an items chest
-            if (currentMap[curr_x, curr_y] == 6)
-                playerManager.hitChest(new Vector2(curr_x, curr_y));
-
-            if (currentMap[curr_x, curr_y] == 7)
-            {   
-                shopKeeper.ToggleShop(true);
-            }
-            else
-                shopKeeper.ToggleShop(false);
-
-            if(currentMap[curr_x,curr_y] == 9)
-            {
-                brandStation.ToggleBrandStation(true);
-            }
-            else
-            {
-                brandStation.ToggleBrandStation(false);
-            }
-
-            playerManager.PlayerMoved(new Vector2(curr_x, curr_y));
-            miniMap.RevealNewPart(new Vector2(curr_x, curr_y));
         }
     }
 

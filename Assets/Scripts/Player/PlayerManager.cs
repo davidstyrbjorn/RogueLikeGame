@@ -67,8 +67,6 @@ public class PlayerManager : MonoBehaviour {
     private Vector2 playerCombatPos, enemyCombatPos;
     private Vector2 combatTilePos;
 
-    private Potion recentlyPickedUpPotion;
-
     public float getHealth() { return healthPoints; }
     public float getMaxHealth() { return maxHealthPoints; }
     public float getAttack() { return attack; }
@@ -120,15 +118,10 @@ public class PlayerManager : MonoBehaviour {
             {
                 ConfirmWeapon_Decline();
             }
-        }
-
-        if (Input.GetKeyDown(KeyCode.E) && recentlyPickedUpPotion != null)
-        {
-            ConsumePotion(recentlyPickedUpPotion.type);
-            playerInventory.RemovePotionAt(playerInventory.GetPotionsList().Count-1);
-            uiManager.UpdatePotionSlots();
-
-            recentlyPickedUpPotion = null;
+            if (uiManager.escapePrompt.gameObject.activeInHierarchy)
+            {
+                uiManager.disableEscapePrompt();
+            }
         }
 
         // Quick consume health potion
@@ -137,6 +130,19 @@ public class PlayerManager : MonoBehaviour {
             for(int i = 0; i < playerInventory.GetPotionsList().Count; i++)
             {
                 if(playerInventory.GetPotionsList()[i].type == Potion.potionType.HEALING)
+                {
+                    ConsumePotion(playerInventory.GetPotionsList()[i].type);
+                    playerInventory.GetPotionsList().RemoveAt(i);
+                    uiManager.UpdatePotionSlots();
+                    uiManager.NewPlayerValues();
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            for (int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+            {
+                if (playerInventory.GetPotionsList()[i].type == Potion.potionType.STRENTGH)
                 {
                     ConsumePotion(playerInventory.GetPotionsList()[i].type);
                     playerInventory.GetPotionsList().RemoveAt(i);
@@ -201,7 +207,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void onEngage(int enemy_x, int enemy_y)
     {
-
+        anim.SetBool("WalkSide", false);
         currentState = BaseValues.PlayerStates.IN_COMBAT;
 
         GameObject _enemy = floorManager.enemyList[new Vector2(enemy_x, enemy_y)];
@@ -473,7 +479,6 @@ public class PlayerManager : MonoBehaviour {
                 foundWeapon.chestPos = pos;
 
                 // Stopping the player animations
-                playerMove.getAnim().SetBool("WalkVertical", false);
                 playerMove.getAnim().SetBool("WalkSide", false);
 
                 // Sound
@@ -489,7 +494,6 @@ public class PlayerManager : MonoBehaviour {
                 foundArmor.chestPos = pos;
 
                 // Stopping the player animations
-                playerMove.getAnim().SetBool("WalkVertical", false);
                 playerMove.getAnim().SetBool("WalkSide", false);
 
                 // Sound
@@ -502,8 +506,6 @@ public class PlayerManager : MonoBehaviour {
                 // Create and try to add the potion to players inventory
                 Potion foundPotion = chestMaster.makeNewPotion();
                 playerInventory.addPotion(foundPotion);
-                recentlyPickedUpPotion = foundPotion;
-                Invoke("setRecentPotionToNull", 4.5f);
 
                 if(foundPotion.type == Potion.potionType.HEALING)
                 {
@@ -573,7 +575,6 @@ public class PlayerManager : MonoBehaviour {
 
     public void ConsumePotion(Potion.potionType _type)
     {
-        recentlyPickedUpPotion = null;
         if(_type == Potion.potionType.HEALING)
         {
             addHealth(maxHealthPoints * BaseValues.healthPotionFactor);
@@ -834,11 +835,6 @@ public class PlayerManager : MonoBehaviour {
     {
         money -= money_;
         moneySpent += money_;
-    }
-
-    void setRecentPotionToNull()
-    {
-        recentlyPickedUpPotion = null;
     }
 
     public BaseValues.PlayerStates getCurrentState() { return currentState; }

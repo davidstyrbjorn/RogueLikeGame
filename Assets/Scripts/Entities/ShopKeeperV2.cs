@@ -235,7 +235,7 @@ public class ShopKeeperV2 : MonoBehaviour {
         if(p_item_index != -1)
         {
             // Sound and event box right here
-            eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetWeaponsList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " coins</color>");
+            eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetWeaponsList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " souls</color>");
             
             playerManager.addMoney((int)(playerInventory.GetWeaponsList()[p_item_index].getValue()*BaseValues.ShopSellRatio));
 
@@ -281,7 +281,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 }
 
                 // Event box and sound here
-                eventBox.addEvent("Bought  " + sk_weapons[sk_item_index].name + " for  <color=#daa520>" + sk_weapons[sk_item_index].value + "  coins</color>");
+                eventBox.addEvent("Bought  " + sk_weapons[sk_item_index].name + " for  <color=#daa520>" + sk_weapons[sk_item_index].value + "  souls</color>");
 
                 // Remove the weapon from the shop
                 sk_weapons[sk_item_index] = null;
@@ -320,7 +320,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 }
 
                 // Event box and sound here
-                eventBox.addEvent("Bought " + sk_armor[sk_item_index].name + " for <color=#daa520>" + sk_armor[sk_item_index].value + " coins</color>");
+                eventBox.addEvent("Bought " + sk_armor[sk_item_index].name + " for <color=#daa520>" + sk_armor[sk_item_index].value + " souls</color>");
 
                 // Remove the armor from the shop
                 sk_armor[sk_item_index] = null;
@@ -344,7 +344,7 @@ public class ShopKeeperV2 : MonoBehaviour {
         if (p_item_index != -1)
         {
             // Sound and event box right here
-            eventBox.addEvent("Sold " + playerInventory.GetArmorList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetArmorList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " coins</color>");
+            eventBox.addEvent("Sold " + playerInventory.GetArmorList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetArmorList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " souls</color>");
 
             playerManager.addMoney((int)(playerInventory.GetArmorList()[p_item_index].getValue()*BaseValues.ShopSellRatio));
 

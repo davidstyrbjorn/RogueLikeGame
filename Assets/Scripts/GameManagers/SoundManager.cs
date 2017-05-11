@@ -22,38 +22,56 @@ public class SoundManager : MonoBehaviour {
 
     public void PlayBackgroundMusic()
     {
-        backgroundAudioSource.StartBackgroundMusic();
+        if (PlayerPrefs.GetInt("OPTIONS_MUSIC_ON") == 1)
+        {
+            backgroundAudioSource.StartBackgroundMusic();
+        }
     }
 
     public void OpenedChest()
     {
-        GameObject temp = Instantiate(ChestSFX, transform.position, Quaternion.identity) as GameObject;
-        Destroy(temp, 5);
+        if (PlayerPrefs.GetInt("OPTIONS_SFX_ON") == 1)
+        {
+            GameObject temp = Instantiate(ChestSFX, transform.position, Quaternion.identity) as GameObject;
+            Destroy(temp, 5);
+        }
     }
 
     public void SwingSword()
     {
-        int randIndex = Random.Range(0, SwordSwishSFX.Length);
-        GameObject temp = Instantiate(SwordSwishSFX[randIndex], transform.position, Quaternion.identity) as GameObject;
-        Destroy(temp, 2.25f);
+        if (PlayerPrefs.GetInt("OPTIONS_SFX_ON") == 1)
+        {
+            int randIndex = Random.Range(0, SwordSwishSFX.Length);
+            GameObject temp = Instantiate(SwordSwishSFX[randIndex], transform.position, Quaternion.identity) as GameObject;
+            Destroy(temp, 2.25f);
+        }
     }
 
     /* User Interface */
     public void OpenedInventory()
     {
-        GameObject temp = Instantiate(ClothInventory, transform.position, Quaternion.identity) as GameObject;
-        Destroy(temp,1);
+        if (PlayerPrefs.GetInt("OPTIONS_SFX_ON") == 1)
+        {
+            GameObject temp = Instantiate(ClothInventory, transform.position, Quaternion.identity) as GameObject;
+            Destroy(temp, 1);
+        }
     }
 
     public void InventoryEquip()
     {
-        GameObject temp = Instantiate(MetalClash, transform.position, Quaternion.identity) as GameObject;
-        Destroy(temp, 0.6f);
+        if (PlayerPrefs.GetInt("OPTIONS_SFX_ON") == 1)
+        {
+            GameObject temp = Instantiate(MetalClash, transform.position, Quaternion.identity) as GameObject;
+            Destroy(temp, 0.6f);
+        }
     }
 
     public void Buy_Sell()
     {
-        GameObject temp = Instantiate(BuySell, transform.position, Quaternion.identity) as GameObject;
-        Destroy(temp, 0.6f);
+        if (PlayerPrefs.GetInt("OPTIONS_SFX_ON") == 1)
+        {
+            GameObject temp = Instantiate(BuySell, transform.position, Quaternion.identity) as GameObject;
+            Destroy(temp, 0.6f);
+        }
     }
 }
