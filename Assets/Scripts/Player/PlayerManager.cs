@@ -135,6 +135,7 @@ public class PlayerManager : MonoBehaviour {
                     playerInventory.GetPotionsList().RemoveAt(i);
                     uiManager.UpdatePotionSlots();
                     uiManager.NewPlayerValues();
+                    return;
                 }
             }
         }
@@ -148,6 +149,7 @@ public class PlayerManager : MonoBehaviour {
                     playerInventory.GetPotionsList().RemoveAt(i);
                     uiManager.UpdatePotionSlots();
                     uiManager.NewPlayerValues();
+                    return;
                 }
             }
         }
@@ -269,6 +271,7 @@ public class PlayerManager : MonoBehaviour {
                         eventBox.addEvent("Critical blow" + "  +<color=#8a2be2>(" + (weaponDamage - equipedWeapon.getNormalAttack()) + ")</color>  damage");
                     }
                 }
+                //print(nextAttackBonus);
                 float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
 
                 // Combat text
@@ -276,8 +279,6 @@ public class PlayerManager : MonoBehaviour {
                 {
                     camShake.DoShake();
                     combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), new Color(0.54f, 0.168f, 0.886f), 250);
-                    
-                    
                 }
                 else
                 {
@@ -582,7 +583,15 @@ public class PlayerManager : MonoBehaviour {
         }
         if(_type == Potion.potionType.STRENTGH)
         {
-            nextAttackBonus += BaseValues.strengthPotionMultiplier;
+            if(nextAttackBonus == 1)
+            {
+                nextAttackBonus = BaseValues.strengthPotionMultiplier;
+            }
+            else
+            {
+                print("what");
+                nextAttackBonus += (BaseValues.strengthPotionMultiplier) * 0.5f;
+            }
             eventBox.addEvent("You feel <color=#0099cc>energized</color>");
         }
     }
@@ -843,33 +852,15 @@ public class PlayerManager : MonoBehaviour {
     private IEnumerator FlashSprite()
     {
         spre.color = Color.white;
-        while(spre.color != Color.red)
+        while (spre.color != Color.red)
         {
-            spre.color = new Color(1, spre.color.g - 0.025f, spre.color.b-0.025f, 1);
-            yield return new WaitForSeconds(0.00025f);
+            spre.color = new Color(1, spre.color.g - 0.025f, spre.color.b - 0.025f, 1);
+            yield return new WaitForSeconds(0.0002f);
         }
-        while(spre.color != Color.white)
+        while (spre.color != Color.white)
         {
             spre.color = new Color(1, spre.color.g + 0.025f, spre.color.b + 0.025f, 1);
-            yield return new WaitForSeconds(0.00025f);
-        }
-    }
-
-    private IEnumerator LowHealth()
-    {
-        while (1 == 1)
-        {
-            spre.color = Color.white;
-            while (spre.color != Color.red)
-            {
-                spre.color = new Color(1, spre.color.g - 0.025f, spre.color.b - 0.025f, 1);
-                yield return new WaitForSeconds(0.00025f);
-            }
-            while (spre.color != Color.white)
-            {
-                spre.color = new Color(1, spre.color.g + 0.025f, spre.color.b + 0.025f, 1);
-                yield return new WaitForSeconds(0.00025f);
-            }
+            yield return new WaitForSeconds(0.0002f);
         }
     }
 

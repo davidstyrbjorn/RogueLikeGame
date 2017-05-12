@@ -100,6 +100,8 @@ public class UIManager : MonoBehaviour {
     private PlayerInventory playerInventory;
     private FloorManager floorManager;
     private EventBox eventBox;
+    private ShopKeeperV2 shopKeeper;
+    private BrandStation brandStation;
 
     // Currently selected inventory weapon
     private Weapon currentlySelectedInventoryWeapon;
@@ -122,11 +124,13 @@ public class UIManager : MonoBehaviour {
 
     private void Awake()
     {
+        shopKeeper = FindObjectOfType<ShopKeeperV2>();
         floorManager = FindObjectOfType<FloorManager>();
         playerInventory = FindObjectOfType<PlayerInventory>();
         playerManager = FindObjectOfType<PlayerManager>();
         eventBox = FindObjectOfType<EventBox>();
         inventory = FindObjectOfType<Inventory>();
+        brandStation = FindObjectOfType<BrandStation>();
     }
 
     private void Start()
@@ -204,9 +208,22 @@ public class UIManager : MonoBehaviour {
 
         // Player Inventory Hot Keys
 
-        // Toggle Inventory on and off
+        // Toggle Stuff with I
         if (Input.GetKeyDown(KeyCode.I))
-            ToggleInventoryScreen();
+        {
+            if (shopKeeper.ShopTransform.gameObject.activeInHierarchy)
+            {
+                shopKeeper.ShopTransform.gameObject.SetActive(false);
+            }
+            else if (brandStation.BrandStaionTransform.gameObject.activeInHierarchy)
+            {
+                brandStation.BrandStaionTransform.gameObject.SetActive(false);
+            }
+            else
+            {
+                ToggleInventoryScreen();
+            }
+        }
 
         // Navigating inside the inventory
         if (characterInventory.gameObject.activeSelf)

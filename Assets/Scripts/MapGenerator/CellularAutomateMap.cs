@@ -6,9 +6,16 @@ using System;
 /// This class makes a two dimensional integer that holds either 0,1,2,3,4... representing different things on the map
 /// The map is then passed to the Floor class map which then based on what numbers it has, spawns various objects on the map
 /// This class only does this and leaves all the game logic to the FloorManager class
-/// Also spawns gemstones randomly around certain random enemies
+/// </summary>
+/// 
+/// <summary>
+/// SEED
+/// Statincreasers and chests will not spawn based on seeds
+/// Enemies and the actual map will spawn based on the seed
+/// This is to prevent possible exploits of the feature where you can freeze the dungeon
 /// </summary>
 
+// Values inside the 2d array representing different objects
 // 1 = wall
 // 0 = ground
 // 2 = Entrance
@@ -46,62 +53,89 @@ public class CellularAutomateMap : MonoBehaviour
     private int[,] map;
     private int[,] flaggedMap;
 
+    [NonSerialized]
     public int EntranceX;
+    [NonSerialized]
     public int EntranceY;
+    [NonSerialized]
     public int ExitX;
+    [NonSerialized]
     public int ExitY;
 
     public int enemySpawnChance;
 
-    [SerializeField]
+    [NonSerialized]
     public int groundCount;
 
-    public void GenerateMap()
+    public void GenerateMap(bool titleScreen = false)
     {
         seed = Guid.NewGuid().ToString();
 
-        System.Random rand = new System.Random(seed.GetHashCode());
-
-        int num = rand.Next(0, 100);
-
-        /* Map dimensions */
-        if(num >= 0 && num <= 50) // 32x32
+        #region 1. Randomly setting floor width and height
+        if (!titleScreen)
         {
-            width = 32;
-            height = 32;
-        }
-        else if(num >= 51 && num <= 75) // 48x16
-        {
-            width = 48;
-            height = 16;
-        }
-        else if(num >= 76 && num <= 100) // 16x48
-        {
-            width = 16;
-            height = 48;
-        }
+            System.Random rand = new System.Random(seed.GetHashCode());
+            int num = rand.Next(0, 100);
 
-        BaseValues.MAP_WIDTH = width;
-        BaseValues.MAP_HEIGHT = height;
+            /* Map dimensions */
+            if (num >= 0 && num <= 50) // 32x32
+            {
+                width = 32;
+                height = 32;
+            }
+            else if (num >= 51 && num <= 75) // 48x16
+            {
+                width = 48;
+                height = 16;
+            }
+            else if (num >= 76 && num <= 100) // 16x48
+            {
+                width = 16;
+                height = 48;
+            }
 
+            BaseValues.MAP_WIDTH = width;
+            BaseValues.MAP_HEIGHT = height;
+        }
+        else
+        {
+            BaseValues.MAP_WIDTH = 32;
+            BaseValues.MAP_HEIGHT = 32;
+        }
+        #endregion
+
+        #region 2. Creating a new 2d int and making the actual floor
+        // Ground work for new floor
         flaggedMap = new int[width, height]; // The flagged map that checks 
         map = new int[width, height]; // Creates a new map with height and width as dimensions
         RandomFillMap(); // Fills the map at random with the fill percentage
 
+        // Cellular automata to smooth the map making it look more like a level
         for (int i = 0; i < 2; i++)
         {
             SmoothMap();
         }
+        #endregion
 
+        #region 3. Flood fill to remove unreachable areas
+        // We need to place the entrance so we can start flood fill
         PlaceEntrance();
+        // This starts a flood fill of the map
+        // Every position on flaggedMap makred as a 1 is accesible 
         floodFill(EntranceX, EntranceY);
+        // Remove every position that's 0 on the actual map based on the flaggedMap
         RemoveUnreachAbles();
+        #endregion
 
+        #region 4. Place all the other objects 
+        // Place the rest of the game objects
         PlaceStatIncrease();
         PlaceChest(false);
-        SpawnEnemies(); // This spawns enemies on the map... etc
+        SpawnEnemies(); 
         PlaceExit();
+        #endregion
     }
+
 
     public bool CheckIfValidMap()
     {
