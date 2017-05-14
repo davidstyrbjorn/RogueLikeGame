@@ -4,7 +4,7 @@ using System.Collections;
 public class ChestMaster : MonoBehaviour {
 
     [Header("Weapon Tiers")]
-    public GameObject[] tier1Weapons, tier2Weapons, tier3Weapons; // Every fifth floor
+    public GameObject[] tier1Weapons, tier2Weapons, tier3Weapons,tier4Weapons,tier5Weapons; // Every fifth floor
 
     [Header("Armor Tiers")]
     public GameObject[] tier1Armor, tier2Armor, tier3Armor; // Every fifth floor
@@ -28,10 +28,20 @@ public class ChestMaster : MonoBehaviour {
             int randomIndex = Random.Range(0, tier2Weapons.Length);
             return tier2Weapons[randomIndex].GetComponent<Weapon>();
         }
-        if(floorManager.getCurrentFloor() > 10 && floorManager.getCurrentFloor() <= 100)
+        if(floorManager.getCurrentFloor() > 10 && floorManager.getCurrentFloor() <= 15)
         {
             int randomIndex = Random.Range(0, tier3Weapons.Length);
             return tier3Weapons[randomIndex].GetComponent<Weapon>();
+        }
+        if (floorManager.getCurrentFloor() > 15 && floorManager.getCurrentFloor() <= 20)
+        {
+            int randomIndex = Random.Range(0, tier4Weapons.Length);
+            return tier4Weapons[randomIndex].GetComponent<Weapon>();
+        }
+        if (floorManager.getCurrentFloor() > 20 && floorManager.getCurrentFloor() <= 99)
+        {
+            int randomIndex = Random.Range(0, tier5Weapons.Length);
+            return tier5Weapons[randomIndex].GetComponent<Weapon>();
         }
         return null;
     }

@@ -35,8 +35,10 @@ public class ShopKeeperV2 : MonoBehaviour {
 
     /* Misc classes we need reference to */
     private ChestMaster chestMaster;
+    private ShopKeeperItemPool shopKeepetItemPool;
     private UIManager uiManager;
     private EventBox eventBox;
+    private SoundManager soundManager;
 
     void Start()
     {
@@ -45,6 +47,8 @@ public class ShopKeeperV2 : MonoBehaviour {
         playerInventory = FindObjectOfType<PlayerInventory>();
         chestMaster = FindObjectOfType<ChestMaster>();
         uiManager = FindObjectOfType<UIManager>();
+        shopKeepetItemPool = FindObjectOfType<ShopKeeperItemPool>();
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
     void sk_ClickedOnArmor(int index)
@@ -235,6 +239,7 @@ public class ShopKeeperV2 : MonoBehaviour {
         if(p_item_index != -1)
         {
             // Sound and event box right here
+            soundManager.Buy_Sell();
             eventBox.addEvent("Sold " + playerInventory.GetWeaponsList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetWeaponsList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " souls</color>");
             
             playerManager.addMoney((int)(playerInventory.GetWeaponsList()[p_item_index].getValue()*BaseValues.ShopSellRatio));
@@ -281,6 +286,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 }
 
                 // Event box and sound here
+                soundManager.Buy_Sell();
                 eventBox.addEvent("Bought  " + sk_weapons[sk_item_index].name + " for  <color=#daa520>" + sk_weapons[sk_item_index].value + "  souls</color>");
 
                 // Remove the weapon from the shop
@@ -320,6 +326,7 @@ public class ShopKeeperV2 : MonoBehaviour {
                 }
 
                 // Event box and sound here
+                soundManager.Buy_Sell();
                 eventBox.addEvent("Bought " + sk_armor[sk_item_index].name + " for <color=#daa520>" + sk_armor[sk_item_index].value + " souls</color>");
 
                 // Remove the armor from the shop
@@ -344,6 +351,7 @@ public class ShopKeeperV2 : MonoBehaviour {
         if (p_item_index != -1)
         {
             // Sound and event box right here
+            soundManager.Buy_Sell();
             eventBox.addEvent("Sold " + playerInventory.GetArmorList()[p_item_index].name + " for <color=#daa520>" + (int)(playerInventory.GetArmorList()[p_item_index].getValue()*BaseValues.ShopSellRatio) + " souls</color>");
 
             playerManager.addMoney((int)(playerInventory.GetArmorList()[p_item_index].getValue()*BaseValues.ShopSellRatio));
@@ -376,6 +384,9 @@ public class ShopKeeperV2 : MonoBehaviour {
         {
             if(playerManager.getMoney() >= BaseValues.HealingPotionCost)
             {
+                soundManager.Buy_Sell();
+                print("bought red pot");
+
                 playerManager.removeMoney(BaseValues.HealingPotionCost);
 
                 Potion redPotion = new Potion(0);
@@ -392,6 +403,9 @@ public class ShopKeeperV2 : MonoBehaviour {
         {
             if(playerManager.getMoney() >= BaseValues.StrengthPotionCost)
             {
+                soundManager.Buy_Sell();
+                print("bought blue pot");
+
                 playerManager.removeMoney(BaseValues.StrengthPotionCost);
 
                 Potion bluePotion = new Potion(0);
@@ -471,8 +485,8 @@ public class ShopKeeperV2 : MonoBehaviour {
 
         for (int i = 0; i < sk_item_buttons.Length; i++)
         {
-            sk_weapons[i] = chestMaster.makeNewWeapon();
-            sk_armor[i] = chestMaster.makeNewArmor();
+            sk_weapons[i] = shopKeepetItemPool.makeNewWeapon();
+            sk_armor[i] = shopKeepetItemPool.makeNewArmor();
         }
 
         p_update_money_text();

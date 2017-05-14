@@ -503,7 +503,7 @@ public class UIManager : MonoBehaviour {
     {
         if (currentlySelectedInventoryArmor != null)
         {
-            soundManager.InventoryEquip();
+            soundManager.Equiped_Armor();
             playerManager.EquipArmor(currentlySelectedInventoryArmor);
 
             currentlySelectedInventoryArmor = null;

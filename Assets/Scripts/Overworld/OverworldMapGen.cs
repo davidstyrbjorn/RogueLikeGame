@@ -4,14 +4,17 @@ using System.Collections;
 // 0 - ground
 // 1 - wall
 // 2 - start tile
+// 3 - options
+// 4 - credits/stats
 
 public class OverworldMapGen : MonoBehaviour {
 
     int[,] map;
 
     public Color tileColor;
-    public GameObject groundPrefab, wallPrefab, startPrefab, optionsPrefab;
+    public GameObject groundPrefab, wallPrefab, startPrefab, optionsPrefab,bookPrefab;
 
+    [System.NonSerialized]
     public float tileSize;
 
     void Awake()
@@ -63,6 +66,16 @@ public class OverworldMapGen : MonoBehaviour {
                     GameObject options = Instantiate(optionsPrefab, new Vector2(x * _tileSize, y * _tileSize * 1.1f), Quaternion.identity) as GameObject;
                     options.transform.parent = transform;
                 }
+                else if(map[x,y] == 4)
+                {
+                    GameObject ground = Instantiate(groundPrefab, new Vector2(x * _tileSize, y * _tileSize), Quaternion.identity) as GameObject;
+                    ground.transform.parent = transform;
+                    ground.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
+                    ground.GetComponent<SpriteRenderer>().color = Color.white;
+
+                    GameObject book = Instantiate(bookPrefab, new Vector2(x * _tileSize, y * _tileSize * 1.1f), Quaternion.identity) as GameObject;
+                    book.transform.parent = transform;
+                }
             }
         }
     }
@@ -82,6 +95,10 @@ public class OverworldMapGen : MonoBehaviour {
                 else if(i == 4 && j == 6)
                 {
                     map[i, j] = 2;
+                }
+                else if(i == 6 && j == 6)
+                {
+                    map[i, j] = 4;
                 }
                 else if (i == 0 || j == 0 || i == BaseValues.HUB_WIDTH-1 || j == BaseValues.HUB_HEIGHT-1)
                 {

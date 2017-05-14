@@ -51,7 +51,7 @@ public class PlayerInventory : MonoBehaviour {
 
     public void addPotion(Potion _potion)
     {
-        if (potionsList.Count < maxPotionCount)
+        //if (potionsList.Count < maxPotionCount)
             potionsList.Add(_potion);
     }
 

@@ -33,7 +33,6 @@ using System;
 
 public class CellularAutomateMap : MonoBehaviour
 {
-
     public int width = 32;
     public int height = 32;
 
@@ -135,7 +134,6 @@ public class CellularAutomateMap : MonoBehaviour
         PlaceExit();
         #endregion
     }
-
 
     public bool CheckIfValidMap()
     {

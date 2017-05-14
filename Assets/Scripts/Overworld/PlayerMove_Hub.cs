@@ -23,6 +23,7 @@ public class PlayerMove_Hub : MonoBehaviour {
     private const float fadeSpeed = 3.5f;
 
     private OverworldMapGen mapGenerator;
+    private Stats stats;
     private PLAYER_STATES state;
 
     public Image fadePanel;
@@ -33,6 +34,9 @@ public class PlayerMove_Hub : MonoBehaviour {
         mapGenerator = FindObjectOfType<OverworldMapGen>();
         spre = GetComponentInChildren<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
+        stats = FindObjectOfType<Stats>();
+
+        Application.targetFrameRate = BaseValues.FPS;
     }
 
     void Start()
@@ -65,11 +69,15 @@ public class PlayerMove_Hub : MonoBehaviour {
             CheckCanMove();
         }
 
-        if (options.gameObject.activeInHierarchy)
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.I))
         {
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.I))
+            if (options.gameObject.activeInHierarchy)
             {
                 options.gameObject.SetActive(false);
+            }
+            if (stats.statsTransform.gameObject.activeInHierarchy)
+            {
+                stats.ToggleStats(false);
             }
         }
     }
@@ -91,14 +99,14 @@ public class PlayerMove_Hub : MonoBehaviour {
 
     void MovePlayer()
     {
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
         {
             // Move left
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
                 anim.SetBool("WalkSide", true);
                 // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x - 1, curr_y] != 1 && currentMap[curr_x - 1, curr_y] != 4)
+                if (currentMap[curr_x - 1, curr_y] != 1)
                 {
                     curr_x--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
@@ -114,7 +122,7 @@ public class PlayerMove_Hub : MonoBehaviour {
                 anim.SetBool("WalkSide", true);
                 spre.flipX = true;
                 // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x + 1, curr_y] != 1 && currentMap[curr_x + 1, curr_y] != 4)
+                if (currentMap[curr_x + 1, curr_y] != 1)
                 {
                     curr_x++;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
@@ -128,7 +136,7 @@ public class PlayerMove_Hub : MonoBehaviour {
             {
                 anim.SetBool("WalkSide", true);
                 // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y + 1] != 1 && currentMap[curr_x, curr_y + 1] != 4)
+                if (currentMap[curr_x, curr_y + 1] != 1)
                 {
                     curr_y++;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
@@ -141,7 +149,7 @@ public class PlayerMove_Hub : MonoBehaviour {
             {
                 anim.SetBool("WalkSide", true);
                 // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y - 1] != 1 && currentMap[curr_x, curr_y - 1] != 4)
+                if (currentMap[curr_x, curr_y - 1] != 1)
                 {
                     curr_y--;
                     currentWorldPosition = SetPlayerPos(curr_x, curr_y);
@@ -163,6 +171,15 @@ public class PlayerMove_Hub : MonoBehaviour {
             else
             {
                 options.gameObject.SetActive(false);
+            }
+
+            if(currentMap[curr_x,curr_y] == 4)
+            {
+                stats.ToggleStats(true);
+            }
+            else
+            {
+                stats.ToggleStats(false);
             }
         }
     }

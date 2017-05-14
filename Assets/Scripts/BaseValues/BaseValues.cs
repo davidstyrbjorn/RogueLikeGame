@@ -2,6 +2,8 @@
 using UnityEngine;
 
 public class BaseValues : MonoBehaviour{
+    public static int FPS = 90;
+
     public static int   MAP_WIDTH               = 25;
     public static int   MAP_HEIGHT              = 25;
 

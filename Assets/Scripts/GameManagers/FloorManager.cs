@@ -47,6 +47,8 @@ public class FloorManager : MonoBehaviour
 
     void Start()
     {
+        Application.targetFrameRate = BaseValues.FPS;
+
         AudioListener.pause = false;
         AudioListener.volume = 1;
         bg = FindObjectOfType<Background>();
@@ -157,9 +159,14 @@ public class FloorManager : MonoBehaviour
 
 
                         // Making the stat increase object at x and y location
-                        GameObject statIncreaser = Instantiate(StatIncreaser, new Vector3(x * tileWidth, y * tileWidth*1.025f, -1), Quaternion.identity) as GameObject;
+                        GameObject statIncreaser = Instantiate(StatIncreaser, new Vector3(x * tileWidth, (y * tileWidth), -1), Quaternion.identity) as GameObject;
                         statIncreaser.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
                         statIncreaser.transform.parent = transform;
+                        /*
+                        statIncreaser.AddComponent<SinusFloat>();
+                        statIncreaser.GetComponent<SinusFloat>().amplitude = 0.25f;
+                        statIncreaser.GetComponent<SinusFloat>().frequency = 6;
+                        */
 
                         // Adding to the localasation list
                         statIncreaserList.Add(new Vector2(x, y), statIncreaser);

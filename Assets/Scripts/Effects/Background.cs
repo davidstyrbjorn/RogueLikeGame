@@ -19,7 +19,7 @@ public class Background : MonoBehaviour {
 
         StartCoroutine(spawnClouds());
 
-        widestCloud = getWidestCloud(); // Not used at the moment, converting, can't convert widestCloud to world space
+        //widestCloud = getWidestCloud(); // Not used at the moment, converting, can't convert widestCloud to world space
     }
 
     public void SpawnIslands()

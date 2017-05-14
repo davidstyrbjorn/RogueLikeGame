@@ -240,9 +240,8 @@ public class PlayerManager : MonoBehaviour {
 
     void StartCombat()
     {
-        //StartCoroutine(Player_CombatLoop());
+        soundManager.CombatStart();
         StartCoroutine("Player_CombatLoop");
-        //StartCoroutine(Enemy_CombatLoop());
         StartCoroutine("Enemy_CombatLoop");
     }
 
@@ -277,6 +276,7 @@ public class PlayerManager : MonoBehaviour {
                 // Combat text
                 if (didCrit || nextAttackBonus != 1)
                 {
+                    soundManager.SwingSword();
                     camShake.DoShake();
                     combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), new Color(0.54f, 0.168f, 0.886f), 250);
                 }
@@ -330,11 +330,14 @@ public class PlayerManager : MonoBehaviour {
 
         PlayerPrefs.SetInt("STATS_DAMAGE_TAKEN", PlayerPrefs.GetInt("STATS_DAMAGE_TAKEN",0) + (int)_hp);
         healthPoints -= _hp;
-        StopCoroutine("FlashSprite");
-        StartCoroutine("FlashSprite");
+        //StopCoroutine("FlashSprite");
+        //StartCoroutine("FlashSprite");
 
         // Spawning combat text
         combatTextManager.SpawnCombatText(transform.position+(Vector3.up*3.5f)+(Vector3.left*0.3f),_hp.ToString(),Color.red);
+
+        // SFX
+        soundManager.TookDamage();
 
         // Player dies here
         if (healthPoints <= 0)
@@ -426,7 +429,7 @@ public class PlayerManager : MonoBehaviour {
             GameObject temp = Instantiate(spriteFadeAndScaleObject, pos*floorManager.GetTileWidth() + (Vector2.up * 4.75f), Quaternion.identity) as GameObject;
             temp.GetComponent<SpriteRenderer>().sprite = BaseValues.attackSymbolSprite;
             temp.GetComponent<SpriteFadeAndScale>().desiredScale = 1.5f;
-            temp.GetComponent<SpriteFadeAndScale>().scaleSpeed = 0.025f;
+            temp.GetComponent<SpriteFadeAndScale>().scaleSpeed = 0.015f;
 
             eventBox.addEvent("<color=red>Attack</color>  increased by  " + "<color=red>" + BaseValues.AttackStatIncrease + " point " + "</color>");
         }
@@ -448,6 +451,9 @@ public class PlayerManager : MonoBehaviour {
             floorManager.statIncreaserList.Remove(pos);
             floorManager.map[(int)pos.x, (int)pos.y] = 0;
         }
+
+        // SFX
+        soundManager.StatIncreased();
 
         // Updating Player UI
         uiManager.NewPlayerValues();
@@ -594,6 +600,7 @@ public class PlayerManager : MonoBehaviour {
             }
             eventBox.addEvent("You feel <color=#0099cc>energized</color>");
         }
+        soundManager.DrankPotion();
     }
 
     public Weapon getEquipedWeapon()
@@ -613,6 +620,8 @@ public class PlayerManager : MonoBehaviour {
 
     public void died()
     {
+        soundManager.GameOver();
+
         healthPoints = 0;
 
         GameObject deadObject = new GameObject("deadObject");
@@ -732,6 +741,8 @@ public class PlayerManager : MonoBehaviour {
         saveLoad.SavePlayerArmor(armor);
         //saveLoad.ResetPlayerPrefs();
 
+        soundManager.Ascended();
+
         eventBox.addEvent("Exiting map");
         StartCoroutine(ExitCorountine());
     }
@@ -754,6 +765,8 @@ public class PlayerManager : MonoBehaviour {
         anim.enabled = false;
         currentState = BaseValues.PlayerStates.ASCENDING;
         spre.color = Color.white;
+
+        soundManager.Ascended();
 
         // Ascend upwards and fade sprite out
         Vector3 ascendPos = new Vector3(transform.position.x, transform.position.y + 4.5f, transform.position.z);

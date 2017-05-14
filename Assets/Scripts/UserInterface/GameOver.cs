@@ -69,7 +69,7 @@ public class GameOver : MonoBehaviour {
         /* Max Money text */
         if(PlayerPrefs.GetInt("playerMaxMoney") != maxMoneyBeforeRun)
         {
-            maxMoneyText.text = "New Pouch Size (" + PlayerPrefs.GetInt("playerMaxMoney") + ")";
+            maxMoneyText.text = "Soul Capacity Increased (" + PlayerPrefs.GetInt("playerMaxMoney") + ")";
         }
 
         /* Branded Weapon */

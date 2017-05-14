@@ -66,8 +66,8 @@ public class Enemy : MonoBehaviour {
 
     public void looseHealth(float _hp)
     {
-        StopCoroutine("FlashSprite");
-        StartCoroutine("FlashSprite");
+        //StopCoroutine("FlashSprite");
+        //StartCoroutine("FlashSprite");
         healthPoints -= _hp;
         if (healthPoints <= 0)
         {
