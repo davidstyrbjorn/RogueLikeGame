@@ -18,6 +18,7 @@ public class SoundManager : MonoBehaviour {
     public GameObject CombatStartSFX;
     public GameObject StatIncreaserSFX;
     public GameObject GameOverSFX;
+    public GameObject MoneyGainedSFX;
 
     private BackgroundMusic backgroundAudioSource;
 
@@ -59,6 +60,15 @@ public class SoundManager : MonoBehaviour {
         {
             GameObject temp = Instantiate(CombatStartSFX, transform.position, Quaternion.identity) as GameObject;
             Destroy(temp, .6f);
+        }
+    }
+
+    public void MoneyGained()
+    {
+        if (PlayerPrefs.GetInt("OPTIONS_SFX_ON") == 1)
+        {
+            GameObject temp = Instantiate(MoneyGainedSFX, transform.position, Quaternion.identity) as GameObject;
+            Destroy(temp, 2f);
         }
     }
 

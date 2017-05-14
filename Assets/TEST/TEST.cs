@@ -10,12 +10,6 @@ public class TEST : MonoBehaviour {
     {
         playerManager = FindObjectOfType<PlayerManager>();
     }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-            playerManager.addMoney(10);
-    }
 	
 	void FixedUpdate () {
         if (target != null)

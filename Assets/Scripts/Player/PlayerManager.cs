@@ -153,6 +153,11 @@ public class PlayerManager : MonoBehaviour {
                 }
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            //addMoney(10);
+        }
     }
 
     void Start()
@@ -559,6 +564,7 @@ public class PlayerManager : MonoBehaviour {
         {
             equipedWeapon = _weapon;
             eventBox.addEvent("Equiped " + _weapon.getName());
+            soundManager.InventoryEquip();
         }
         else
         {
@@ -573,7 +579,9 @@ public class PlayerManager : MonoBehaviour {
         {
             equipedArmor = _armor;
             eventBox.addEvent("Equiped " + _armor.getName());
-        }else
+            soundManager.Equiped_Armor();
+        }
+        else
         {
             equipedArmor = null;
         }
@@ -848,6 +856,7 @@ public class PlayerManager : MonoBehaviour {
                 money -= money - maxMoney;
             uiManager.NewPlayerValues();
             shopKeeper.p_update_money_text();
+            soundManager.MoneyGained();
         }
         int moneyAfter = money;
         uiManager.AddedNewMoney(moneyAfter - moneyBefore);

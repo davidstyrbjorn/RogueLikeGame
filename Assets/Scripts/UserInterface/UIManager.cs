@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour {
     public RectTransform IntroScreen;
     public RectTransform escapePrompt;
     public RectTransform brandingTutorial;
+    public RectTransform version1EndTransform;
 
     [Space(20)]
     [Header("Text Objects")]
@@ -492,7 +493,6 @@ public class UIManager : MonoBehaviour {
     {
         if (currentlySelectedInventoryWeapon != null)
         {
-            soundManager.InventoryEquip();
             playerManager.EquipWeapon(currentlySelectedInventoryWeapon);
 
             currentlySelectedInventoryWeapon = null;
@@ -503,7 +503,6 @@ public class UIManager : MonoBehaviour {
     {
         if (currentlySelectedInventoryArmor != null)
         {
-            soundManager.Equiped_Armor();
             playerManager.EquipArmor(currentlySelectedInventoryArmor);
 
             currentlySelectedInventoryArmor = null;
@@ -902,5 +901,10 @@ public class UIManager : MonoBehaviour {
     public void disableEscapePrompt()
     {
         escapePrompt.gameObject.SetActive(false);
+    }
+
+    public void disableVersion1Transform()
+    {
+        version1EndTransform.gameObject.SetActive(false);
     }
 }

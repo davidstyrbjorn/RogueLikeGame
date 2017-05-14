@@ -9,6 +9,7 @@ public class StartSceneManager : MonoBehaviour {
 
     void Start()
     {
+        Application.targetFrameRate = BaseValues.FPS;
         StartCoroutine(BlinkingText());
     }
 

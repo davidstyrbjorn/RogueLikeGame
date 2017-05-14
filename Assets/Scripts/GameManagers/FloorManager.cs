@@ -71,8 +71,10 @@ public class FloorManager : MonoBehaviour
 
     void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.N))
             NewFloor();
+        */
     }
 
     public void NewFloor()
@@ -88,6 +90,10 @@ public class FloorManager : MonoBehaviour
         chestList.Clear();
 
         currentFloorNumber++;
+        if(currentFloorNumber == 26)
+        {
+            uiManager.version1EndTransform.gameObject.SetActive(true);
+        }
         StartCoroutine(MakeNewFloor());
         miniMap.CreateNewTexture();
     }
@@ -143,6 +149,11 @@ public class FloorManager : MonoBehaviour
                     }
                     else if (map[x, y] == 3)
                     {
+                        // Spawning the ground for the ascend tile
+                        GameObject groundTile = Instantiate(GroundTile, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
+                        groundTile.transform.parent = transform;
+                        groundTile.GetComponent<SpriteRenderer>().sortingOrder = BaseValues.MAP_HEIGHT - y;
+
                         GameObject exitTile = Instantiate(Exit, new Vector3(x * tileWidth, y * tileWidth, -1), Quaternion.identity) as GameObject;
                         exitTile.transform.parent = transform;
 

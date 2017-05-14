@@ -452,9 +452,9 @@ public class CellularAutomateMap : MonoBehaviour
                 floodFill(x, y + 1);
                 floodFill(x, y - 1);
             }
-            catch
+            catch (Exception e)
             {
-                // *Stack Overflow 
+                Debug.LogError(e.Message + "\n" + e.StackTrace);
             }
         }
     }

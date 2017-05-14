@@ -17,27 +17,32 @@ public class ChestMaster : MonoBehaviour {
     }
 
     public Weapon makeNewWeapon()
-    {
-        if (floorManager.getCurrentFloor() >= 0 && floorManager.getCurrentFloor() <= 5)
+    { 
+        // 0 - 5
+        if (floorManager.getCurrentFloor() >= 0 && floorManager.getCurrentFloor() < 5)
         {
             int randomIndex = Random.Range(0, tier1Weapons.Length);
             return tier1Weapons[randomIndex].GetComponent<Weapon>();
         }
-        if(floorManager.getCurrentFloor() > 5 && floorManager.getCurrentFloor() <= 10)
+        // 5 - 10
+        if(floorManager.getCurrentFloor() > 5 && floorManager.getCurrentFloor() < 10)
         {
             int randomIndex = Random.Range(0, tier2Weapons.Length);
             return tier2Weapons[randomIndex].GetComponent<Weapon>();
         }
-        if(floorManager.getCurrentFloor() > 10 && floorManager.getCurrentFloor() <= 15)
+        // 10 - 15
+        if(floorManager.getCurrentFloor() > 10 && floorManager.getCurrentFloor() < 15)
         {
             int randomIndex = Random.Range(0, tier3Weapons.Length);
             return tier3Weapons[randomIndex].GetComponent<Weapon>();
         }
-        if (floorManager.getCurrentFloor() > 15 && floorManager.getCurrentFloor() <= 20)
+        // 15 - 20
+        if (floorManager.getCurrentFloor() > 15 && floorManager.getCurrentFloor() < 20)
         {
             int randomIndex = Random.Range(0, tier4Weapons.Length);
             return tier4Weapons[randomIndex].GetComponent<Weapon>();
         }
+        // 20 - N
         if (floorManager.getCurrentFloor() > 20 && floorManager.getCurrentFloor() <= 99)
         {
             int randomIndex = Random.Range(0, tier5Weapons.Length);
