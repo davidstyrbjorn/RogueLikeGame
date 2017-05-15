@@ -683,6 +683,7 @@ public class UIManager : MonoBehaviour {
         {
             soundManager.OpenedInventory();
         }
+        weaponInfoBox.gameObject.SetActive(false);
         inventory.Toggled();
         characterInventory.gameObject.SetActive(!characterInventory.gameObject.activeSelf);
     }
