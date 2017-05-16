@@ -211,7 +211,11 @@ public class PlayerManager : MonoBehaviour {
     // PlayerMove calls this method each time player moves
     public void PlayerMoved(Vector2 newPos)
     {
-        
+        if (floorManager.soulVeilList.ContainsKey(newPos))
+        {
+            floorManager.soulVeilList[newPos].GetComponent<SoulVeil>().Activate();
+            floorManager.soulVeilList.Remove(newPos);
+        }
     }
 
     public void onEngage(int enemy_x, int enemy_y)
@@ -365,6 +369,8 @@ public class PlayerManager : MonoBehaviour {
             {
                 floorManager.enemyList.Remove(currentEnemyPos);
                 floorManager.map[(int)currentEnemyPos.x, (int)currentEnemyPos.y] = 0;
+
+                SpawnSoulVeil(new Vector2((int)currentEnemyPos.x, (int)currentEnemyPos.y));
             }
 
             PlayerPrefs.SetInt("STATS_ENEMIES_KILLED", PlayerPrefs.GetInt("STATS_ENEMIES_KILLED",0) + 1);
@@ -388,6 +394,43 @@ public class PlayerManager : MonoBehaviour {
             // Disable enemy UI
             uiManager.DisableEnemyUI();
         }
+    }
+
+    void SpawnSoulVeil(Vector2 deathPos)
+    {
+        bool foundSpot = false;
+        Vector2 spot = deathPos;
+        while (!foundSpot)
+        {
+            // There's no need for checking if we're out of bounds
+            // Because we know that no enemy can spawn on the outher edges of the map
+            int dir = Random.Range(0, 3+1);
+            // Down
+            if (dir == 0)
+                if (floorManager.map[(int)deathPos.x, (int)deathPos.y - 1] == 0)
+                    spot = new Vector2(deathPos.x, deathPos.y - 1);
+            // Left
+            if (dir == 1)
+                if (floorManager.map[(int)deathPos.x-1, (int)deathPos.y] == 0)
+                    spot = new Vector2(deathPos.x-1, deathPos.y);
+            // Up
+            if (dir == 2)
+                if (floorManager.map[(int)deathPos.x, (int)deathPos.y+1] == 0)
+                    spot = new Vector2(deathPos.x, deathPos.y+1);
+            // Right
+            if (dir == 3)
+                if (floorManager.map[(int)deathPos.x+1, (int)deathPos.y] == 0)
+                    spot = new Vector2(deathPos.x+1, deathPos.y);
+
+            // Check if we found a spot
+            if (spot != deathPos)
+                foundSpot = true;
+        }
+
+        // Spawn the soul veil and add it the floor managers list
+        GameObject temp = Instantiate(floorManager.soulVeilPrefab, new Vector3(spot.x * floorManager.GetTileWidth(), spot.y * floorManager.GetTileWidth(), -1), Quaternion.identity) as GameObject;
+        temp.transform.SetParent(floorManager.transform);
+        floorManager.soulVeilList.Add(new Vector2((int)spot.x,(int)spot.y), temp);
     }
 
     public void disengageCombat()
