@@ -182,8 +182,8 @@ public class MiniMap : MonoBehaviour {
 
         // Placement
         //spre.sprite.pivot = new Vector2(spre)
-        spre.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0))+Vector3.left*spre.bounds.size.x+Vector3.down*spre.bounds.size.y;
-        spre.transform.position = new Vector3(spre.transform.position.x, spre.transform.position.y, 0);
+        SetMiniMapPosition();
+        //Invoke("SetMiniMapPosition", 1);
     }
 
     void DoBorderEdges()
@@ -210,5 +210,11 @@ public class MiniMap : MonoBehaviour {
         }
 
         miniMapTexture.Apply();   
+    }
+
+    public void SetMiniMapPosition()
+    {
+        spre.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0)) + Vector3.left * spre.bounds.size.x + Vector3.down * spre.bounds.size.y;
+        spre.transform.position = new Vector3(spre.transform.position.x, spre.transform.position.y, 1);
     }
 }   

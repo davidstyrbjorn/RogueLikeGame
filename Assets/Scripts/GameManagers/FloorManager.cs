@@ -71,10 +71,10 @@ public class FloorManager : MonoBehaviour
 
     void Update()
     {
-        /*
+        
         if (Input.GetKeyDown(KeyCode.N))
             NewFloor();
-        */
+        
     }
 
     public void NewFloor()
@@ -306,6 +306,8 @@ public class FloorManager : MonoBehaviour
         RenderMap();
         playerMove.NewFloor(map);
         playerMove.MoveToWorldPos();
+
+        //miniMap.SetMiniMapPosition();
 
         PlayerPrefs.SetInt("STATS_FLOORS_ASCENDED", PlayerPrefs.GetInt("STATS_FLOORS_ASCENDED") + 1);
     }
