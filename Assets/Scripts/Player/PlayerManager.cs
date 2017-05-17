@@ -154,12 +154,12 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        /*
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.F))
         {
             addMoney(10);
         }
-        */
+#endif
     }
 
     void Start()

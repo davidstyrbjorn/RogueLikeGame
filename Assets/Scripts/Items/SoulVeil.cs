@@ -5,15 +5,26 @@ public class SoulVeil : MonoBehaviour {
 
     private SpriteRenderer spre;
 
+    private bool fadeOut;
+
     private void Start()
     {
         spre = GetComponent<SpriteRenderer>();
     }
 
-    public void Activate()
+    private void Update()
     {
-        print("fuck me");
-        Destroy(gameObject);
+        if (fadeOut)
+            spre.color = new Color(spre.color.r, spre.color.g, spre.color.b, spre.color.a - 1f * Time.deltaTime);
+        if (spre.color.a <= 0)
+        {
+            Destroy
+            (gameObject);
+        }
     }
 
+    public void Activate()
+    {
+        fadeOut = true;
+    }
 }
