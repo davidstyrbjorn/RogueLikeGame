@@ -93,4 +93,16 @@ public class PlayerInventory : MonoBehaviour {
             }
         }
     }
+
+    // Returns number of potions of type _type inside potionList
+    public int GetPotionTypeCount(Potion.potionType _type)
+    {
+        int l_count = 0;
+        for(int i = 0; i < potionsList.Count; i++)
+        {
+            if (potionsList[i].type == _type)
+                l_count++;
+        }
+        return l_count;
+    }
 }

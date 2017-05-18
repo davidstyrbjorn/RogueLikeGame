@@ -67,8 +67,8 @@ public class Enemy : MonoBehaviour {
 
     public void looseHealth(float _hp)
     {
-        //StopCoroutine("FlashSprite");
-        //StartCoroutine("FlashSprite");
+        StopCoroutine("FlashSprite");
+        StartCoroutine("FlashSprite");
         healthPoints -= _hp;
         if (healthPoints <= 0)
         {
@@ -105,16 +105,20 @@ public class Enemy : MonoBehaviour {
     private IEnumerator FlashSprite()
     {
         spre.color = Color.white;
-        while (spre.color != Color.red)
+        while (spre.color.g > 0)
         {
-            spre.color = new Color(1, spre.color.g - 0.025f, spre.color.b - 0.025f, 1);
-            yield return new WaitForSeconds(0.0002f);
+            spre.color = new Color(1, spre.color.g - 7f * Time.deltaTime, spre.color.b - 7f * Time.deltaTime, 1);
+            yield return new WaitForEndOfFrame();
         }
-        while (spre.color != Color.white)
+
+        spre.color = Color.red;
+        while (spre.color.g < 1)
         {
-            spre.color = new Color(1, spre.color.g + 0.025f, spre.color.b + 0.025f, 1);
-            yield return new WaitForSeconds(0.0002f);
+            spre.color = new Color(1, spre.color.g + 7f * Time.deltaTime, spre.color.b + 7f * Time.deltaTime, 1);
+            yield return new WaitForEndOfFrame();
         }
+
+        spre.color = Color.white;
     }
 
     private IEnumerator fadeOut()

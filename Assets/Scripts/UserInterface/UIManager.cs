@@ -46,6 +46,7 @@ public class UIManager : MonoBehaviour {
     public Text numberOfRedPotions;
     public Text numberOfBluePotions;
     public Text inGameRedPotion, inGameBluePotion;
+    public Text inGameRedPotionConfirm, inGameBluePotionConfirm;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -911,5 +912,84 @@ public class UIManager : MonoBehaviour {
     public void disableVersion1Transform()
     {
         version1EndTransform.gameObject.SetActive(false);
+    }
+
+    // In game potion code
+    public void InGame_ClickedOnRedPotion()
+    {
+        int count = playerInventory.GetPotionTypeCount(Potion.potionType.HEALING);
+        if(count > 0)
+        {
+            if(inGameRedPotionConfirm.color.a == 1)
+            {
+                inGameRedPotionConfirm.color = Color.clear;
+                for (int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+                {
+                    if (playerInventory.GetPotionsList()[i].getPotionType() == Potion.potionType.HEALING)
+                    {
+                        playerInventory.GetPotionsList().RemoveAt(i);
+                        playerManager.ConsumePotion(Potion.potionType.HEALING);
+                        UpdatePotionSlots();
+                        NewPlayerValues();
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                inGameRedPotionConfirm.color = Color.white;
+                StopCoroutine("InGame_ResetRedPotionConfirm");
+                StartCoroutine("InGame_ResetRedPotionConfirm");
+            }
+        }
+    }
+
+    public void InGame_ClickedOnBluePotion()
+    {
+        int count = playerInventory.GetPotionTypeCount(Potion.potionType.STRENTGH);
+        if (count > 0)
+        {
+            if (inGameBluePotionConfirm.color.a == 1)
+            {
+                inGameBluePotionConfirm.color = Color.clear;
+                for (int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+                {
+                    if (playerInventory.GetPotionsList()[i].getPotionType() == Potion.potionType.STRENTGH)
+                    {
+                        playerInventory.GetPotionsList().RemoveAt(i);
+                        playerManager.ConsumePotion(Potion.potionType.STRENTGH);
+                        UpdatePotionSlots();
+                        NewPlayerValues();
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                inGameBluePotionConfirm.color = Color.white;
+                StopCoroutine("InGame_ResetBluePotionConfirm");
+                StartCoroutine("InGame_ResetBluePotionConfirm");
+            }
+        }
+    }
+
+    IEnumerator InGame_ResetRedPotionConfirm()
+    {
+        yield return new WaitForSeconds(1.5f);
+        while(inGameRedPotionConfirm.color.a > 0)
+        {
+            inGameRedPotionConfirm.color = new Color(1, 1, 1, inGameRedPotionConfirm.color.a - 4 * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    IEnumerator InGame_ResetBluePotionConfirm()
+    {
+        yield return new WaitForSeconds(1.5f);
+        while (inGameBluePotionConfirm.color.a > 0)
+        {
+            inGameBluePotionConfirm.color = new Color(1, 1, 1, inGameBluePotionConfirm.color.a - 4 * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
     }
 }
