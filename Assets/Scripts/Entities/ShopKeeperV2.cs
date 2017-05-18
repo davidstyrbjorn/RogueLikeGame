@@ -385,7 +385,7 @@ public class ShopKeeperV2 : MonoBehaviour {
             if(playerManager.getMoney() >= BaseValues.HealingPotionCost)
             {
                 soundManager.Buy_Sell();
-                print("bought red pot");
+                //print("bought red pot");
 
                 playerManager.removeMoney(BaseValues.HealingPotionCost);
 
@@ -404,7 +404,7 @@ public class ShopKeeperV2 : MonoBehaviour {
             if(playerManager.getMoney() >= BaseValues.StrengthPotionCost)
             {
                 soundManager.Buy_Sell();
-                print("bought blue pot");
+                //print("bought blue pot");
 
                 playerManager.removeMoney(BaseValues.StrengthPotionCost);
 

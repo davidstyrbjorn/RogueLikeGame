@@ -293,6 +293,8 @@ public class FloorManager : MonoBehaviour
                 mapTranform.localPosition = new Vector3(17.3f, 2.1f,10);
                 */
 
+
+
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
             bg.SpawnIslands();
         }
@@ -313,9 +315,19 @@ public class FloorManager : MonoBehaviour
         playerMove.NewFloor(map);
         playerMove.MoveToWorldPos();
 
-        //miniMap.SetMiniMapPosition();
+        SetPotionCost();
 
         PlayerPrefs.SetInt("STATS_FLOORS_ASCENDED", PlayerPrefs.GetInt("STATS_FLOORS_ASCENDED") + 1);
+    }
+
+    void SetPotionCost()
+    {
+        // Regulate potion cost based on floor number
+        if(currentFloorNumber == 10)
+        {
+            BaseValues.HealingPotionCost = 50;
+            BaseValues.StrengthPotionCost = 50;
+        }
     }
 
     public float GetTileWidth()

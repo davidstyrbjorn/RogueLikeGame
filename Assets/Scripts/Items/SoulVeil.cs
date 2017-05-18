@@ -6,6 +6,10 @@ public class SoulVeil : MonoBehaviour {
     private SpriteRenderer spre;
 
     private bool fadeOut;
+    private int moneyReward;
+
+    [System.NonSerialized]
+    public Vector2 groundPos;
 
     private void Start()
     {
@@ -26,5 +30,15 @@ public class SoulVeil : MonoBehaviour {
     public void Activate()
     {
         fadeOut = true;
+    }
+
+    public void setMoneyReward(int amount)
+    {
+        moneyReward = amount;
+    }
+
+    public int getMoneyReward()
+    {
+        return moneyReward;
     }
 }

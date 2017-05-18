@@ -61,11 +61,12 @@ public class BaseValues : MonoBehaviour{
     public static int BattleCameraSize = 16; // shop
 
     // Potion Cost
-    public static int HealingPotionCost = 50;
-    public static int StrengthPotionCost = 50;
+    public static int HealingPotionCost = 25;
+    public static int StrengthPotionCost = 25;
 
-    // Shop stuff
-    public static float ShopSellRatio = 0.6f; // Sell weapon for 25% less than it's actual value
+    // Ratio reglations
+    public static float ShopSellRatio = 0.6f; // Sell weapon for 40% less then it's actual worth
+    public static float SoulVeilRatio = 0.5f;
 
     public enum PlayerStates
     {

@@ -45,6 +45,7 @@ public class UIManager : MonoBehaviour {
     public Text fullyExploredMap;
     public Text numberOfRedPotions;
     public Text numberOfBluePotions;
+    public Text inGameRedPotion, inGameBluePotion;
 
     [Space(20)]
     [Header("Slider Objects")]
@@ -568,6 +569,9 @@ public class UIManager : MonoBehaviour {
 
         numberOfRedPotions.text = "x"+redPotions.ToString();
         numberOfBluePotions.text = "x" + bluePotions.ToString();
+
+        inGameRedPotion.text = "x" + redPotions.ToString();
+        inGameBluePotion.text = "x" + bluePotions.ToString();
     }
 
     public void RemoveSelectedWeapon()

@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour {
     public string name_;
     public int maxHealth;
     public int moneyDrop;
+
     [Range(0.1f, 10)]
     public float attackSpeed;
 

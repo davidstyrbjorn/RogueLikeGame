@@ -213,8 +213,25 @@ public class PlayerManager : MonoBehaviour {
     {
         if (floorManager.soulVeilList.ContainsKey(newPos))
         {
-            floorManager.soulVeilList[newPos].GetComponent<SoulVeil>().Activate();
-            floorManager.soulVeilList.Remove(newPos);
+            HitSoulVeil(newPos);
+        }
+    }
+
+    void HitSoulVeil(Vector2 pos)
+    {
+        if (floorManager.soulVeilList.ContainsKey(pos))
+        {
+            // Activate the soul veil
+            floorManager.soulVeilList[pos].GetComponent<SoulVeil>().Activate();
+
+            // Reward (souls)
+            addMoney(Mathf.Abs(floorManager.soulVeilList[pos].GetComponent<SoulVeil>().getMoneyReward()));
+
+            // Sound
+            soundManager.MoneyGained();
+
+            // Remove the soul veil
+            floorManager.soulVeilList.Remove(pos);
         }
     }
 
@@ -341,8 +358,8 @@ public class PlayerManager : MonoBehaviour {
 
         PlayerPrefs.SetInt("STATS_DAMAGE_TAKEN", PlayerPrefs.GetInt("STATS_DAMAGE_TAKEN",0) + (int)_hp);
         healthPoints -= _hp;
-        //StopCoroutine("FlashSprite");
-        //StartCoroutine("FlashSprite");
+        StopCoroutine("FlashSprite");
+        StartCoroutine("FlashSprite");
 
         // Spawning combat text
         combatTextManager.SpawnCombatText(transform.position+(Vector3.up*3.5f)+(Vector3.left*0.3f),_hp.ToString(),Color.red);
@@ -370,7 +387,11 @@ public class PlayerManager : MonoBehaviour {
                 floorManager.enemyList.Remove(currentEnemyPos);
                 floorManager.map[(int)currentEnemyPos.x, (int)currentEnemyPos.y] = 0;
 
-                SpawnSoulVeil(new Vector2((int)currentEnemyPos.x, (int)currentEnemyPos.y));
+                // Check if we want to spawn soul veil, random choice
+                if (Random.Range(0, 100 + 1) > 50)
+                {
+                    SpawnSoulVeil(new Vector2((int)currentEnemyPos.x, (int)currentEnemyPos.y), currentEnemy.getMoneyDrop());
+                }
             }
 
             PlayerPrefs.SetInt("STATS_ENEMIES_KILLED", PlayerPrefs.GetInt("STATS_ENEMIES_KILLED",0) + 1);
@@ -396,7 +417,7 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
-    void SpawnSoulVeil(Vector2 deathPos)
+    void SpawnSoulVeil(Vector2 deathPos, int deadEnemyWorth)
     {
         bool foundSpot = false;
         Vector2 spot = deathPos;
@@ -428,8 +449,10 @@ public class PlayerManager : MonoBehaviour {
         }
 
         // Spawn the soul veil and add it the floor managers list
-        GameObject temp = Instantiate(floorManager.soulVeilPrefab, new Vector3(spot.x * floorManager.GetTileWidth(), spot.y * floorManager.GetTileWidth(), -1), Quaternion.identity) as GameObject;
+        GameObject temp = Instantiate(floorManager.soulVeilPrefab, new Vector3(spot.x * floorManager.GetTileWidth(), (spot.y) * floorManager.GetTileWidth(), -1), Quaternion.identity) as GameObject;
+
         temp.transform.SetParent(floorManager.transform);
+        temp.GetComponent<SoulVeil>().setMoneyReward((int)(deadEnemyWorth * BaseValues.SoulVeilRatio));
         floorManager.soulVeilList.Add(new Vector2((int)spot.x,(int)spot.y), temp);
     }
 
@@ -648,7 +671,6 @@ public class PlayerManager : MonoBehaviour {
             }
             else
             {
-                print("what");
                 nextAttackBonus += (BaseValues.strengthPotionMultiplier) * 0.5f;
             }
             eventBox.addEvent("You feel <color=#0099cc>energized</color>");
@@ -902,6 +924,7 @@ public class PlayerManager : MonoBehaviour {
             uiManager.NewPlayerValues();
             shopKeeper.p_update_money_text();
             soundManager.MoneyGained();
+            // Potential event box adding here @
         }
         int moneyAfter = money;
         uiManager.AddedNewMoney(moneyAfter - moneyBefore);
@@ -918,6 +941,8 @@ public class PlayerManager : MonoBehaviour {
 
     private IEnumerator FlashSprite()
     {
+        // Wrong way probably, becomes frame rate dependent
+        /*
         spre.color = Color.white;
         while (spre.color != Color.red)
         {
@@ -929,6 +954,22 @@ public class PlayerManager : MonoBehaviour {
             spre.color = new Color(1, spre.color.g + 0.025f, spre.color.b + 0.025f, 1);
             yield return new WaitForSeconds(0.0002f);
         }
+        */
+        spre.color = Color.white;
+        while(spre.color.g > 0)
+        {
+            spre.color = new Color(1, spre.color.g - 7f * Time.deltaTime, spre.color.b - 7f * Time.deltaTime, 1);
+            yield return new WaitForEndOfFrame();
+        }
+
+        spre.color = Color.red;
+        while(spre.color.g < 1)
+        {
+            spre.color = new Color(1, spre.color.g + 7f * Time.deltaTime, spre.color.b + 7f * Time.deltaTime, 1);
+            yield return new WaitForEndOfFrame();
+        }
+
+        spre.color = Color.white;
     }
 
     private IEnumerator AfterCombatEventLog()
