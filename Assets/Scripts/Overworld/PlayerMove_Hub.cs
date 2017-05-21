@@ -24,6 +24,7 @@ public class PlayerMove_Hub : MonoBehaviour {
 
     private OverworldMapGen mapGenerator;
     private Stats stats;
+    private SeededRun seededRun;
     private PLAYER_STATES state;
 
     public Image fadePanel;
@@ -35,6 +36,7 @@ public class PlayerMove_Hub : MonoBehaviour {
         spre = GetComponentInChildren<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
         stats = FindObjectOfType<Stats>();
+        seededRun = FindObjectOfType<SeededRun>();
 
         Application.targetFrameRate = BaseValues.FPS;
     }
@@ -44,7 +46,7 @@ public class PlayerMove_Hub : MonoBehaviour {
         currentMap = mapGenerator.getMap();
 
         curr_x = 4;
-        curr_y = 1;
+        curr_y = 4;
         currentWorldPosition = SetPlayerPos(curr_x, curr_y);
 
         transform.position = currentWorldPosition;
@@ -99,87 +101,99 @@ public class PlayerMove_Hub : MonoBehaviour {
 
     void MovePlayer()
     {
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+        if (!seededRun.seededTransform.gameObject.activeInHierarchy)
         {
-            // Move left
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
             {
-                anim.SetBool("WalkSide", true);
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x - 1, curr_y] != 1)
+                // Move left
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
                 {
-                    curr_x--;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
+                    anim.SetBool("WalkSide", true);
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x - 1, curr_y] != 1)
+                    {
+                        curr_x--;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
+                        spre.flipX = true;
+
+                    }
+                }
+
+                // Move to the left 
+                else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+                {
+                    anim.SetBool("WalkSide", true);
                     spre.flipX = true;
-
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x + 1, curr_y] != 1)
+                    {
+                        curr_x++;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
+                        spre.flipX = false;
+                    }
                 }
-            }
 
-            // Move to the left 
-            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            {
-                anim.SetBool("WalkSide", true);
-                spre.flipX = true;
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x + 1, curr_y] != 1)
+                // Move upwards
+                else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
                 {
-                    curr_x++;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
-                    spre.flipX = false;
+                    anim.SetBool("WalkSide", true);
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x, curr_y + 1] != 1)
+                    {
+                        curr_y++;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
+                    }
                 }
-            }
 
-            // Move upwards
-            else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-            {
-                anim.SetBool("WalkSide", true);
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y + 1] != 1)
+                // Move downwards
+                else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
                 {
-                    curr_y++;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
-                }
-            }
+                    anim.SetBool("WalkSide", true);
+                    // Move as long as we arent hitting any wall or an enemy
+                    if (currentMap[curr_x, curr_y - 1] != 1)
+                    {
+                        curr_y--;
+                        currentWorldPosition = SetPlayerPos(curr_x, curr_y);
+                        canMove = false;
 
-            // Move downwards
-            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-            {
-                anim.SetBool("WalkSide", true);
-                // Move as long as we arent hitting any wall or an enemy
-                if (currentMap[curr_x, curr_y - 1] != 1)
+                    }
+                }
+
+                if (currentMap[curr_x, curr_y] == 2)
                 {
-                    curr_y--;
-                    currentWorldPosition = SetPlayerPos(curr_x, curr_y);
-                    canMove = false;
-
+                    StopAllCoroutines();
+                    StartCoroutine("StartGame");
                 }
-            }
 
-            if(currentMap[curr_x,curr_y] == 2)
-            {
-                StopAllCoroutines();
-                StartCoroutine("StartGame");
-            }
+                if (currentMap[curr_x, curr_y] == 3)
+                {
+                    options.gameObject.SetActive(true);
+                }
+                else
+                {
+                    options.gameObject.SetActive(false);
+                }
 
-            if(currentMap[curr_x,curr_y] == 3)
-            {
-                options.gameObject.SetActive(true);
-            }
-            else
-            {
-                options.gameObject.SetActive(false);
-            }
+                if (currentMap[curr_x, curr_y] == 4)
+                {
+                    stats.ToggleStats(true);
+                }
+                else
+                {
+                    stats.ToggleStats(false);
+                }
 
-            if(currentMap[curr_x,curr_y] == 4)
-            {
-                stats.ToggleStats(true);
-            }
-            else
-            {
-                stats.ToggleStats(false);
+                if (currentMap[curr_x, curr_y] == 5)
+                {
+                    seededRun.Toggle(true);
+                }
+                else
+                {
+                    seededRun.Toggle(false);
+                }
             }
         }
     }

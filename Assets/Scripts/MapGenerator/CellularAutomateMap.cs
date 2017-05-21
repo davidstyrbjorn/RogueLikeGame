@@ -68,7 +68,15 @@ public class CellularAutomateMap : MonoBehaviour
 
     public void GenerateMap(bool titleScreen = false)
     {
-        seed = Guid.NewGuid().ToString();
+        if(PlayerPrefs.GetString("SEED") == string.Empty)
+        {
+            seed = Guid.NewGuid().ToString();
+        }
+        else
+        {
+            seed = PlayerPrefs.GetString("SEED");
+        }
+        //print(seed ")
 
         #region 1. Randomly setting floor width and height
         if (!titleScreen)

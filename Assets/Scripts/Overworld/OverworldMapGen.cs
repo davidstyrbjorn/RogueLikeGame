@@ -6,6 +6,7 @@ using System.Collections;
 // 2 - start tile
 // 3 - options
 // 4 - credits/stats
+// 5 - seeded run input
 
 public class OverworldMapGen : MonoBehaviour {
 
@@ -99,6 +100,10 @@ public class OverworldMapGen : MonoBehaviour {
                 else if(i == 6 && j == 6)
                 {
                     map[i, j] = 4;
+                }
+                else if(i == 4 && j == 2)
+                {
+                    map[i, j] = 5;
                 }
                 else if (i == 0 || j == 0 || i == BaseValues.HUB_WIDTH-1 || j == BaseValues.HUB_HEIGHT-1)
                 {
