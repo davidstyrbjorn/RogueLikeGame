@@ -292,9 +292,7 @@ public class FloorManager : MonoBehaviour
             else if (BaseValues.MAP_WIDTH == 16)
                 mapTranform.localPosition = new Vector3(17.3f, 2.1f,10);
                 */
-
-
-
+            
             eventBox.addEvent("Welcome to floor  " + currentFloorNumber + "!");
             bg.SpawnIslands();
         }

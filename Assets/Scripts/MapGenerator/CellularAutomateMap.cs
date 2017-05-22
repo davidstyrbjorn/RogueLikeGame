@@ -33,6 +33,13 @@ using System;
 
 public class CellularAutomateMap : MonoBehaviour
 {
+    FloorManager floorManager;
+
+    private void Awake()
+    {
+        floorManager = FindObjectOfType<FloorManager>();
+    }
+
     public int width = 32;
     public int height = 32;
 
@@ -74,9 +81,8 @@ public class CellularAutomateMap : MonoBehaviour
         }
         else
         {
-            seed = PlayerPrefs.GetString("SEED");
+            seed = PlayerPrefs.GetString("SEED") + floorManager.getCurrentFloor().ToString();
         }
-        //print(seed ")
 
         #region 1. Randomly setting floor width and height
         if (!titleScreen)

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class GameOver : MonoBehaviour {
 
     /* Public Attributes starts here */
-
     [Header("Rect Transform")]
     public RectTransform GameOverRect;
 
@@ -16,6 +15,7 @@ public class GameOver : MonoBehaviour {
     public Text brandedWeaponName;
     public Text miscStatsText;
     public Text maxMoneyText;
+    public Text seededRunText;
 
     [Header("Image Attributes")]
     public Image brandedWeaponImage;
@@ -51,13 +51,32 @@ public class GameOver : MonoBehaviour {
 
     public void RunEnded()
     {
+        // Check if seeded this was a seeded run
+        if(PlayerPrefs.GetString("SEED") != string.Empty)
+        {
+            seededRunText.text = "Seeded Run, Progress Vanquished";
+        }
+        else
+        {
+            seededRunText.text = string.Empty;
+        }
+
         StartCoroutine("FadeIn");
         GameOverRect.gameObject.SetActive(true);
 
         /* Sets all stats accordingly for displaying them */
-        attackIncreaseText.text = "<color=green>+" + (playerManager.getAttack() - attackAtStartOfRun).ToString()+"</color>";
-        armorIncreaseText.text = "<color=green>+" + (Mathf.CeilToInt((playerManager.getArmor() - armorAtStartOfRun)*100)).ToString() + "</color>"; // *100 convert to percentage points
-        healthIncreaseText.text = "<color=green>+" + (playerManager.getMaxHealth() - healthAtStartOfRun) + "</color>";
+        if (PlayerPrefs.GetString("SEED") == string.Empty)
+        {
+            attackIncreaseText.text = "<color=green>+" + (playerManager.getAttack() - attackAtStartOfRun).ToString() + "</color>";
+            armorIncreaseText.text = "<color=green>+" + (((playerManager.getArmor() - armorAtStartOfRun) * 100)).ToString("0.#") + "</color>"; // *100 convert to percentage points
+            healthIncreaseText.text = "<color=green>+" + (playerManager.getMaxHealth() - healthAtStartOfRun) + "</color>";
+        }
+        else
+        {
+            attackIncreaseText.text = "<color=red>0</color>";
+            armorIncreaseText.text = "<color=red>0</color>";
+            healthIncreaseText.text = "<color=red>0</color>";
+        }
 
         /* Misc stats text */
         miscStatsText.text =
