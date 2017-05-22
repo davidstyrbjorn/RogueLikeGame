@@ -813,9 +813,11 @@ public class PlayerManager : MonoBehaviour {
 
         if (PlayerPrefs.GetString("SEED") == string.Empty)
         {
+            
             saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
             saveLoad.SaveMaxMoney(maxMoney);
             saveLoad.SavePlayerArmor(armor);
+            
         }
         //saveLoad.ResetPlayerPrefs();
 
