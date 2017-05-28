@@ -345,6 +345,17 @@ public class UIManager : MonoBehaviour {
         }
     }
 
+    public void HoveredOverArmor(int _index)
+    {
+        if(playerInventory.GetArmorList().Count > _index)
+        {
+            weaponInfoBox.gameObject.SetActive(true);
+
+            weaponInfoName.text = playerInventory.GetArmorList()[_index].getName();
+            weaponInfo.text = playerInventory.GetArmorList()[_index].getDescription();
+        }
+    }
+
     public void MouseLeftWeapon()
     {
         weaponInfoBox.gameObject.SetActive(false);
@@ -694,18 +705,24 @@ public class UIManager : MonoBehaviour {
     }
     public void GoTo_WeaponsTab()
     {
+        weaponInfoBox.gameObject.SetActive(false);
+
         weaponsTab.gameObject.SetActive(true);
         potionTab.gameObject.SetActive(false);
         armorTab.gameObject.SetActive(false);
     }
     public void GoTo_PotionTab()
     {
+        weaponInfoBox.gameObject.SetActive(false);
+
         weaponsTab.gameObject.SetActive(false);
         potionTab.gameObject.SetActive(true);
         armorTab.gameObject.SetActive(false);
     }
     public void GoTo_ArmorTab()
     {
+        weaponInfoBox.gameObject.SetActive(false);
+
         armorTab.gameObject.SetActive(true);
         potionTab.gameObject.SetActive(false);
         weaponsTab.gameObject.SetActive(false);
