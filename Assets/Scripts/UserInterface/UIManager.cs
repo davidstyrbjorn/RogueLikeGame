@@ -151,7 +151,7 @@ public class UIManager : MonoBehaviour {
         soundManager = FindObjectOfType<SoundManager>();
 
         // Display intro?
-        if (!PlayerPrefs.HasKey("showIntro"))
+        if (!PlayerPrefs.HasKey("showIntro")) 
         {
             IntroScreen.gameObject.SetActive(true);
             PlayerPrefs.SetInt("showIntro", 0);

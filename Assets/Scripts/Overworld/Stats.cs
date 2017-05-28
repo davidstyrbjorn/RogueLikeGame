@@ -7,8 +7,14 @@ public class Stats : MonoBehaviour {
     public RectTransform statsTransform;
     public Text statsText;
 
-    void Update()
+    private void Start()
     {
+        /*
+        PlayerPrefs.SetInt("STATS_DAMAGE_DEALT",0);
+        PlayerPrefs.SetInt("STATS_DAMAGE_TAKEN",0);
+        PlayerPrefs.SetInt("STATS_ENEMIES_KILLED",0);
+        PlayerPrefs.SetInt("STATS_FLOORS_ASCENDED", 0);
+        */
     }
 
     public void ToggleStats(bool a_value)

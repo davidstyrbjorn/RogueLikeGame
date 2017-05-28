@@ -58,6 +58,12 @@ public class PlayerMove_Hub : MonoBehaviour {
 
     void Update()
     {
+        // @
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("StartScene");
+        }
+
         { 
             transform.position = Vector2.MoveTowards(transform.position, currentWorldPosition, moveSpeed * Time.deltaTime);
         }

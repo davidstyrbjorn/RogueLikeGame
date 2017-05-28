@@ -11,8 +11,8 @@ public class BaseValues : MonoBehaviour{
     public static int   HUB_HEIGHT              = 9;
 
     // Player base values
-    public static float PlayerBaseHP            = 100;
-    public static float PlayerBaseAttack        = 15;
+    public static float PlayerBaseHP            = 100;  //  @   100
+    public static float PlayerBaseAttack        = 10;   //  @   10
     public static float PlayerBaseAttackSpeed   = 0.85f;
 
     // Player stat increaser numbers
