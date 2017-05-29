@@ -514,7 +514,7 @@ public class ShopKeeperV2 : MonoBehaviour {
         }
         if(playerManager.getMaxMoney() == 500)
         {
-            m_infoText.text = "You have the biggest money pouch I presently offer!";
+            m_infoText.text = "Maximum soul capacity reached!";
         }
     }
 
