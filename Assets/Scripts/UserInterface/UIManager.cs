@@ -121,7 +121,7 @@ public class UIManager : MonoBehaviour {
     private Vector2 weaponInfoBoxOffset;
 
     private SoundManager soundManager;
-    public Inventory inventory;
+    private Inventory inventory;
 
     private float fullyExploredMapTimer = 0;
 
@@ -656,7 +656,8 @@ public class UIManager : MonoBehaviour {
 
             // The text after the attack symbol
             //enemyDamageText.text = enemy.getAttack().ToString(); 
-            enemyDamageText.text = enemy.getAverageAttack().ToString();
+            //enemyDamageText.text = enemy.getAverageAttack().ToString();
+            enemyDamageText.text = enemy.attack1 + " - " + enemy.attack2;
 
             // Setting up the slider *health
             enemyHealthSlider.maxValue = enemy.getMaxHP();
