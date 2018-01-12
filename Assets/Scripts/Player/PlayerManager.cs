@@ -10,6 +10,20 @@ public class PlayerManager : MonoBehaviour {
         public Vector2 chestPos;
     }
 
+    enum AttackType
+    {
+        NORMAL, // No soul cost but has no chance of crit hit
+        HARD, // Costs x-souls but has a chance for crit hit
+    }
+
+    public enum CombatPhase
+    {
+        BEGIN,
+        COMBAT_PLAYER,
+        COMBAT_ENEMY,
+        END,
+    }
+
     struct FoundArmor
     {
         public Armor armor;
@@ -63,6 +77,14 @@ public class PlayerManager : MonoBehaviour {
     public Texture2D[] maskTextures;
     public Sprite playerSprite;
 
+    // New combat mechanic
+    private AttackType nextAttackType;
+    public CombatPhase combatPhase;
+    // Total 8.0 seconds
+    const float BEGIN_TIME = 3f;
+    const float COMBAT_PLAYER_TIME = 3.5f;
+    const float COMBAT_ENEMY_TIME = 2.5f;
+
     // Combat position variables
     private Vector2 playerCombatPos, enemyCombatPos;
     private Vector2 combatTilePos;
@@ -73,6 +95,8 @@ public class PlayerManager : MonoBehaviour {
 
     void Update()
     {
+        NewCombatInput();
+
         if (currentState == BaseValues.PlayerStates.NOT_IN_COMBAT || currentState == BaseValues.PlayerStates.DEAD)
         {
             CheckForEnemyClick();
@@ -91,13 +115,49 @@ public class PlayerManager : MonoBehaviour {
             uiManager.inGame_EnemyHealthSlider.transform.position = currentEnemy.transform.position +
                 (Vector3.right * 1.45f);
             uiManager.inGame_EnemyHealthSlider.transform.position = new Vector2(uiManager.inGame_EnemyHealthSlider.transform.position.x, uiManager.inGame_PlayerHealthSlider.transform.position.y);
-
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                disengageCombat();
-            }
         }
 
+        QorEInput();
+        QuickConsumePotionInput();
+
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            addMoney(10);
+        }
+#endif
+    }
+
+    void NewCombatInput()
+    {
+        if(combatPhase == CombatPhase.BEGIN)
+        {
+            // Change the next attack type
+            if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            {
+                nextAttackType = AttackType.NORMAL;
+            }
+            else if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+            {
+                nextAttackType = AttackType.HARD;
+            }
+        }
+        else if(combatPhase == CombatPhase.COMBAT_PLAYER)
+        {
+            // Here the player can choose to disengage combat
+        }
+        else if(combatPhase == CombatPhase.COMBAT_ENEMY)
+        {
+            // Here the enemy can decide to execute actions (not implemented)
+        }
+        else if(combatPhase == CombatPhase.END)
+        {
+            // Pass (for now)
+        }
+    }
+
+    void QorEInput()
+    {
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (uiManager.confirmWeapon.gameObject.activeInHierarchy)
@@ -124,12 +184,16 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
+    }
+
+    void QuickConsumePotionInput()
+    {
         // Quick consume health potion
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            for(int i = 0; i < playerInventory.GetPotionsList().Count; i++)
+            for (int i = 0; i < playerInventory.GetPotionsList().Count; i++)
             {
-                if(playerInventory.GetPotionsList()[i].type == Potion.potionType.HEALING)
+                if (playerInventory.GetPotionsList()[i].type == Potion.potionType.HEALING)
                 {
                     ConsumePotion(playerInventory.GetPotionsList()[i].type);
                     playerInventory.GetPotionsList().RemoveAt(i);
@@ -153,13 +217,6 @@ public class PlayerManager : MonoBehaviour {
                 }
             }
         }
-
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            addMoney(10);
-        }
-#endif
     }
 
     void Start()
@@ -204,8 +261,9 @@ public class PlayerManager : MonoBehaviour {
         money = 0;
         maxMoney = saveLoad.GetPlayerMaxMoney();
 
-        // Initial state
+        // Initial state/s
         currentState = BaseValues.PlayerStates.NOT_IN_COMBAT;
+        nextAttackType = AttackType.NORMAL;
     }
 
     // PlayerMove calls this method each time player moves
@@ -248,25 +306,95 @@ public class PlayerManager : MonoBehaviour {
     void StartCombat()
     {
         soundManager.CombatStart();
-        StartCoroutine("Player_CombatLoop");
-        StartCoroutine("Enemy_CombatLoop");
+
+        // String argument automatically restarts the coroutine
+        StartCoroutine("NewCombatLoop");
+        //StartCoroutine("Player_CombatLoop");
+        //StartCoroutine("Enemy_CombatLoop");
     }
 
+    IEnumerator NewCombatLoop()
+    {
+        //print("what");
+        yield return new WaitForSeconds(1.5f); // initial wait time before combat begins
+        // New Combat-loop which works based on a phase-system with the new normal/hard attack mechanic
+        while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        {
+            // Begin phase start
+            combatPhase = CombatPhase.BEGIN; print("BEGIN PHASE");
+
+            yield return new WaitForSeconds(BEGIN_TIME);
+
+            // <=================================================> //
+
+            // Player_Combat phase start
+            combatPhase = CombatPhase.COMBAT_PLAYER; print("COMBAT_PLAYER PHASE");
+            float playerCombatDamage = 0;
+
+            yield return new WaitForSeconds(COMBAT_PLAYER_TIME);
+
+            // Now the player executes his/hers attack
+            // Check what type of attack to do
+            if(nextAttackType == AttackType.NORMAL)
+            {
+                // Perform a normal attack
+                playerCombatDamage = equipedWeapon == null ? attack : attack + equipedWeapon.getNormalAttack();
+            }
+            else
+            {
+                // Perform a hard hitting attack
+                // Check if we have souls to perform the attack
+                if (money >= 1)
+                {
+                    playerCombatDamage = equipedWeapon == null ? attack : equipedWeapon.getAttack();
+                    removeMoney(1);
+                }
+            }
+
+            // Update the enemy
+            currentEnemy.looseHealth(playerCombatDamage);
+            uiManager.UpdateEnemyUI(currentEnemy);
+            if (currentEnemy != null)
+                uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
+            // Sound
+            soundManager.SwingSword();
+
+            // <=================================================> //
+
+            // Enemy_Combat phase start
+            combatPhase = CombatPhase.COMBAT_ENEMY; print("COMBAT_ENEMY PHASE");
+
+            yield return new WaitForSeconds(COMBAT_ENEMY_TIME);
+
+            // <=================================================> //
+
+            // End phase
+            combatPhase = CombatPhase.END; print("END PHASE");
+
+            yield return new WaitForSeconds(0);
+
+            // Restart ^^^
+            //         |||   
+            //         |||
+            //         |||
+        }
+    }
+
+    /*
     IEnumerator Player_CombatLoop()
     {
         yield return new WaitForSeconds(attackSpeed);
         while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
-
             bool didCrit = false;
 
             if(currentEnemy != null)
             {
-                // Show player attack effect
+                // Show player attack animation
                 playerAnimation.DoCombatAnimation();
                 yield return new WaitForSeconds(0.3f);
 
-                // Starts off instantly with the player hitting the enemy 
+                // Player hitting the enemy
                 float weaponDamage = 0;
                 if (equipedWeapon != null)
                 {
@@ -277,13 +405,11 @@ public class PlayerManager : MonoBehaviour {
                         eventBox.addEvent("Critical blow" + "  +<color=#8a2be2>(" + (weaponDamage - equipedWeapon.getNormalAttack()) + ")</color>  damage");
                     }
                 }
-                //print(nextAttackBonus);
                 float total_attack_power = (attack + weaponDamage) * nextAttackBonus;
 
-                // Combat text
+                // Combat effect (combat text, camera shake)
                 if (didCrit || nextAttackBonus != 1)
                 {
-                    soundManager.SwingSword();
                     camShake.DoShake();
                     combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), new Color(0.54f, 0.168f, 0.886f), 250);
                 }
@@ -291,18 +417,17 @@ public class PlayerManager : MonoBehaviour {
                 {
                     combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), total_attack_power.ToString(), Color.red);
                 }
-
-                currentEnemy.looseHealth(total_attack_power); // Enemy takes damage baed on our attack
-                uiManager.UpdateEnemyUI(currentEnemy);
-
-                if(currentEnemy != null)
-                    uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
-
-                PlayerPrefs.SetInt("STATS_DAMAGE_DEALT", PlayerPrefs.GetInt("STATS_DAMAGE_DEALT",0) + (int)total_attack_power);
-
                 // Sound
                 soundManager.SwingSword();
 
+                // Update the enemy
+                currentEnemy.looseHealth(total_attack_power); 
+                uiManager.UpdateEnemyUI(currentEnemy);
+                if(currentEnemy != null)
+                    uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
+
+                // Done 
+                PlayerPrefs.SetInt("STATS_DAMAGE_DEALT", PlayerPrefs.GetInt("STATS_DAMAGE_DEALT",0) + (int)total_attack_power);
                 nextAttackBonus = 1f;
 
                 yield return new WaitForSeconds(attackSpeed); // The time between each player attack
@@ -326,6 +451,7 @@ public class PlayerManager : MonoBehaviour {
             }
         }
     }
+    */
 
     void looseHealth(float _hp)
     {
@@ -468,11 +594,9 @@ public class PlayerManager : MonoBehaviour {
 
     void StopCombatLoops()
     {
-        /* Somehow stopping using a string to call works better */
-        //StopCoroutine(Player_CombatLoop());
-        StopCoroutine("Player_CombatLoop");
-        // StopCoroutine(Enemy_CombatLoop());
-        StopCoroutine("Enemy_CombatLoop");
+        //StopCoroutine("Player_CombatLoop");
+        //StopCoroutine("Enemy_CombatLoop");
+        StopCoroutine("NewCombatLoop");
 
         uiManager.inGame_PlayerHealthSlider.gameObject.SetActive(false);
         uiManager.inGame_EnemyHealthSlider.gameObject.SetActive(false);
@@ -745,9 +869,9 @@ public class PlayerManager : MonoBehaviour {
 
         uiManager.disableEscapePrompt();
 
+        // If not-seeded save the gains
         if (PlayerPrefs.GetString("SEED") == string.Empty)
         {
-            
             saveLoad.SavePlayerAttackAndHealth(maxHealthPoints, attack);
             saveLoad.SaveMaxMoney(maxMoney);
             saveLoad.SavePlayerArmor(armor);

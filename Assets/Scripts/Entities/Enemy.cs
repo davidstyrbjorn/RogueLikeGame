@@ -48,21 +48,13 @@ public class Enemy : MonoBehaviour {
         playerManager = FindObjectOfType<PlayerManager>(); // Getting the player manager
     }
 
-    public void SetUpEnemy(int _floorNumber)
+    public void SetUpEnemy(int _floorNumber = -1)
     {
         healthPoints = maxHealth;
-        /*
-        name_ = parentObject.gameObject.name;
-        maxHealth = Mathf.CeilToInt(BaseValues.EnemyBaseHP * Mathf.Pow(1.1f, _floorNumber));
-        attack = Mathf.CeilToInt(BaseValues.EnemyBaseAttack * Mathf.Pow(1.0838f, _floorNumber));
-
-        moneyDrop = Mathf.CeilToInt(_floorNumber / 2) + 1 + Random.Range(0, _floorNumber + 5);
-        */
     }
 
     public float getMaxHP() { return maxHealth; }
-    public float getHP() { return healthPoints; }
-                    
+    public float getHP() { return healthPoints; } 
     public float getAttack() { return (int)Random.Range(attack1,attack2+1); }
 
     public void looseHealth(float _hp)
