@@ -17,8 +17,7 @@ public class SpriteHoverUpwards : MonoBehaviour {
     void Update()
     {
         if (fadeOut)
-            spre.color = 
-                (spre.color, Color.clear, 1.5f * Time.deltaTime);
+            spre.color = Vector4.MoveTowards(spre.color, Color.clear, 1.5f * Time.deltaTime);
         else
         {
             spre.color = Color.Lerp(spre.color, Color.white, 4f * Time.deltaTime);

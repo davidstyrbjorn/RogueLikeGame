@@ -33,14 +33,12 @@ public class FloorManager : MonoBehaviour
     public GameObject shopKeeperPrefab;
     public GameObject soulFurnace;
     public GameObject escapeTile;
-    public GameObject soulVeilPrefab;
     public Transform mapTranform;
 
     public Dictionary<Vector2, GameObject> enemyList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> statIncreaserList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> tileList = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, GameObject> chestList = new Dictionary<Vector2, GameObject>();
-    public Dictionary<Vector2, GameObject> soulVeilList = new Dictionary<Vector2, GameObject>();
 
     /* Different map positions */
     private Vector3 mapOrgPos;
@@ -91,7 +89,6 @@ public class FloorManager : MonoBehaviour
         enemyList.Clear();
         statIncreaserList.Clear();
         chestList.Clear();
-        soulVeilList.Clear();
 
         currentFloorNumber++;
         // Hack for version 1.0
