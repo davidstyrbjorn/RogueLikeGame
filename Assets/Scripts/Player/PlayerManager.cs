@@ -78,6 +78,7 @@ public class PlayerManager : MonoBehaviour {
     public Sprite playerSprite;
 
     // New combat mechanic
+    public NewCombatMechanicUIManager combatUI;
     private AttackType nextAttackType;
     public CombatPhase combatPhase;
     // Total 8.0 seconds
@@ -102,8 +103,11 @@ public class PlayerManager : MonoBehaviour {
             CheckForEnemyClick();
         }
 
+        // In-combat
         if (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
+            Camera.main.orthographicSize = Mathf.MoveTowards(Camera.main.orthographicSize, BaseValues.BattleCameraSize, 1.2f * Time.deltaTime);
+
             transform.position = Vector2.MoveTowards(transform.position, playerCombatPos, 14 * Time.deltaTime);
 
             currentEnemy.transform.position = Vector2.MoveTowards(currentEnemy.transform.position, enemyCombatPos, 14 * Time.deltaTime);
@@ -115,6 +119,10 @@ public class PlayerManager : MonoBehaviour {
             uiManager.inGame_EnemyHealthSlider.transform.position = currentEnemy.transform.position +
                 (Vector3.right * 1.45f);
             uiManager.inGame_EnemyHealthSlider.transform.position = new Vector2(uiManager.inGame_EnemyHealthSlider.transform.position.x, uiManager.inGame_PlayerHealthSlider.transform.position.y);
+        }
+        else
+        {
+            Camera.main.orthographicSize = Mathf.MoveTowards(Camera.main.orthographicSize, BaseValues.NormalCameraSize, 1.2f * Time.deltaTime);
         }
 
         QorEInput();
@@ -321,17 +329,23 @@ public class PlayerManager : MonoBehaviour {
         while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             // Begin phase start
-            combatPhase = CombatPhase.BEGIN; print("BEGIN PHASE");
+            combatPhase = CombatPhase.BEGIN;
+            combatUI.NewPhase(CombatPhase.BEGIN);
 
             yield return new WaitForSeconds(BEGIN_TIME);
 
             // <=================================================> //
 
             // Player_Combat phase start
-            combatPhase = CombatPhase.COMBAT_PLAYER; print("COMBAT_PLAYER PHASE");
+            combatPhase = CombatPhase.COMBAT_PLAYER;
+            combatUI.NewPhase(CombatPhase.COMBAT_PLAYER);
             float playerCombatDamage = 0;
 
             yield return new WaitForSeconds(COMBAT_PLAYER_TIME);
+
+            // Play player attack animation & give it some time before proceeding
+            playerAnimation.DoCombatAnimation();
+            yield return new WaitForSeconds(0.3f);
 
             // Now the player executes his/hers attack
             // Check what type of attack to do
@@ -353,23 +367,27 @@ public class PlayerManager : MonoBehaviour {
 
             // Update the enemy
             currentEnemy.looseHealth(playerCombatDamage);
+            // UIManager updates
             uiManager.UpdateEnemyUI(currentEnemy);
             if (currentEnemy != null)
                 uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
-            // Sound
+            // Effects
             soundManager.SwingSword();
+            combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), playerCombatDamage.ToString(), Color.red);
 
             // <=================================================> //
 
             // Enemy_Combat phase start
-            combatPhase = CombatPhase.COMBAT_ENEMY; print("COMBAT_ENEMY PHASE");
+            combatPhase = CombatPhase.COMBAT_ENEMY;
+            combatUI.NewPhase(CombatPhase.COMBAT_ENEMY);
 
             yield return new WaitForSeconds(COMBAT_ENEMY_TIME);
 
             // <=================================================> //
 
             // End phase
-            combatPhase = CombatPhase.END; print("END PHASE");
+            combatPhase = CombatPhase.END;
+            combatUI.NewPhase(CombatPhase.END);
 
             yield return new WaitForSeconds(0);
 

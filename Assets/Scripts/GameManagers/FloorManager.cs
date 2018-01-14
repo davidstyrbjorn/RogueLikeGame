@@ -299,7 +299,7 @@ public class FloorManager : MonoBehaviour
             eventBox.addEvent("Welcome to the shop!");
             mapGenerator.MakeShop();
             map = mapGenerator.getMap();
-            Camera.main.orthographicSize = BaseValues.BattleCameraSize;
+            Camera.main.orthographicSize = BaseValues.ShopCameraSize;
             uiManager.OnNewFloor(true);
 
             mapTranform.localPosition = mapShopPos;
