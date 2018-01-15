@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour {
         public Vector2 chestPos;
     }
 
-    enum AttackType
+    public enum AttackType
     {
         NORMAL, // No soul cost but has no chance of crit hit
         HARD, // Costs x-souls but has a chance for crit hit
@@ -81,10 +81,6 @@ public class PlayerManager : MonoBehaviour {
     public NewCombatMechanicUIManager combatUI;
     private AttackType nextAttackType;
     public CombatPhase combatPhase;
-    // Total 8.0 seconds
-    const float BEGIN_TIME = 3f;
-    const float COMBAT_PLAYER_TIME = 3.5f;
-    const float COMBAT_ENEMY_TIME = 2.5f;
 
     // Combat position variables
     private Vector2 playerCombatPos, enemyCombatPos;
@@ -332,7 +328,7 @@ public class PlayerManager : MonoBehaviour {
             combatPhase = CombatPhase.BEGIN;
             combatUI.NewPhase(CombatPhase.BEGIN);
 
-            yield return new WaitForSeconds(BEGIN_TIME);
+            yield return new WaitForSeconds(BaseValues.BEGIN_TIME);
 
             // <=================================================> //
 
@@ -341,7 +337,7 @@ public class PlayerManager : MonoBehaviour {
             combatUI.NewPhase(CombatPhase.COMBAT_PLAYER);
             float playerCombatDamage = 0;
 
-            yield return new WaitForSeconds(COMBAT_PLAYER_TIME);
+            yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME/2);
 
             // Play player attack animation & give it some time before proceeding
             playerAnimation.DoCombatAnimation();
@@ -375,13 +371,15 @@ public class PlayerManager : MonoBehaviour {
             soundManager.SwingSword();
             combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), playerCombatDamage.ToString(), Color.red);
 
+            yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME / 2);
+
             // <=================================================> //
 
             // Enemy_Combat phase start
             combatPhase = CombatPhase.COMBAT_ENEMY;
             combatUI.NewPhase(CombatPhase.COMBAT_ENEMY);
 
-            yield return new WaitForSeconds(COMBAT_ENEMY_TIME);
+            yield return new WaitForSeconds(BaseValues.COMBAT_ENEMY_TIME);
 
             // <=================================================> //
 
@@ -389,7 +387,7 @@ public class PlayerManager : MonoBehaviour {
             combatPhase = CombatPhase.END;
             combatUI.NewPhase(CombatPhase.END);
 
-            yield return new WaitForSeconds(0);
+            yield return new WaitForSeconds(BaseValues.END_TIME);
 
             // Restart ^^^
             //         |||   
@@ -1017,6 +1015,7 @@ public class PlayerManager : MonoBehaviour {
         moneySpent += money_;
     }
 
+    public AttackType getAttackType() { return nextAttackType; }
     public BaseValues.PlayerStates getCurrentState() { return currentState; }
     public int getVisionRadius() { return visionRadius; }
 

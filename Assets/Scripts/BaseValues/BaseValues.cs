@@ -65,7 +65,14 @@ public class BaseValues : MonoBehaviour{
     public static int HealingPotionCost = 25;
     public static int StrengthPotionCost = 25;
 
-    // Ratio reglations
+    // New combat mechanic values
+    // Total 8.0 seconds
+    public static float BEGIN_TIME = 3f;
+    public static float COMBAT_PLAYER_TIME = 3.5f;
+    public static float COMBAT_ENEMY_TIME = 2.5f;
+    public static float END_TIME = 2f;
+
+    // Ratio regelations
     public static float ShopSellRatio = 0.6f; // Sell weapon for 40% less then it's actual worth
     public static float SoulVeilRatio = 0.5f;
 
