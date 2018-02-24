@@ -312,91 +312,90 @@ public class PlayerManager : MonoBehaviour {
         soundManager.CombatStart();
 
         // String argument automatically restarts the coroutine
-        StartCoroutine("NewCombatLoop");
-        //StartCoroutine("Player_CombatLoop");
-        //StartCoroutine("Enemy_CombatLoop");
+        //StartCoroutine("NewCombatLoop");
+        StartCoroutine("Player_CombatLoop");
+        StartCoroutine("Enemy_CombatLoop");
     }
 
-    IEnumerator NewCombatLoop()
-    {
-        //print("what");
-        yield return new WaitForSeconds(1.5f); // initial wait time before combat begins
-        // New Combat-loop which works based on a phase-system with the new normal/hard attack mechanic
-        while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
-        {
-            // Begin phase start
-            combatPhase = CombatPhase.BEGIN;
-            combatUI.NewPhase(CombatPhase.BEGIN);
+    //IEnumerator NewCombatLoop()
+    //{
+    //    //print("what");
+    //    yield return new WaitForSeconds(1.5f); // initial wait time before combat begins
+    //    // New Combat-loop which works based on a phase-system with the new normal/hard attack mechanic
+    //    while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
+    //    {
+    //        // Begin phase start
+    //        combatPhase = CombatPhase.BEGIN;
+    //        combatUI.NewPhase(CombatPhase.BEGIN);
+    //
+    //        yield return new WaitForSeconds(BaseValues.BEGIN_TIME);
+    //
+    //        // <=================================================> //
+    //
+    //        // Player_Combat phase start
+    //        combatPhase = CombatPhase.COMBAT_PLAYER;
+    //        combatUI.NewPhase(CombatPhase.COMBAT_PLAYER);
+    //        float playerCombatDamage = 0;
+    //
+    //        yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME/2);
+    //
+    //        // Play player attack animation & give it some time before proceeding
+    //        playerAnimation.DoCombatAnimation();
+    //        yield return new WaitForSeconds(0.3f);
+    //
+    //        // Now the player executes his/hers attack
+    //        // Check what type of attack to do
+    //        if(nextAttackType == AttackType.NORMAL)
+    //        {
+    //            // Perform a normal attack
+    //            playerCombatDamage = equipedWeapon == null ? attack : attack + equipedWeapon.getNormalAttack();
+    //        }
+    //        else
+    //        {
+    //            // Perform a hard hitting attack
+    //            // Check if we have souls to perform the attack
+    //            if (money >= 1)
+    //            {
+    //                playerCombatDamage = equipedWeapon == null ? attack : equipedWeapon.getAttack();
+    //                removeMoney(1);
+    //            }
+    //        }
+    //
+    //        // Update the enemy
+    //        currentEnemy.looseHealth(playerCombatDamage);
+    //        // UIManager updates
+    //        uiManager.UpdateEnemyUI(currentEnemy);
+    //        if (currentEnemy != null)
+    //            uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
+    //        // Effects
+    //        soundManager.SwingSword();
+    //        combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), playerCombatDamage.ToString(), Color.red);
+    //
+    //        yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME / 2);
+    //
+    //        // <=================================================> //
+    //
+    //        // Enemy_Combat phase start
+    //        combatPhase = CombatPhase.COMBAT_ENEMY;
+    //        combatUI.NewPhase(CombatPhase.COMBAT_ENEMY);
+    //
+    //        yield return new WaitForSeconds(BaseValues.COMBAT_ENEMY_TIME);
+    //
+    //        // <=================================================> //
+    //
+    //        // End phase
+    //        combatPhase = CombatPhase.END;
+    //        combatUI.NewPhase(CombatPhase.END);
+    //
+    //        yield return new WaitForSeconds(BaseValues.END_TIME);
+    //
+    //        // Restart ^^^
+    //        //         |||   
+    //        //         |||
+    //        //         |||
+    //    }
+    //}
 
-            yield return new WaitForSeconds(BaseValues.BEGIN_TIME);
-
-            // <=================================================> //
-
-            // Player_Combat phase start
-            combatPhase = CombatPhase.COMBAT_PLAYER;
-            combatUI.NewPhase(CombatPhase.COMBAT_PLAYER);
-            float playerCombatDamage = 0;
-
-            yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME/2);
-
-            // Play player attack animation & give it some time before proceeding
-            playerAnimation.DoCombatAnimation();
-            yield return new WaitForSeconds(0.3f);
-
-            // Now the player executes his/hers attack
-            // Check what type of attack to do
-            if(nextAttackType == AttackType.NORMAL)
-            {
-                // Perform a normal attack
-                playerCombatDamage = equipedWeapon == null ? attack : attack + equipedWeapon.getNormalAttack();
-            }
-            else
-            {
-                // Perform a hard hitting attack
-                // Check if we have souls to perform the attack
-                if (money >= 1)
-                {
-                    playerCombatDamage = equipedWeapon == null ? attack : equipedWeapon.getAttack();
-                    removeMoney(1);
-                }
-            }
-
-            // Update the enemy
-            currentEnemy.looseHealth(playerCombatDamage);
-            // UIManager updates
-            uiManager.UpdateEnemyUI(currentEnemy);
-            if (currentEnemy != null)
-                uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
-            // Effects
-            soundManager.SwingSword();
-            combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), playerCombatDamage.ToString(), Color.red);
-
-            yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME / 2);
-
-            // <=================================================> //
-
-            // Enemy_Combat phase start
-            combatPhase = CombatPhase.COMBAT_ENEMY;
-            combatUI.NewPhase(CombatPhase.COMBAT_ENEMY);
-
-            yield return new WaitForSeconds(BaseValues.COMBAT_ENEMY_TIME);
-
-            // <=================================================> //
-
-            // End phase
-            combatPhase = CombatPhase.END;
-            combatUI.NewPhase(CombatPhase.END);
-
-            yield return new WaitForSeconds(BaseValues.END_TIME);
-
-            // Restart ^^^
-            //         |||   
-            //         |||
-            //         |||
-        }
-    }
-
-    /*
     IEnumerator Player_CombatLoop()
     {
         yield return new WaitForSeconds(attackSpeed);
@@ -467,7 +466,6 @@ public class PlayerManager : MonoBehaviour {
             }
         }
     }
-    */
 
     void looseHealth(float _hp)
     {
