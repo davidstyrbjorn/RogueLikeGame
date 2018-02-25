@@ -26,7 +26,7 @@ public class NewCombatMechanicUIManager : MonoBehaviour
             GameObject swordObject = new GameObject("barSword");
             swordObject.AddComponent<Image>().sprite = BaseValues.attackSymbolSprite;
             swordObject.GetComponent<RectTransform>().position = BarImage.rectTransform.position + (Vector3.right*BarImage.rectTransform.sizeDelta.x)/2;
-            swordObject.transform.SetParent(BarImage.transform);
+            swordObject.transform.SetParent(BarImage.transform.parent);
             swordObject.AddComponent<CombatBarSword>().originX = BarImage.rectTransform.position.x;
 
             // Instantiate it into the world
