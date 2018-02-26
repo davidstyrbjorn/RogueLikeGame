@@ -12,8 +12,8 @@ public class PlayerManager : MonoBehaviour {
 
     public enum AttackType
     {
-        NORMAL, // No soul cost but has no chance of crit hit
-        HARD, // Costs x-souls but has a chance for crit hit
+        NORMAL, 
+        HARD, 
     }
 
     public enum CombatPhase
@@ -80,7 +80,7 @@ public class PlayerManager : MonoBehaviour {
     // New combat mechanic
     public NewCombatMechanicUIManager combatUI;
     private AttackType nextAttackType;
-    public CombatPhase combatPhase;
+    bool doAttack;
 
     // Combat position variables
     private Vector2 playerCombatPos, enemyCombatPos;
@@ -92,8 +92,6 @@ public class PlayerManager : MonoBehaviour {
 
     void Update()
     {
-        NewCombatInput();
-
         if (currentState == BaseValues.PlayerStates.NOT_IN_COMBAT || currentState == BaseValues.PlayerStates.DEAD)
         {
             CheckForEnemyClick();
@@ -115,6 +113,8 @@ public class PlayerManager : MonoBehaviour {
             uiManager.inGame_EnemyHealthSlider.transform.position = currentEnemy.transform.position +
                 (Vector3.right * 1.45f);
             uiManager.inGame_EnemyHealthSlider.transform.position = new Vector2(uiManager.inGame_EnemyHealthSlider.transform.position.x, uiManager.inGame_PlayerHealthSlider.transform.position.y);
+
+            PlayerSwordBarInput();
         }
         else
         {
@@ -132,31 +132,19 @@ public class PlayerManager : MonoBehaviour {
 #endif
     }
 
-    void NewCombatInput()
+    private void PlayerSwordBarInput()
     {
-        if(combatPhase == CombatPhase.BEGIN)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            // Change the next attack type
-            if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            if(combatUI.greenSwords.First != null)
             {
-                nextAttackType = AttackType.NORMAL;
+                if(combatUI.greenSwords.First.Value.GetComponent<CombatBarSword>().positionState == CombatBarSword.PositionState.PERFECT)
+                {
+                    doAttack = true;
+                }
+                Destroy(combatUI.greenSwords.First.Value);
+                combatUI.greenSwords.RemoveFirst();
             }
-            else if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-            {
-                nextAttackType = AttackType.HARD;
-            }
-        }
-        else if(combatPhase == CombatPhase.COMBAT_PLAYER)
-        {
-            // Here the player can choose to disengage combat
-        }
-        else if(combatPhase == CombatPhase.COMBAT_ENEMY)
-        {
-            // Here the enemy can decide to execute actions (not implemented)
-        }
-        else if(combatPhase == CombatPhase.END)
-        {
-            // Pass (for now)
         }
     }
 
@@ -312,99 +300,33 @@ public class PlayerManager : MonoBehaviour {
         soundManager.CombatStart();
 
         // String argument automatically restarts the coroutine
-        //StartCoroutine("NewCombatLoop");
+        doAttack = false;
         StartCoroutine("Player_CombatLoop");
+        StartCoroutine("Player_BarSwordSpawnLoop");
         StartCoroutine("Enemy_CombatLoop");
     }
 
-    //IEnumerator NewCombatLoop()
-    //{
-    //    //print("what");
-    //    yield return new WaitForSeconds(1.5f); // initial wait time before combat begins
-    //    // New Combat-loop which works based on a phase-system with the new normal/hard attack mechanic
-    //    while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
-    //    {
-    //        // Begin phase start
-    //        combatPhase = CombatPhase.BEGIN;
-    //        combatUI.NewPhase(CombatPhase.BEGIN);
-    //
-    //        yield return new WaitForSeconds(BaseValues.BEGIN_TIME);
-    //
-    //        // <=================================================> //
-    //
-    //        // Player_Combat phase start
-    //        combatPhase = CombatPhase.COMBAT_PLAYER;
-    //        combatUI.NewPhase(CombatPhase.COMBAT_PLAYER);
-    //        float playerCombatDamage = 0;
-    //
-    //        yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME/2);
-    //
-    //        // Play player attack animation & give it some time before proceeding
-    //        playerAnimation.DoCombatAnimation();
-    //        yield return new WaitForSeconds(0.3f);
-    //
-    //        // Now the player executes his/hers attack
-    //        // Check what type of attack to do
-    //        if(nextAttackType == AttackType.NORMAL)
-    //        {
-    //            // Perform a normal attack
-    //            playerCombatDamage = equipedWeapon == null ? attack : attack + equipedWeapon.getNormalAttack();
-    //        }
-    //        else
-    //        {
-    //            // Perform a hard hitting attack
-    //            // Check if we have souls to perform the attack
-    //            if (money >= 1)
-    //            {
-    //                playerCombatDamage = equipedWeapon == null ? attack : equipedWeapon.getAttack();
-    //                removeMoney(1);
-    //            }
-    //        }
-    //
-    //        // Update the enemy
-    //        currentEnemy.looseHealth(playerCombatDamage);
-    //        // UIManager updates
-    //        uiManager.UpdateEnemyUI(currentEnemy);
-    //        if (currentEnemy != null)
-    //            uiManager.inGame_EnemyHealthSlider.value = currentEnemy.getHP();
-    //        // Effects
-    //        soundManager.SwingSword();
-    //        combatTextManager.SpawnCombatText(transform.position + (Vector3.up * 3.5f) + (Vector3.right * 1.3f), playerCombatDamage.ToString(), Color.red);
-    //
-    //        yield return new WaitForSeconds(BaseValues.COMBAT_PLAYER_TIME / 2);
-    //
-    //        // <=================================================> //
-    //
-    //        // Enemy_Combat phase start
-    //        combatPhase = CombatPhase.COMBAT_ENEMY;
-    //        combatUI.NewPhase(CombatPhase.COMBAT_ENEMY);
-    //
-    //        yield return new WaitForSeconds(BaseValues.COMBAT_ENEMY_TIME);
-    //
-    //        // <=================================================> //
-    //
-    //        // End phase
-    //        combatPhase = CombatPhase.END;
-    //        combatUI.NewPhase(CombatPhase.END);
-    //
-    //        yield return new WaitForSeconds(BaseValues.END_TIME);
-    //
-    //        // Restart ^^^
-    //        //         |||   
-    //        //         |||
-    //        //         |||
-    //    }
-    //}
+    IEnumerator Player_BarSwordSpawnLoop()
+    {
+        yield return new WaitForSeconds(1.0f);
+        while (currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
+        {
+            combatUI.SpawnBarSword();
+            yield return new WaitForSeconds(attackSpeed);
+        }
+    }
 
     IEnumerator Player_CombatLoop()
     {
-        yield return new WaitForSeconds(attackSpeed);
         while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             bool didCrit = false;
 
             if(currentEnemy != null)
             {
+                // Wait here please
+                yield return new WaitUntil(() => doAttack);
+
                 // Show player attack animation
                 playerAnimation.DoCombatAnimation();
                 yield return new WaitForSeconds(0.3f);
@@ -444,15 +366,14 @@ public class PlayerManager : MonoBehaviour {
                 // Done 
                 PlayerPrefs.SetInt("STATS_DAMAGE_DEALT", PlayerPrefs.GetInt("STATS_DAMAGE_DEALT",0) + (int)total_attack_power);
                 nextAttackBonus = 1f;
-
-                yield return new WaitForSeconds(attackSpeed); // The time between each player attack
+                doAttack = false;
             }
         }
     }
 
     IEnumerator Enemy_CombatLoop()
     {
-        yield return new WaitForSeconds(attackSpeed);
+        yield return new WaitForSeconds(1.0f);
         while(currentState == BaseValues.PlayerStates.IN_COMBAT || currentState == BaseValues.PlayerStates.IN_COMBAT_CAN_ESCAPE)
         {
             if (currentEnemy != null)

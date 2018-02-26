@@ -13,7 +13,7 @@ public class BaseValues : MonoBehaviour{
     // Player base values
     public static float PlayerBaseHP            = 100;  //  @   100
     public static float PlayerBaseAttack        = 10;   //  @   10
-    public static float PlayerBaseAttackSpeed   = 0.85f;
+    public static float PlayerBaseAttackSpeed   = 1.0f;
 
     // Player stat increaser numbers
     public static float HealthStatIncrease      = 10;

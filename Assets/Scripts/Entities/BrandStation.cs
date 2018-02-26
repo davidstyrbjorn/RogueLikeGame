@@ -42,18 +42,6 @@ public class BrandStation : MonoBehaviour {
     public Image brandedWeaponImage;
     public Text brandedWeaponName;
 
-    void Update()
-    {
-        //DEBUG
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            if (BrandStaionTransform.gameObject.activeInHierarchy)
-                ToggleBrandStation(false);
-            else
-                ToggleBrandStation(true);
-        }
-    }
-
     void Start()
     {
         playerInventory = FindObjectOfType<PlayerInventory>();

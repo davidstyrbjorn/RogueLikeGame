@@ -5,40 +5,63 @@ using UnityEngine.UI;
 
 public class CombatBarSword : MonoBehaviour {
 
+    public enum PositionState
+    {
+        PERFECT,
+        LATE
+    }
+
     public float originX;
+    public NewCombatMechanicUIManager combatUI;
+    public PositionState positionState;
+
     private Vector2 startSize;
-    private static float maxDistanceFromOrigin;
+    private float timer = 0;
+    private static float maxDistanceFromOrigin = 0;
 
     private Image swordImage;
     private RectTransform rectTransform;
 
     private void Start()
     {
+        // Initial position states
         rectTransform = GetComponent<RectTransform>();
         swordImage = GetComponent<Image>();
         startSize = swordImage.rectTransform.sizeDelta;
+        positionState = PositionState.LATE;
 
-        float deltaX = (Mathf.Abs((swordImage.rectTransform.position.x - originX)) * 0.0125f) + 1;
-        swordImage.rectTransform.sizeDelta = startSize / deltaX;
+        float startDeltaX = (Mathf.Abs((swordImage.rectTransform.position.x - originX)) * 0.0125f) + 1;
+        swordImage.rectTransform.sizeDelta = startSize / startDeltaX;
+        if(maxDistanceFromOrigin == 0)
+        {
+            maxDistanceFromOrigin = Mathf.Abs(startDeltaX);
+        }
     }
 
     private void Update()
     {
+        timer += Time.deltaTime;
+
         float deltaX = ((swordImage.rectTransform.position.x - originX) * 0.0125f);
         swordImage.rectTransform.sizeDelta = startSize / (Mathf.Abs(deltaX)+1);
-        //print(Mathf.Abs(deltaX));
-
-        if (Mathf.Abs(deltaX) <= 1.4f)
+        
+        if(timer >= 1.0f)
         {
-            swordImage.color = Color.green;
+            if(Mathf.Abs(deltaX) >= maxDistanceFromOrigin)
+            {
+                Destroy(gameObject);
+            }
         }
-        else if(Mathf.Abs(deltaX) >= 8)
+        if (Mathf.Abs(deltaX) <= 0.35f)
         {
-            Destroy(gameObject);
+            positionState = PositionState.PERFECT;
+            combatUI.greenSwords.AddFirst(this.gameObject);
+            swordImage.color = Color.green;
         }
         else
         {
-            swordImage.color = Color.white;
+            positionState = PositionState.LATE;
+            swordImage.color = Color.red;
         }
 
         rectTransform.Translate(Vector3.left * 80.0f * Time.deltaTime);
